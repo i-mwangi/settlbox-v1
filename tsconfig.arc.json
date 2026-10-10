@@ -1,0 +1,32 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "incremental": false
+  },
+  "include": [
+    "types/finance.ts",
+    "types/node-sqlite.d.ts",
+    "services/server/**/*.ts",
+    "app/api/**/*.ts",
+    "app/operator/page.tsx",
+    "app/testnet-treasury/page.tsx",
+    "services/arc/**/*.ts",
+    "contexts/ArcWalletProvider.tsx",
+    "components/Common/ArcWalletControl.tsx",
+    "app/transfer/page.tsx",
+    "app/payment/[code]/page.tsx",
+    "app/invoice/**/*.tsx",
+    "app/bill/**/*.tsx",
+    "app/payroll/**/*.tsx",
+    "services/api/payment-link.ts",
+    "contexts/AccountProvider.tsx",
+    "contexts/TransactionProvider.tsx",
+    "components/Business/**/*.tsx",
+    "components/Transactions/TransactionsContainer.tsx",
+    "components/Transactions/TransactionDetailContainer.tsx",
+    "components/Home/HomeContainer.tsx",
+    "components/Modal/ConnectWallet/ConnectWalletModal.tsx",
+    "components/Notification/Notification.tsx"
+  ],
+  "exclude": ["node_modules"]
+}
