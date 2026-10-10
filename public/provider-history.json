@@ -1,0 +1,273 @@
+{
+  "globalAccounts": {
+    "accounts": [
+      {
+        "id": "va-usd-ach",
+        "currency": "USD",
+        "method": "ACH / Wire",
+        "bankName": "Lead Bank",
+        "status": "active",
+        "details": [
+          {
+            "label": "Account Holder",
+            "value": "Settlbox Inc."
+          },
+          {
+            "label": "Account Number",
+            "value": "9401028374650"
+          },
+          {
+            "label": "Routing Number (ACH)",
+            "value": "101019644"
+          },
+          {
+            "label": "Routing Number (Wire)",
+            "value": "101019644"
+          },
+          {
+            "label": "Bank Name",
+            "value": "Lead Bank"
+          },
+          {
+            "label": "Bank Address",
+            "value": "1801 Main St, Kansas City, MO 64108"
+          }
+        ]
+      },
+      {
+        "id": "va-usd-swift",
+        "currency": "USD",
+        "method": "SWIFT",
+        "bankName": "Lead Bank",
+        "status": "active",
+        "details": [
+          {
+            "label": "Account Holder",
+            "value": "Settlbox Inc."
+          },
+          {
+            "label": "IBAN",
+            "value": "US82 LEAD 0000 9401 0283 7465 0"
+          },
+          {
+            "label": "SWIFT / BIC",
+            "value": "LEABORC1"
+          },
+          {
+            "label": "Bank Name",
+            "value": "Lead Bank"
+          },
+          {
+            "label": "Bank Address",
+            "value": "1801 Main St, Kansas City, MO 64108"
+          }
+        ]
+      },
+      {
+        "id": "va-eur-sepa",
+        "currency": "EUR",
+        "method": "SEPA",
+        "bankName": "Banking Circle",
+        "status": "active",
+        "details": [
+          {
+            "label": "Account Holder",
+            "value": "Settlbox Inc."
+          },
+          {
+            "label": "IBAN",
+            "value": "LU28 0019 4006 4475 0000"
+          },
+          {
+            "label": "BIC",
+            "value": "BABORLUL"
+          },
+          {
+            "label": "Bank Name",
+            "value": "Banking Circle S.A."
+          },
+          {
+            "label": "Bank Address",
+            "value": "2 Boulevard de la Foire, Luxembourg"
+          }
+        ]
+      },
+      {
+        "id": "va-aed-uaefts",
+        "currency": "AED",
+        "method": "UAEFTS",
+        "bankName": "Mashreq Bank",
+        "status": "active",
+        "details": [
+          {
+            "label": "Account Holder",
+            "value": "Settlbox Inc."
+          },
+          {
+            "label": "IBAN",
+            "value": "AE07 0331 0000 0102 8374 650"
+          },
+          {
+            "label": "Bank Name",
+            "value": "Mashreq Bank PSC"
+          },
+          {
+            "label": "Bank Address",
+            "value": "Al Rigga Rd, Dubai, UAE"
+          }
+        ]
+      }
+    ],
+    "deposits": [
+      {
+        "id": "d1",
+        "currency": "USD",
+        "method": "ACH",
+        "amount": 25000,
+        "sender": "Acme Corp",
+        "date": "2026-04-04T14:30:00Z",
+        "status": "completed"
+      },
+      {
+        "id": "d2",
+        "currency": "EUR",
+        "method": "SEPA",
+        "amount": 18500,
+        "sender": "Berlin GmbH",
+        "date": "2026-04-03T09:15:00Z",
+        "status": "completed"
+      },
+      {
+        "id": "d3",
+        "currency": "USD",
+        "method": "Wire",
+        "amount": 50000,
+        "sender": "TechVentures LLC",
+        "date": "2026-04-02T16:45:00Z",
+        "status": "completed"
+      },
+      {
+        "id": "d4",
+        "currency": "AED",
+        "method": "UAEFTS",
+        "amount": 73400,
+        "sender": "Gulf Trading Co.",
+        "date": "2026-04-01T11:20:00Z",
+        "status": "completed"
+      },
+      {
+        "id": "d5",
+        "currency": "USD",
+        "method": "SWIFT",
+        "amount": 120000,
+        "sender": "Singapore Holdings Pte",
+        "date": "2026-03-30T08:00:00Z",
+        "status": "completed"
+      },
+      {
+        "id": "d6",
+        "currency": "EUR",
+        "method": "SEPA",
+        "amount": 9200,
+        "sender": "Paris Design Studio",
+        "date": "2026-03-28T13:10:00Z",
+        "status": "completed"
+      }
+    ]
+  },
+  "yield": {
+    "apy": 4.85,
+    "monthly": [
+      {
+        "date": "Oct 25",
+        "earned": 0
+      },
+      {
+        "date": "Nov 25",
+        "earned": 0
+      },
+      {
+        "date": "Dec 25",
+        "earned": 0
+      },
+      {
+        "date": "Jan 26",
+        "earned": 101.04
+      },
+      {
+        "date": "Feb 26",
+        "earned": 606.25
+      },
+      {
+        "date": "Mar 26",
+        "earned": 606.25
+      }
+    ],
+    "activity": [
+      {
+        "id": "e1",
+        "type": "deposit",
+        "amount": 50000,
+        "date": "2026-03-15T10:30:00Z",
+        "wallet": "Treasury",
+        "status": "completed"
+      },
+      {
+        "id": "e2",
+        "type": "yield",
+        "amount": 202.08,
+        "date": "2026-03-31T00:00:00Z",
+        "wallet": "Treasury",
+        "status": "completed"
+      },
+      {
+        "id": "e3",
+        "type": "deposit",
+        "amount": 100000,
+        "date": "2026-02-10T14:20:00Z",
+        "wallet": "Operations",
+        "status": "completed"
+      },
+      {
+        "id": "e4",
+        "type": "yield",
+        "amount": 202.08,
+        "date": "2026-02-28T00:00:00Z",
+        "wallet": "Treasury",
+        "status": "completed"
+      },
+      {
+        "id": "e5",
+        "type": "yield",
+        "amount": 404.17,
+        "date": "2026-02-28T00:00:00Z",
+        "wallet": "Operations",
+        "status": "completed"
+      },
+      {
+        "id": "e6",
+        "type": "withdraw",
+        "amount": 25000,
+        "date": "2026-01-20T09:00:00Z",
+        "wallet": "Treasury",
+        "status": "completed"
+      },
+      {
+        "id": "e7",
+        "type": "deposit",
+        "amount": 25000,
+        "date": "2026-01-05T16:45:00Z",
+        "wallet": "Treasury",
+        "status": "completed"
+      },
+      {
+        "id": "e8",
+        "type": "yield",
+        "amount": 101.04,
+        "date": "2026-01-31T00:00:00Z",
+        "wallet": "Treasury",
+        "status": "completed"
+      }
+    ]
+  }
+}

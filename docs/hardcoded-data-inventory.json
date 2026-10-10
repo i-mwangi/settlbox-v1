@@ -1,0 +1,1352 @@
+{
+  "filesScanned": 841,
+  "findings": [
+    {
+      "file": "app/api/business-records/[id]/route.ts",
+      "line": 9,
+      "name": "pending",
+      "kind": "literal-array",
+      "items": 4,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "app/api/seeded-workspace/action/route.ts",
+      "line": 53,
+      "name": "changes",
+      "kind": "literal-array",
+      "items": 1,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "app/not-found.tsx",
+      "line": 10,
+      "name": "colors",
+      "kind": "literal-array",
+      "items": 6,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/AccountManagement/AccountSidebar.tsx",
+      "line": 6,
+      "name": "accounts",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/AccountManagement/SignersTable.tsx",
+      "line": 5,
+      "name": "signers",
+      "kind": "literal-array",
+      "items": 6,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Business/BusinessRecordPresentation.tsx",
+      "line": 23,
+      "name": "dates",
+      "kind": "literal-array",
+      "items": 4,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Common/Dropdown/CompanyTypeDropdown.tsx",
+      "line": 6,
+      "name": "COMPANY_TYPE",
+      "kind": "literal-array",
+      "items": 12,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Common/Dropdown/CountryDropdown.tsx",
+      "line": 6,
+      "name": "COUNTRY",
+      "kind": "literal-array",
+      "items": 23,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Common/Dropdown/RecurringIntervalDropdown.tsx",
+      "line": 4,
+      "name": "RECURRING_INTERVALS",
+      "kind": "literal-array",
+      "items": 4,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Common/TableFooter.tsx",
+      "line": 14,
+      "name": "PAGE_SIZE_OPTIONS",
+      "kind": "literal-array",
+      "items": 5,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Common/ToolTip/ShapeSelectionTooltip.tsx",
+      "line": 35,
+      "name": "shapeOptions",
+      "kind": "literal-array",
+      "items": 4,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Home/DashboardPreview.tsx",
+      "line": 7,
+      "name": "balances",
+      "kind": "literal-array",
+      "items": 10,
+      "review": "business-data-candidate"
+    },
+    {
+      "file": "components/Home/DashboardPreview.tsx",
+      "line": 11,
+      "name": "months",
+      "kind": "literal-array",
+      "items": 10,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Home/DashboardPreview.tsx",
+      "line": 23,
+      "name": "navigation",
+      "kind": "literal-array",
+      "items": 10,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Home/Overview/PeriodFilterDropdown.tsx",
+      "line": 7,
+      "name": "PERIOD_OPTIONS",
+      "kind": "literal-array",
+      "items": 4,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Home/PaymentInteration/PaymentLink.tsx",
+      "line": 230,
+      "name": "paymentLinkTableHeaders",
+      "kind": "literal-array",
+      "items": 8,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Home/TransactionHistory.tsx",
+      "line": 112,
+      "name": "uniqueAssetIds",
+      "kind": "literal-array",
+      "items": 1,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Home/TransactionHistory.tsx",
+      "line": 190,
+      "name": "tableHeaders",
+      "kind": "literal-array",
+      "items": 6,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Login/DecorField.tsx",
+      "line": 8,
+      "name": "AVATAR_COLORS",
+      "kind": "literal-array",
+      "items": 6,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Login/DecorField.tsx",
+      "line": 71,
+      "name": "team",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Login/DecorField.tsx",
+      "line": 92,
+      "name": "rows",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Login/DecorField.tsx",
+      "line": 177,
+      "name": "ITEMS",
+      "kind": "literal-array",
+      "items": 9,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Modal/Contact/CreateCategoryModal.tsx",
+      "line": 23,
+      "name": "colorOptions",
+      "kind": "literal-array",
+      "items": 5,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Modal/Contact/CreateEmployeeContactModal.tsx",
+      "line": 263,
+      "name": "step1Fields",
+      "kind": "literal-array",
+      "items": 2,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Modal/Contact/CreateGroupModal.tsx",
+      "line": 19,
+      "name": "colorOptions",
+      "kind": "literal-array",
+      "items": 5,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Modal/DepositModal.tsx",
+      "line": 14,
+      "name": "balanceNum",
+      "kind": "financial-number",
+      "review": "business-data-candidate"
+    },
+    {
+      "file": "components/Modal/Group/CreateNewGroupModal.tsx",
+      "line": 28,
+      "name": "tableHeaders",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Modal/Group/EditGroupModal.tsx",
+      "line": 13,
+      "name": "headers",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Modal/Payroll/PayrollSimulationModal.tsx",
+      "line": 25,
+      "name": "ROLE_PRESETS",
+      "kind": "literal-array",
+      "items": 5,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Modal/ReviewPlanModal.tsx",
+      "line": 9,
+      "name": "features",
+      "kind": "literal-array",
+      "items": 6,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Modal/SelectNetworkModal.tsx",
+      "line": 10,
+      "name": "NETWORKS",
+      "kind": "literal-array",
+      "items": 1,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Modal/SetupModulesModal.tsx",
+      "line": 76,
+      "name": "signers",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Send/Stream/StreamingTransactionDashboard.tsx",
+      "line": 24,
+      "name": "defaultTransactions",
+      "kind": "literal-array",
+      "items": 6,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Sidebar/MoveCryptoSidebar.tsx",
+      "line": 39,
+      "name": "moveCryptoItems",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "components/Sidebar/Sidebar.tsx",
+      "line": 63,
+      "name": "actionItems",
+      "kind": "literal-array",
+      "items": 13,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "contexts/TourProvider.tsx",
+      "line": 131,
+      "name": "steps",
+      "kind": "literal-array",
+      "items": 5,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "hooks/server/useAuthGuard.ts",
+      "line": 7,
+      "name": "publicRoutes",
+      "kind": "literal-array",
+      "items": 10,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "services/auth/crypto.ts",
+      "line": 156,
+      "name": "components",
+      "kind": "literal-array",
+      "items": 7,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "services/server/business-document.ts",
+      "line": 10,
+      "name": "entries",
+      "kind": "literal-array",
+      "items": 12,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "services/server/workspace-records.ts",
+      "line": 9,
+      "name": "resources",
+      "kind": "literal-array",
+      "items": 8,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "services/utils/constant.ts",
+      "line": 1,
+      "name": "PUBLIC_ROUTES",
+      "kind": "literal-array",
+      "items": 6,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "services/utils/qrCode.ts",
+      "line": 48,
+      "name": "updatedQRs",
+      "kind": "literal-array",
+      "items": 2,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "services/utils/supportedToken.ts",
+      "line": 2,
+      "name": "supportedTokens",
+      "kind": "literal-array",
+      "items": 1,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/app/card/page.tsx",
+      "line": 123,
+      "name": "presets",
+      "kind": "literal-array",
+      "items": 4,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/app/card/page.tsx",
+      "line": 330,
+      "name": "tableHeaders",
+      "kind": "literal-array",
+      "items": 6,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/app/card/page.tsx",
+      "line": 457,
+      "name": "txHeaders",
+      "kind": "literal-array",
+      "items": 5,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/app/earn/page.tsx",
+      "line": 23,
+      "name": "EARN_APY",
+      "kind": "financial-number",
+      "review": "business-data-candidate"
+    },
+    {
+      "file": "presentation/app/earn/page.tsx",
+      "line": 24,
+      "name": "TOTAL_DEPOSITED",
+      "kind": "financial-number",
+      "review": "business-data-candidate"
+    },
+    {
+      "file": "presentation/app/earn/page.tsx",
+      "line": 25,
+      "name": "AVAILABLE_TO_WITHDRAW",
+      "kind": "financial-number",
+      "review": "business-data-candidate"
+    },
+    {
+      "file": "presentation/app/earn/page.tsx",
+      "line": 26,
+      "name": "TOTAL_EARNED",
+      "kind": "financial-number",
+      "review": "business-data-candidate"
+    },
+    {
+      "file": "presentation/app/earn/page.tsx",
+      "line": 27,
+      "name": "MONTHLY_YIELD",
+      "kind": "financial-number",
+      "review": "business-data-candidate"
+    },
+    {
+      "file": "presentation/app/earn/page.tsx",
+      "line": 28,
+      "name": "TVL",
+      "kind": "financial-number",
+      "review": "business-data-candidate"
+    },
+    {
+      "file": "presentation/app/earn/page.tsx",
+      "line": 38,
+      "name": "MONTHLY_YIELD_DATA",
+      "kind": "literal-array",
+      "items": 6,
+      "review": "business-data-candidate"
+    },
+    {
+      "file": "presentation/app/earn/page.tsx",
+      "line": 54,
+      "name": "MOCK_ACTIVITY",
+      "kind": "literal-array",
+      "items": 8,
+      "review": "business-data-candidate"
+    },
+    {
+      "file": "presentation/app/global-account/page.tsx",
+      "line": 27,
+      "name": "VIRTUAL_ACCOUNTS",
+      "kind": "literal-array",
+      "items": 4,
+      "review": "business-data-candidate"
+    },
+    {
+      "file": "presentation/app/global-account/page.tsx",
+      "line": 85,
+      "name": "RECENT_DEPOSITS",
+      "kind": "literal-array",
+      "items": 6,
+      "review": "business-data-candidate"
+    },
+    {
+      "file": "presentation/app/mobile/page.tsx",
+      "line": 4,
+      "name": "socialLinks",
+      "kind": "literal-array",
+      "items": 1,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/app/ramp/page.tsx",
+      "line": 8,
+      "name": "FIAT_OPTIONS",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/app/reimbursement/page.tsx",
+      "line": 29,
+      "name": "MOCK_REIMBURSEMENTS",
+      "kind": "literal-array",
+      "items": 6,
+      "review": "business-data-candidate"
+    },
+    {
+      "file": "presentation/app/reimbursement/page.tsx",
+      "line": 49,
+      "name": "CATEGORY_OPTIONS",
+      "kind": "literal-array",
+      "items": 7,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/app/reimbursement/page.tsx",
+      "line": 377,
+      "name": "tableHeaders",
+      "kind": "literal-array",
+      "items": 7,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/app/treasury/page.tsx",
+      "line": 24,
+      "name": "names",
+      "kind": "literal-array",
+      "items": 12,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/app/treasury/page.tsx",
+      "line": 44,
+      "name": "CATEGORY_COLORS",
+      "kind": "literal-array",
+      "items": 8,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Bill/BillDetailContainer.tsx",
+      "line": 155,
+      "name": "lifecycleItems",
+      "kind": "literal-array",
+      "items": 2,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Common/Dropdown/CompanyTypeDropdown.tsx",
+      "line": 5,
+      "name": "COMPANY_TYPE",
+      "kind": "literal-array",
+      "items": 12,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Common/Dropdown/CountryDropdown.tsx",
+      "line": 5,
+      "name": "COUNTRY",
+      "kind": "literal-array",
+      "items": 23,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Common/Dropdown/DateRangePicker.tsx",
+      "line": 6,
+      "name": "WEEKDAYS",
+      "kind": "literal-array",
+      "items": 7,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Common/Dropdown/DateRangePicker.tsx",
+      "line": 7,
+      "name": "MONTHS",
+      "kind": "literal-array",
+      "items": 12,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Common/Dropdown/DueDateDropdown.tsx",
+      "line": 4,
+      "name": "QUICK_DUE_DATES",
+      "kind": "literal-array",
+      "items": 5,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Common/Dropdown/DueDateDropdown.tsx",
+      "line": 11,
+      "name": "WEEKDAYS",
+      "kind": "literal-array",
+      "items": 7,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Common/Dropdown/DueDateDropdown.tsx",
+      "line": 12,
+      "name": "MONTHS",
+      "kind": "literal-array",
+      "items": 12,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Common/TableFooter.tsx",
+      "line": 12,
+      "name": "PAGE_SIZE_OPTIONS",
+      "kind": "literal-array",
+      "items": 5,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Common/TokenList.tsx",
+      "line": 12,
+      "name": "tokenSortOptions",
+      "kind": "literal-array",
+      "items": 1,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Common/TokenList.tsx",
+      "line": 15,
+      "name": "networkSortOptions",
+      "kind": "literal-array",
+      "items": 1,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Common/TokenList.tsx",
+      "line": 18,
+      "name": "filterOptions",
+      "kind": "literal-array",
+      "items": 2,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Common/TokenList.tsx",
+      "line": 22,
+      "name": "tabs",
+      "kind": "literal-array",
+      "items": 2,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Common/ToolTip/ShapeSelectionTooltip.tsx",
+      "line": 26,
+      "name": "shapeOptions",
+      "kind": "literal-array",
+      "items": 4,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/ContactBook/ClientContact.tsx",
+      "line": 152,
+      "name": "tableHeaders",
+      "kind": "literal-array",
+      "items": 6,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/ContactBook/EmployeeContact.tsx",
+      "line": 147,
+      "name": "originalgroups",
+      "kind": "literal-array",
+      "items": 1,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/ContactBook/EmployeeContact.tsx",
+      "line": 149,
+      "name": "allgroups",
+      "kind": "literal-array",
+      "items": 2,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/ContactBook/EmployeeContact.tsx",
+      "line": 273,
+      "name": "tableHeaders",
+      "kind": "literal-array",
+      "items": 10,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Dashboard/CancelTransaction/CancelDashboardContainer.tsx",
+      "line": 144,
+      "name": "readyToCancelHeaders",
+      "kind": "literal-array",
+      "items": 4,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Dashboard/CancelTransaction/CancelDashboardContainer.tsx",
+      "line": 145,
+      "name": "upcomingCancelHeaders",
+      "kind": "literal-array",
+      "items": 5,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Dashboard/PendingRecieve/PendingRecieveContainer.tsx",
+      "line": 28,
+      "name": "HeaderColumns",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Dashboard/PendingRequest/AcceptedRequestSection.tsx",
+      "line": 11,
+      "name": "headers",
+      "kind": "literal-array",
+      "items": 6,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Dashboard/PendingRequest/PendingRequestSection.tsx",
+      "line": 14,
+      "name": "HEADERS",
+      "kind": "literal-array",
+      "items": 4,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Dashboard/WalletAnalytics/TransactionHistory.tsx",
+      "line": 57,
+      "name": "tableHeaders",
+      "kind": "literal-array",
+      "items": 7,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Home/CardContainer.tsx",
+      "line": 18,
+      "name": "UPCOMING_PAYROLLS",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "business-data-candidate"
+    },
+    {
+      "file": "presentation/components/Home/HomeContainer.tsx",
+      "line": 15,
+      "name": "tabs",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Home/Overview/GeneralStatistics.tsx",
+      "line": 17,
+      "name": "timeOptions",
+      "kind": "literal-array",
+      "items": 1,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Home/Overview/GeneralStatistics.tsx",
+      "line": 48,
+      "name": "months",
+      "kind": "literal-array",
+      "items": 12,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Home/Overview/PeriodFilterDropdown.tsx",
+      "line": 6,
+      "name": "PERIOD_OPTIONS",
+      "kind": "literal-array",
+      "items": 4,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Home/Overview/SpendingAverageChart.tsx",
+      "line": 14,
+      "name": "timeRangeOptions",
+      "kind": "literal-array",
+      "items": 2,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Home/Overview/SpendingAverageChart.tsx",
+      "line": 84,
+      "name": "dayNames",
+      "kind": "literal-array",
+      "items": 7,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Home/Overview/TransactionHistory.tsx",
+      "line": 33,
+      "name": "chartColors",
+      "kind": "literal-array",
+      "items": 6,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Home/Overview.tsx",
+      "line": 17,
+      "name": "CHART_GREYS",
+      "kind": "literal-array",
+      "items": 5,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Home/Overview.tsx",
+      "line": 18,
+      "name": "PERIODS",
+      "kind": "literal-array",
+      "items": 4,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Home/Overview.tsx",
+      "line": 25,
+      "name": "WEEKDAYS",
+      "kind": "literal-array",
+      "items": 7,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Home/Overview.tsx",
+      "line": 36,
+      "name": "labels",
+      "kind": "literal-array",
+      "items": 8,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Home/Overview.tsx",
+      "line": 42,
+      "name": "MONTH_NAMES",
+      "kind": "literal-array",
+      "items": 12,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Home/ReportsSection.tsx",
+      "line": 16,
+      "name": "tabs",
+      "kind": "literal-array",
+      "items": 4,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Home/ReportsSection.tsx",
+      "line": 25,
+      "name": "PIE_COLORS",
+      "kind": "literal-array",
+      "items": 5,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Home/ReportsSection.tsx",
+      "line": 26,
+      "name": "PIE_CATEGORIES",
+      "kind": "literal-array",
+      "items": 5,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Home/ReportsSection.tsx",
+      "line": 37,
+      "name": "TAX_JURISDICTIONS",
+      "kind": "literal-array",
+      "items": 6,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Home/ReportsSection.tsx",
+      "line": 266,
+      "name": "headers",
+      "kind": "literal-array",
+      "items": 18,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Home/ReportsSection.tsx",
+      "line": 328,
+      "name": "tableHeaders",
+      "kind": "literal-array",
+      "items": 5,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Invoice/CreateClientInvoice.tsx",
+      "line": 252,
+      "name": "newItems",
+      "kind": "literal-array",
+      "items": 1,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Invoice/CreateClientInvoice.tsx",
+      "line": 267,
+      "name": "next",
+      "kind": "literal-array",
+      "items": 1,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Login/DecorField.tsx",
+      "line": 5,
+      "name": "AVATAR_COLORS",
+      "kind": "literal-array",
+      "items": 6,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Login/DecorField.tsx",
+      "line": 65,
+      "name": "team",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Login/DecorField.tsx",
+      "line": 81,
+      "name": "rows",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Login/DecorField.tsx",
+      "line": 148,
+      "name": "ITEMS",
+      "kind": "literal-array",
+      "items": 9,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Login/OtpInput.tsx",
+      "line": 44,
+      "name": "next",
+      "kind": "literal-array",
+      "items": 1,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Login/OtpInput.tsx",
+      "line": 52,
+      "name": "next",
+      "kind": "literal-array",
+      "items": 1,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Login/OtpInput.tsx",
+      "line": 61,
+      "name": "next",
+      "kind": "literal-array",
+      "items": 1,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Modal/Account/ChooseAccountModal.tsx",
+      "line": 13,
+      "name": "colors",
+      "kind": "literal-array",
+      "items": 10,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Modal/Account/CreateAccountModal.tsx",
+      "line": 107,
+      "name": "tabOrder",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Modal/Account/CreateAccountModal.tsx",
+      "line": 197,
+      "name": "mergedMembers",
+      "kind": "literal-array",
+      "items": 2,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Modal/Contact/CreateEmployeeContactModal.tsx",
+      "line": 213,
+      "name": "step1Fields",
+      "kind": "literal-array",
+      "items": 2,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Modal/Contact/CreateGroupModal.tsx",
+      "line": 17,
+      "name": "colorOptions",
+      "kind": "literal-array",
+      "items": 5,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Modal/DepositModal.tsx",
+      "line": 12,
+      "name": "balanceNum",
+      "kind": "financial-number",
+      "review": "business-data-candidate"
+    },
+    {
+      "file": "presentation/components/Modal/EditTransactionModal.tsx",
+      "line": 59,
+      "name": "timeOptions",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Modal/Entity/CreateEntityModal.tsx",
+      "line": 14,
+      "name": "COUNTRY_OPTIONS",
+      "kind": "literal-array",
+      "items": 8,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Modal/Group/CreateNewGroupModal.tsx",
+      "line": 26,
+      "name": "tableHeaders",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Modal/Group/EditGroupModal.tsx",
+      "line": 15,
+      "name": "headers",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Modal/Payroll/PayrollSimulationModal.tsx",
+      "line": 14,
+      "name": "ROLE_PRESETS",
+      "kind": "literal-array",
+      "items": 5,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Modal/ReviewPlanModal.tsx",
+      "line": 8,
+      "name": "features",
+      "kind": "literal-array",
+      "items": 6,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Modal/SelectNetworkModal.tsx",
+      "line": 8,
+      "name": "NETWORKS",
+      "kind": "literal-array",
+      "items": 1,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Modal/SelectTokenModal.tsx",
+      "line": 10,
+      "name": "DEMO_TOKENS",
+      "kind": "literal-array",
+      "items": 8,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Modal/SetupModulesModal.tsx",
+      "line": 59,
+      "name": "signers",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Modal/Wallet/ImportWalletModal.tsx",
+      "line": 125,
+      "name": "sizes",
+      "kind": "literal-array",
+      "items": 4,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/PaymentLink/CreatePaymentLinkContainer.tsx",
+      "line": 87,
+      "name": "acceptedTokens",
+      "kind": "literal-array",
+      "items": 1,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/PaymentLink/EditPaymentLinkContainer.tsx",
+      "line": 143,
+      "name": "acceptedTokens",
+      "kind": "literal-array",
+      "items": 1,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/PaymentLink/PaymentLinkContainer.tsx",
+      "line": 24,
+      "name": "tabs",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/PaymentLink/PaymentLinkContainer.tsx",
+      "line": 214,
+      "name": "tableHeaders",
+      "kind": "literal-array",
+      "items": 8,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/PaymentLink/PaymentLinkPreview.tsx",
+      "line": 11,
+      "name": "CHAINS",
+      "kind": "literal-array",
+      "items": 1,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Portfolio/Accounts.tsx",
+      "line": 29,
+      "name": "avatarColors",
+      "kind": "literal-array",
+      "items": 5,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Portfolio/TokenList.tsx",
+      "line": 12,
+      "name": "tokenSortOptions",
+      "kind": "literal-array",
+      "items": 1,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Portfolio/TokenList.tsx",
+      "line": 15,
+      "name": "networkSortOptions",
+      "kind": "literal-array",
+      "items": 1,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Portfolio/TokenList.tsx",
+      "line": 18,
+      "name": "filterOptions",
+      "kind": "literal-array",
+      "items": 2,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Portfolio/TokenList.tsx",
+      "line": 22,
+      "name": "tabs",
+      "kind": "literal-array",
+      "items": 2,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Reimbursement/ReimbursementReviewContainer.tsx",
+      "line": 21,
+      "name": "MOCK_REIMBURSEMENTS",
+      "kind": "literal-array",
+      "items": 4,
+      "review": "business-data-candidate"
+    },
+    {
+      "file": "presentation/components/Send/AmountInput.tsx",
+      "line": 13,
+      "name": "percentages",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Send/TransactionOptions.tsx",
+      "line": 10,
+      "name": "options",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Setting/GoogleSheetsIntegrationSettings.tsx",
+      "line": 46,
+      "name": "featureItems",
+      "kind": "literal-array",
+      "items": 4,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Setting/SettingContainer.tsx",
+      "line": 21,
+      "name": "generalSettingTabs",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Setting/SettingContainer.tsx",
+      "line": 26,
+      "name": "teamSettingTabs",
+      "kind": "literal-array",
+      "items": 1,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Setting/SettingContainer.tsx",
+      "line": 27,
+      "name": "integrationSettingTabs",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Setting/SlackIntegrationSettings.tsx",
+      "line": 9,
+      "name": "notificationTypes",
+      "kind": "literal-array",
+      "items": 6,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Setting/StripeIntegrationSettings.tsx",
+      "line": 19,
+      "name": "featureItems",
+      "kind": "literal-array",
+      "items": 4,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Setting/TeamSetting/InvoiceSettingsTab.tsx",
+      "line": 7,
+      "name": "ACCENT_PRESETS",
+      "kind": "literal-array",
+      "items": 8,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Setting/TeamSetting/InvoiceSettingsTab.tsx",
+      "line": 17,
+      "name": "PAYMENT_TERMS",
+      "kind": "literal-array",
+      "items": 6,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Sidebar/Sidebar.tsx",
+      "line": 53,
+      "name": "actionItems",
+      "kind": "literal-array",
+      "items": 13,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Subscription/SubscriptionContainer.tsx",
+      "line": 6,
+      "name": "tabs",
+      "kind": "literal-array",
+      "items": 2,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/components/Transactions/TransactionsContainer.tsx",
+      "line": 31,
+      "name": "subTabs",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/contexts/DemoProvider.tsx",
+      "line": 709,
+      "name": "accountBalances",
+      "kind": "literal-array",
+      "items": 1,
+      "review": "business-data-candidate"
+    },
+    {
+      "file": "presentation/contexts/DemoProvider.tsx",
+      "line": 715,
+      "name": "totalBalance",
+      "kind": "financial-number",
+      "review": "business-data-candidate"
+    },
+    {
+      "file": "presentation/data/fiat-payout.ts",
+      "line": 15,
+      "name": "FIAT_COUNTRIES",
+      "kind": "literal-array",
+      "items": 23,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/hooks/server/useAuthGuard.ts",
+      "line": 5,
+      "name": "PUBLIC_ROUTES",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/services/api/bill.ts",
+      "line": 49,
+      "name": "ids",
+      "kind": "literal-array",
+      "items": 1,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/services/api/notification.ts",
+      "line": 16,
+      "name": "key",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/services/utils/constant.ts",
+      "line": 1,
+      "name": "PUBLIC_ROUTES",
+      "kind": "literal-array",
+      "items": 6,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/services/utils/qrCode.ts",
+      "line": 43,
+      "name": "updatedQRs",
+      "kind": "literal-array",
+      "items": 2,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "presentation/services/utils/supportedToken.ts",
+      "line": 2,
+      "name": "supportedTokens",
+      "kind": "literal-array",
+      "items": 1,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "types/seeded-workspace.ts",
+      "line": 3,
+      "name": "workspaceEntityIds",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "tests/business-records.test.mjs",
+      "line": 17,
+      "name": "payments",
+      "kind": "literal-array",
+      "items": 2,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "tests/notifications.test.mjs",
+      "line": 12,
+      "name": "events",
+      "kind": "literal-array",
+      "items": 1,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "tests/password-login.test.mjs",
+      "line": 11,
+      "name": "names",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    },
+    {
+      "file": "tests/team-members.test.mjs",
+      "line": 60,
+      "name": "variables",
+      "kind": "literal-array",
+      "items": 3,
+      "review": "classify-static-options-or-business-records"
+    }
+  ],
+  "limitations": [
+    "Literal initializer inventory includes valid static configuration and test fixtures.",
+    "Generated records, inline JSX amounts, API no-ops and runtime fallback logic require separate semantic review."
+  ]
+}

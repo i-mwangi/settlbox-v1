@@ -1,0 +1,59 @@
+"use client";
+import React from "react";
+import { TransactionOverviewModalProps } from "@/presentation/types/modal";
+import { ModalProp } from "@/presentation/contexts/ModalManagerProvider";
+import BaseModal from "../BaseModal";
+import { ActionButton } from "@/presentation/components/Common/ActionButton";
+import { formatAddress } from "@/presentation/services/utils/address";
+import { blo } from "blo";
+import { identiconSeed } from "@/services/arc/identicon";
+import { USDC_TOKEN_ADDRESS } from "@/presentation/services/utils/constant";
+export function GiftTransactionOverviewModal({ isOpen, onClose, zIndex, ...props }: ModalProp<TransactionOverviewModalProps>) {
+    const { amount, accountAddress, transactionType, cancellableTime, onConfirm, tokenAddress, tokenSymbol } = props;
+    if (!isOpen)
+        return null;
+    return (<BaseModal isOpen={isOpen} onClose={onClose} title="Gift Transaction Overview" icon="/modal/coin-icon.gif" zIndex={zIndex}>
+      <div className="flex flex-col gap-1 p-2 bg-[#1E1E1E] rounded-b-2xl w-[520px]">
+        
+        <div className="bg-[#292929] flex flex-col h-[180px] items-center justify-center py-3 rounded-lg w-full">
+          <div className="text-[#989898] text-[14px] tracking-[0.07px] leading-[20px]">Amount</div>
+          <div className="flex items-center gap-2">
+            <div className="text-white text-[40px] font-medium tracking-[0.2px] leading-[normal]">{amount}</div>
+            <img alt={tokenSymbol || "Token"} className="w-8 h-8" src={tokenAddress === USDC_TOKEN_ADDRESS ? "/token/usdc.svg" : blo(identiconSeed(tokenAddress || ""))}/>
+          </div>
+        </div>
+
+        
+        <div className="flex flex-col gap-1 w-full">
+          
+          <div className="bg-[#292929] flex items-center justify-between px-3 py-2.5 rounded-lg w-full">
+            <div className="text-[#989898] text-[14px] tracking-[0.07px] leading-[20px]">From</div>
+            <div className="text-white text-[14px] font-medium tracking-[0.07px] leading-[20px]">
+              (You) {accountAddress && formatAddress(accountAddress)}
+            </div>
+          </div>
+
+          
+          <div className="bg-[#292929] flex items-center justify-between px-3 py-2.5 rounded-lg w-full">
+            <div className="text-[#989898] text-[14px] tracking-[0.07px] leading-[20px]">Transaction Type</div>
+            <div className="text-white text-[14px] font-medium tracking-[0.07px] leading-[20px]">{transactionType}</div>
+          </div>
+
+          
+          <div className="bg-[#292929] flex items-center justify-between px-3 py-2.5 rounded-lg w-full">
+            <div className="text-[#989898] text-[14px] tracking-[0.07px] leading-[20px]">Cancellable in</div>
+            <div className="text-white text-[14px] font-medium tracking-[0.07px] leading-[20px]">{cancellableTime}</div>
+          </div>
+
+          <div className="mt-3 flex gap-2 w-full">
+            <ActionButton text="Cancel" type="neutral" onClick={onClose} className="flex-1"/>
+            <ActionButton text="Confirm and Send" className="flex-3" onClick={() => {
+            onConfirm?.();
+            onClose();
+        }}/>
+          </div>
+        </div>
+      </div>
+    </BaseModal>);
+}
+export default GiftTransactionOverviewModal;

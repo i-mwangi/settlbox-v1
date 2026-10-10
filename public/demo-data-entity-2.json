@@ -1,0 +1,749 @@
+{
+  "company": {
+    "id": 2,
+    "uuid": "c0a80101-0000-0000-0000-000000000002",
+    "companyName": "Chainrails",
+    "registrationNumber": "SI-CHAINRAILS-2026001",
+    "country": "Slovenia",
+    "industry": "DeFi / DEX",
+    "companySize": "1-10",
+    "website": "https://chainrails.io",
+    "logo": "/chainrails.jpg",
+    "createdAt": "2026-10-01T08:00:00.000Z",
+    "updatedAt": "2026-10-01T10:00:00.000Z"
+  },
+  "user": {
+    "id": 1,
+    "uuid": "u0a80101-0000-0000-0000-000000000001",
+    "email": "mieszko@chainrails.io",
+    "role": "ADMIN",
+    "isActive": true,
+    "teamMembership": {
+      "id": 1,
+      "uuid": "tm-2001",
+      "firstName": "Mieszko",
+      "lastName": "Manijak",
+      "position": "Co-founder",
+      "role": "OWNER",
+      "companyId": 2,
+      "profilePicture": null,
+      "company": {
+        "id": 2,
+        "companyName": "Chainrails"
+      }
+    }
+  },
+  "teamMembers": [
+    {
+      "id": 1,
+      "uuid": "tm-2001",
+      "firstName": "Mieszko",
+      "lastName": "Manijak",
+      "email": "mieszko@chainrails.io",
+      "position": "Co-founder",
+      "role": "OWNER",
+      "status": "ACTIVE",
+      "walletAddress": "0x2a1b3c4d5e6f7890abcdef1234567890abcdef01",
+      "salary": 0,
+      "salaryCurrency": "USDC",
+      "profilePicture": null,
+      "joinedAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "uuid": "tm-2002",
+      "firstName": "Mitja",
+      "lastName": "Belak",
+      "email": "mitja@chainrails.io",
+      "position": "Co-founder",
+      "role": "ADMIN",
+      "status": "ACTIVE",
+      "walletAddress": "0x2b2c3d4e5f6a7001abcdef1234567890abcdef02",
+      "salary": 0,
+      "salaryCurrency": "USDC",
+      "profilePicture": null,
+      "joinedAt": "2026-10-01T08:00:00.000Z"
+    }
+  ],
+  "teamStats": {
+    "total": 2,
+    "active": 2,
+    "suspended": 0,
+    "pending": 0
+  },
+  "accounts": [
+    {
+      "id": "acc-201",
+      "uuid": "acc-uuid-201",
+      "accountId": "0xz1c2d3e4f5a60001",
+      "name": "Main Wallet",
+      "description": "Primary treasury wallet for Chainrails operations",
+      "threshold": 1,
+      "companyId": 2,
+      "logo": null,
+      "publicKeys": [
+        "0xchainrails001"
+      ],
+      "members": [
+        {
+          "name": "Mieszko Manijak",
+          "commitment": "0xchainrails001",
+          "role": "OWNER"
+        }
+      ],
+      "thresholdControl": {
+        "amountThreshold": 5000,
+        "highSigners": 1,
+        "lowSigners": 1
+      },
+      "createdAt": "2026-10-01T08:00:00.000Z"
+    }
+  ],
+  "balances": {
+    "0xz1c2d3e4f5a60001": [
+      {
+        "faucetId": "0xusdc0001",
+        "symbol": "USDC",
+        "amount": 85000,
+        "decimals": 6
+      },
+      {
+        "faucetId": "0xusdt0001",
+        "symbol": "USDC",
+        "amount": 15000,
+        "decimals": 6
+      }
+    ]
+  },
+  "totalBalance": 100000,
+  "contacts": [
+    {
+      "id": 1,
+      "uuid": "ct-2001",
+      "name": "BlockSec Advisory",
+      "walletAddress": "0xbs2001aabbccddee1234567890abcdef01020304",
+      "email": "advisory@blocksec.com",
+      "category": "Vendors",
+      "notes": "Blockchain advisory firm, tokenomics and governance consulting"
+    },
+    {
+      "id": 2,
+      "uuid": "ct-2002",
+      "name": "Zellic Security",
+      "walletAddress": "0xzl2002aabbccddee1234567890abcdef01020304",
+      "email": "audits@zellic.io",
+      "category": "Contractors",
+      "notes": "Smart contract audit firm, completed DEX core audit"
+    },
+    {
+      "id": 3,
+      "uuid": "ct-2003",
+      "name": "MEXC Global",
+      "walletAddress": "0xmx2003aabbccddee1234567890abcdef01020304",
+      "email": "listings@mexc.com",
+      "category": "Partners",
+      "notes": "Exchange partner for token listing discussions"
+    }
+  ],
+  "contactCategories": [
+    {
+      "id": 1,
+      "name": "Investors",
+      "order": 1
+    },
+    {
+      "id": 2,
+      "name": "Vendors",
+      "order": 2
+    },
+    {
+      "id": 3,
+      "name": "Contractors",
+      "order": 3
+    },
+    {
+      "id": 4,
+      "name": "Partners",
+      "order": 4
+    }
+  ],
+  "employeeGroups": [
+    {
+      "id": 1,
+      "name": "Founders",
+      "shape": "CIRCLE",
+      "color": "#194BFA",
+      "order": 1,
+      "companyId": 2,
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z"
+    }
+  ],
+  "employees": [
+    {
+      "id": 1,
+      "name": "Mieszko Manijak",
+      "walletAddress": "mtst1azk9t7lzrs3m5gpqhds4kuet8gdmnz37_qruqqypuyph",
+      "email": "mieszko@chainrails.io",
+      "groupId": 1,
+      "companyId": 2,
+      "paymentMethod": "crypto",
+      "token": {
+        "address": "mtst1azk9t7lzrs3m5gpqhds4kuet8gdmnz37_qruqqypuyph",
+        "symbol": "USDC",
+        "decimals": 8,
+        "name": "USDC"
+      },
+      "network": {
+        "name": "Arc Testnet",
+        "chainId": 0
+      },
+      "order": 1,
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z",
+      "employeeType": "employee",
+      "isActive": true
+    },
+    {
+      "id": 2,
+      "name": "Mitja Belak",
+      "walletAddress": "mtst1mjb8s9oxqt5l7hriest6mvfu1jgopy60_rtvrrzxqzri",
+      "email": "mitja@chainrails.io",
+      "groupId": 1,
+      "companyId": 2,
+      "paymentMethod": "crypto",
+      "token": {
+        "address": "mtst1azk9t7lzrs3m5gpqhds4kuet8gdmnz37_qruqqypuyph",
+        "symbol": "USDC",
+        "decimals": 8,
+        "name": "USDC"
+      },
+      "network": {
+        "name": "Arc Testnet",
+        "chainId": 0
+      },
+      "order": 2,
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z",
+      "employeeType": "employee",
+      "isActive": true
+    }
+  ],
+  "clients": [
+    {
+      "uuid": "cl-2001",
+      "email": "treasury@liqwid.fi",
+      "companyName": "Liqwid Finance",
+      "companyType": "DeFi Protocol",
+      "country": "Switzerland",
+      "city": "Zug",
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "uuid": "cl-2002",
+      "email": "ops@sundaeswap.fi",
+      "companyName": "SundaeSwap Labs",
+      "companyType": "DeFi Protocol",
+      "country": "United States",
+      "city": "San Francisco",
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "uuid": "cl-2003",
+      "email": "partnerships@wingriders.com",
+      "companyName": "WingRiders",
+      "companyType": "DEX Aggregator",
+      "country": "Czech Republic",
+      "city": "Prague",
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "uuid": "cl-2004",
+      "email": "grants@polygon.technology",
+      "companyName": "Arc Testnet",
+      "companyType": "Blockchain",
+      "country": "United States",
+      "city": "New York",
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "tx-201",
+      "type": "RECEIVE",
+      "status": "COMPLETED",
+      "amount": 75000,
+      "currency": "USDC",
+      "from": "Imported ecosystem grant",
+      "fromAddress": "0xmf2001aabbccddee1234567890abcdef01020304",
+      "to": "Main Wallet",
+      "toAddress": "0xz1c2d3e4f5a60001",
+      "accountId": "0xz1c2d3e4f5a60001",
+      "category": "Other",
+      "label": "Imported ecosystem grant - Tranche 1",
+      "txHash": "0xzr201abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T10:00:00.000Z",
+      "note": "Initial grant funding for Chainrails DEX development"
+    },
+    {
+      "id": "tx-202",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 18000,
+      "currency": "USDC",
+      "from": "Main Wallet",
+      "fromAddress": "0xz1c2d3e4f5a60001",
+      "to": "Zellic Security",
+      "toAddress": "0xzl2002aabbccddee1234567890abcdef01020304",
+      "accountId": "0xz1c2d3e4f5a60001",
+      "category": "Vendor",
+      "label": "Smart contract audit - DEX core",
+      "txHash": "0xzr202abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T09:00:00.000Z",
+      "note": "Full audit of AMM and router contracts"
+    },
+    {
+      "id": "tx-203",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 1200,
+      "currency": "USDC",
+      "from": "Main Wallet",
+      "fromAddress": "0xz1c2d3e4f5a60001",
+      "to": "Hetzner Cloud",
+      "toAddress": "0xhz2003aabbccddee1234567890abcdef01020304",
+      "accountId": "0xz1c2d3e4f5a60001",
+      "category": "Vendor",
+      "label": "Infrastructure - Q4 2025",
+      "txHash": "0xzr203abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T08:00:00.000Z",
+      "note": "Dedicated servers and indexer hosting"
+    },
+    {
+      "id": "tx-204",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 2500,
+      "currency": "USDC",
+      "from": "Main Wallet",
+      "fromAddress": "0xz1c2d3e4f5a60001",
+      "to": "BlockSec Advisory",
+      "toAddress": "0xbs2001aabbccddee1234567890abcdef01020304",
+      "accountId": "0xz1c2d3e4f5a60001",
+      "category": "Vendor",
+      "label": "Tokenomics review",
+      "txHash": "0xzr204abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T11:00:00.000Z",
+      "note": "Tokenomics and governance model review"
+    },
+    {
+      "id": "tx-205",
+      "type": "RECEIVE",
+      "status": "COMPLETED",
+      "amount": 25000,
+      "currency": "USDC",
+      "from": "Imported ecosystem grant",
+      "fromAddress": "0xmf2001aabbccddee1234567890abcdef01020304",
+      "to": "Main Wallet",
+      "toAddress": "0xz1c2d3e4f5a60001",
+      "accountId": "0xz1c2d3e4f5a60001",
+      "category": "Other",
+      "label": "Imported ecosystem grant - Tranche 2",
+      "txHash": "0xzr205abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T14:00:00.000Z",
+      "note": "Second tranche after milestone delivery"
+    },
+    {
+      "id": "tx-206",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 3000,
+      "currency": "USDC",
+      "from": "Main Wallet",
+      "fromAddress": "0xz1c2d3e4f5a60001",
+      "to": "ETH Denver Hackathon",
+      "toAddress": "0xed2006aabbccddee1234567890abcdef01020304",
+      "accountId": "0xz1c2d3e4f5a60001",
+      "category": "Other",
+      "label": "Hackathon prize pool - Chainrails track",
+      "txHash": "0xzr206abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T10:00:00.000Z",
+      "note": "Sponsored hackathon track prize at ETH Denver"
+    },
+    {
+      "id": "tx-207",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 1500,
+      "currency": "USDC",
+      "from": "Main Wallet",
+      "fromAddress": "0xz1c2d3e4f5a60001",
+      "to": "Bounty Payroll",
+      "toAddress": "multiple",
+      "accountId": "0xz1c2d3e4f5a60001",
+      "category": "Payroll",
+      "label": "March 2026 Stipends",
+      "txHash": "0xzr207abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T10:00:00.000Z",
+      "note": "Monthly stipends and bounty payments"
+    },
+    {
+      "id": "tx-208",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 1200,
+      "currency": "USDC",
+      "from": "Main Wallet",
+      "fromAddress": "0xz1c2d3e4f5a60001",
+      "to": "Hetzner Cloud",
+      "toAddress": "0xhz2003aabbccddee1234567890abcdef01020304",
+      "accountId": "0xz1c2d3e4f5a60001",
+      "category": "Vendor",
+      "label": "Infrastructure - Q4 2026",
+      "txHash": "0xzr208abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T08:00:00.000Z",
+      "note": "Quarterly server and hosting costs"
+    },
+    {
+      "id": "tx-209",
+      "type": "RECEIVE",
+      "status": "COMPLETED",
+      "amount": 15000,
+      "currency": "USDC",
+      "from": "WingRiders",
+      "fromAddress": "0xwr2009aabbccddee1234567890abcdef01020304",
+      "to": "Main Wallet",
+      "toAddress": "0xz1c2d3e4f5a60001",
+      "accountId": "0xz1c2d3e4f5a60001",
+      "category": "Other",
+      "label": "Liquidity aggregation partnership",
+      "txHash": "0xzr209abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T15:00:00.000Z",
+      "note": "Payment for cross-DEX liquidity integration"
+    },
+    {
+      "id": "tx-210",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 800,
+      "currency": "USDC",
+      "from": "Main Wallet",
+      "fromAddress": "0xz1c2d3e4f5a60001",
+      "to": "Vercel",
+      "toAddress": "0xvc2010aabbccddee1234567890abcdef01020304",
+      "accountId": "0xz1c2d3e4f5a60001",
+      "category": "Vendor",
+      "label": "Frontend hosting - annual",
+      "txHash": "0xzr210abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T08:00:00.000Z",
+      "note": "Annual Vercel Pro plan for DEX frontend"
+    }
+  ],
+  "pendingProposals": [
+    {
+      "id": "prop-201",
+      "uuid": "prop-uuid-201",
+      "accountId": "0xz1c2d3e4f5a60001",
+      "accountName": "Main Wallet",
+      "type": "SEND",
+      "proposalCategory": "paying_bill",
+      "status": "PENDING",
+      "amount": 1200,
+      "currency": "USDC",
+      "to": "Hetzner Cloud",
+      "toAddress": "0xhz2003aabbccddee1234567890abcdef01020304",
+      "label": "Infrastructure - Q4 2026",
+      "note": "Quarterly server and hosting renewal",
+      "createdBy": "Mitja Belak",
+      "createdAt": "2026-10-01T09:00:00.000Z",
+      "signatures": [],
+      "requiredSignatures": 1
+    },
+    {
+      "id": "prop-202",
+      "uuid": "prop-uuid-202",
+      "accountId": "0xz1c2d3e4f5a60001",
+      "accountName": "Main Wallet",
+      "type": "SEND",
+      "proposalCategory": "paying_payroll",
+      "status": "PENDING",
+      "amount": 1500,
+      "currency": "USDC",
+      "to": "Bounty Payroll",
+      "toAddress": "multiple",
+      "label": "April 2026 Stipends",
+      "note": "Monthly stipends and contributor bounties",
+      "createdBy": "Mieszko Manijak",
+      "createdAt": "2026-10-01T09:00:00.000Z",
+      "signatures": [],
+      "requiredSignatures": 1
+    }
+  ],
+  "payrolls": [
+    {
+      "id": 1,
+      "uuid": "pr-2001",
+      "name": "March 2026 Stipends",
+      "status": "COMPLETED",
+      "totalAmount": 1500,
+      "currency": "USDC",
+      "employeeCount": 2,
+      "executedAt": "2026-10-01T10:00:00.000Z",
+      "createdAt": "2026-10-01T09:00:00.000Z",
+      "accountId": "0xz1c2d3e4f5a60001",
+      "accountName": "Main Wallet",
+      "txHash": "0xzr207abc123def456789aabbccdd0011eeff2233",
+      "recipients": [
+        {
+          "name": "Mieszko Manijak",
+          "amount": 750,
+          "walletAddress": "0x2a1b3c4d5e6f7890abcdef1234567890abcdef01",
+          "status": "PAID"
+        },
+        {
+          "name": "Mitja Belak",
+          "amount": 750,
+          "walletAddress": "0x2b2c3d4e5f6a7001abcdef1234567890abcdef02",
+          "status": "PAID"
+        }
+      ]
+    }
+  ],
+  "payrollStats": {
+    "totalPaid": 1500,
+    "totalPayrolls": 1,
+    "averagePerPayroll": 1500,
+    "nextPayrollDate": "2026-10-01T00:00:00.000Z"
+  },
+  "invoices": [
+    {
+      "id": 1,
+      "uuid": "inv-2001",
+      "invoiceNumber": "CHAINRAILS-2026-001",
+      "type": "SENT",
+      "status": "PAID",
+      "amount": 15000,
+      "currency": "USDC",
+      "from": "Chainrails",
+      "to": "WingRiders",
+      "toEmail": "partnerships@wingriders.com",
+      "description": "Cross-DEX liquidity aggregation integration",
+      "dueDate": "2026-10-01T00:00:00.000Z",
+      "paidAt": "2026-10-01T15:00:00.000Z",
+      "createdAt": "2026-10-01T10:00:00.000Z",
+      "items": [
+        {
+          "description": "Liquidity router integration",
+          "quantity": 1,
+          "unitPrice": 10000
+        },
+        {
+          "description": "SDK and documentation",
+          "quantity": 1,
+          "unitPrice": 5000
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "uuid": "inv-2002",
+      "invoiceNumber": "CHAINRAILS-2026-002",
+      "type": "SENT",
+      "status": "PENDING",
+      "amount": 8000,
+      "currency": "USDC",
+      "from": "Chainrails",
+      "to": "Liqwid Finance",
+      "toEmail": "treasury@liqwid.fi",
+      "description": "Lending pool integration for Chainrails LP tokens",
+      "dueDate": "2026-10-01T00:00:00.000Z",
+      "paidAt": null,
+      "createdAt": "2026-10-01T10:00:00.000Z",
+      "items": [
+        {
+          "description": "LP token collateral adapter",
+          "quantity": 1,
+          "unitPrice": 5000
+        },
+        {
+          "description": "Oracle price feed integration",
+          "quantity": 1,
+          "unitPrice": 3000
+        }
+      ]
+    }
+  ],
+  "invoiceStats": {
+    "totalSent": 23000,
+    "totalReceived": 0,
+    "pendingSent": 8000,
+    "pendingReceived": 0,
+    "paidSent": 15000,
+    "paidReceived": 0
+  },
+  "bills": [
+    {
+      "id": 1,
+      "uuid": "bill-2001",
+      "vendor": "Hetzner Cloud",
+      "description": "Dedicated servers and indexer hosting - Quarterly",
+      "amount": 1200,
+      "currency": "USDC",
+      "status": "PENDING",
+      "dueDate": "2026-10-01T00:00:00.000Z",
+      "category": "Vendor",
+      "recurring": true,
+      "frequency": "QUARTERLY",
+      "createdAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "uuid": "bill-2002",
+      "vendor": "BlockSec Advisory",
+      "description": "Monthly governance consulting retainer",
+      "amount": 500,
+      "currency": "USDC",
+      "status": "PAID",
+      "dueDate": "2026-10-01T00:00:00.000Z",
+      "category": "Vendor",
+      "recurring": true,
+      "frequency": "MONTHLY",
+      "createdAt": "2026-10-01T08:00:00.000Z"
+    }
+  ],
+  "billStats": {
+    "totalPending": 1200,
+    "totalOverdue": 0,
+    "totalPaid": 2900,
+    "billCount": 2
+  },
+  "paymentLinks": [
+    {
+      "id": 1,
+      "uuid": "pl-2001",
+      "code": "chainrails-integration",
+      "title": "Chainrails DEX Integration Fee",
+      "description": "Payment for integrating with Chainrails liquidity pools and aggregation API",
+      "amount": 5000,
+      "currency": "USDC",
+      "status": "ACTIVE",
+      "recipientAddress": "0xz1c2d3e4f5a60001",
+      "recipientName": "Chainrails",
+      "timesUsed": 0,
+      "maxUses": null,
+      "expiresAt": null,
+      "createdAt": "2026-10-01T10:00:00.000Z",
+      "payments": []
+    }
+  ],
+  "cardTransactions": [
+    {
+      "id": "ctx-201",
+      "merchant": "Vercel",
+      "amount": 20,
+      "currency": "USD",
+      "category": "Software",
+      "date": "2026-10-01T08:00:00.000Z",
+      "status": "COMPLETED"
+    },
+    {
+      "id": "ctx-202",
+      "merchant": "Hetzner Cloud",
+      "amount": 89,
+      "currency": "USD",
+      "category": "Software",
+      "date": "2026-10-01T10:00:00.000Z",
+      "status": "COMPLETED"
+    },
+    {
+      "id": "ctx-203",
+      "merchant": "Notion",
+      "amount": 16,
+      "currency": "USD",
+      "category": "Software",
+      "date": "2026-10-01T08:00:00.000Z",
+      "status": "COMPLETED"
+    },
+    {
+      "id": "ctx-204",
+      "merchant": "GitHub",
+      "amount": 21,
+      "currency": "USD",
+      "category": "Software",
+      "date": "2026-10-01T08:00:00.000Z",
+      "status": "COMPLETED"
+    }
+  ],
+  "card": {
+    "id": "card-201",
+    "last4": "4412",
+    "brand": "Visa",
+    "cardholder": "Mieszko Manijak",
+    "expiryMonth": 11,
+    "expiryYear": 2028,
+    "cvv": "519",
+    "spendingLimit": 2000,
+    "currentSpend": 146,
+    "status": "ACTIVE",
+    "frozen": false
+  },
+  "cards": [
+    {
+      "id": "card-201",
+      "last4": "4412",
+      "brand": "Visa",
+      "cardholder": "Mieszko Manijak",
+      "expiryMonth": 11,
+      "expiryYear": 2028,
+      "cvv": "519",
+      "spendingLimit": 2000,
+      "currentSpend": 146,
+      "status": "ACTIVE",
+      "frozen": false,
+      "dailyLimit": 500,
+      "weeklyLimit": 1000,
+      "monthlyLimit": 2000
+    }
+  ],
+  "cardPoolBalance": 5000,
+  "invoiceSettings": {
+    "logo": null,
+    "accentColor": "#194BFA",
+    "invoicePrefix": "CHAINRAILS-",
+    "nextInvoiceNumber": 1001,
+    "defaultPaymentTerms": "Net 30",
+    "defaultNote": "",
+    "footerText": "Thank you for your business. Payment is expected within the terms specified above.",
+    "companyTaxId": "",
+    "showTaxId": false,
+    "showWalletQr": true
+  },
+  "rampHistory": [
+    {
+      "id": "ramp-201",
+      "type": "ON_RAMP",
+      "fromCurrency": "EUR",
+      "toCurrency": "USDC",
+      "fromAmount": 9200,
+      "toAmount": 10000,
+      "rate": 0.92,
+      "fee": 25,
+      "status": "COMPLETED",
+      "bankAccount": "N26 ****7891",
+      "completedAt": "2026-10-01T10:00:00.000Z"
+    }
+  ],
+  "monthlyFinancials": [
+    {
+      "month": "2026-10",
+      "income": 115000,
+      "expenses": 28700,
+      "payroll": 1500,
+      "netFlow": 84800
+    }
+  ]
+}

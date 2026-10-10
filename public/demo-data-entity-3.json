@@ -1,0 +1,845 @@
+{
+  "company": {
+    "id": 3,
+    "uuid": "c0a80101-0000-0000-0000-000000000003",
+    "companyName": "Pods Finance",
+    "registrationNumber": "BR-45921873",
+    "country": "Brazil",
+    "industry": "DeFi / Options Protocol",
+    "companySize": "1-10",
+    "website": "https://pods.finance",
+    "logo": "/pods.jpg",
+    "createdAt": "2026-10-01T08:00:00.000Z",
+    "updatedAt": "2026-10-01T12:00:00.000Z"
+  },
+  "user": {
+    "id": 1,
+    "uuid": "u0a80101-0000-0000-0000-000000000003",
+    "email": "guilherme@pods.finance",
+    "role": "ADMIN",
+    "isActive": true,
+    "teamMembership": {
+      "id": 1,
+      "uuid": "tm-3001",
+      "firstName": "Guilherme",
+      "lastName": "Guimarães",
+      "position": "Co-Founder",
+      "role": "OWNER",
+      "companyId": 3,
+      "profilePicture": null,
+      "company": {
+        "id": 3,
+        "companyName": "Pods Finance"
+      }
+    }
+  },
+  "teamMembers": [
+    {
+      "id": 1,
+      "uuid": "tm-3001",
+      "firstName": "Guilherme",
+      "lastName": "Guimarães",
+      "email": "guilherme@pods.finance",
+      "position": "Co-Founder",
+      "role": "OWNER",
+      "status": "ACTIVE",
+      "walletAddress": "0xc1d2e3f400001111abcdef1234567890abcdef01",
+      "salary": 12000,
+      "salaryCurrency": "USDC",
+      "profilePicture": null,
+      "joinedAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "uuid": "tm-3002",
+      "firstName": "Emanuel",
+      "lastName": "Oliveira",
+      "email": "emanuel@pods.finance",
+      "position": "Blockchain Fullstack Engineer",
+      "role": "ADMIN",
+      "status": "ACTIVE",
+      "walletAddress": "0xc1d2e3f400002222abcdef1234567890abcdef02",
+      "salary": 10000,
+      "salaryCurrency": "USDC",
+      "profilePicture": null,
+      "joinedAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "id": 3,
+      "uuid": "tm-3003",
+      "firstName": "Bruno",
+      "lastName": "E.",
+      "email": "bruno@pods.finance",
+      "position": "Web3 Frontend Developer",
+      "role": "MEMBER",
+      "status": "ACTIVE",
+      "walletAddress": "",
+      "salary": 51480,
+      "salaryCurrency": "BRL",
+      "profilePicture": null,
+      "joinedAt": "2026-10-01T08:00:00.000Z"
+    }
+  ],
+  "teamStats": {
+    "total": 3,
+    "active": 3,
+    "suspended": 0,
+    "pending": 0
+  },
+  "accounts": [
+    {
+      "id": "acc-301",
+      "uuid": "acc-uuid-301",
+      "accountId": "0xc1d2e3f4a5b60001",
+      "name": "Protocol Treasury",
+      "description": "Primary treasury for Pods Finance protocol operations",
+      "threshold": 2,
+      "companyId": 3,
+      "logo": null,
+      "publicKeys": [
+        "0xcdf301",
+        "0xcdf302"
+      ],
+      "members": [
+        {
+          "name": "Guilherme Guimarães",
+          "commitment": "0xcdf301",
+          "role": "OWNER"
+        },
+        {
+          "name": "Emanuel Oliveira",
+          "commitment": "0xcdf302",
+          "role": "ADMIN"
+        }
+      ],
+      "thresholdControl": {
+        "amountThreshold": 50000,
+        "highSigners": 2,
+        "lowSigners": 1
+      },
+      "createdAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "id": "acc-302",
+      "uuid": "acc-uuid-302",
+      "accountId": "0xc1d2e3f4a5b60002",
+      "name": "Grants and Runway",
+      "description": "Ecosystem grants and team runway fund",
+      "threshold": 2,
+      "companyId": 3,
+      "logo": null,
+      "publicKeys": [
+        "0xcdf301",
+        "0xcdf302"
+      ],
+      "members": [
+        {
+          "name": "Guilherme Guimarães",
+          "commitment": "0xcdf301",
+          "role": "OWNER"
+        },
+        {
+          "name": "Emanuel Oliveira",
+          "commitment": "0xcdf302",
+          "role": "ADMIN"
+        }
+      ],
+      "thresholdControl": {
+        "amountThreshold": 25000,
+        "highSigners": 2,
+        "lowSigners": 1
+      },
+      "createdAt": "2026-10-01T08:00:00.000Z"
+    }
+  ],
+  "balances": {
+    "0xc1d2e3f4a5b60001": [
+      {
+        "faucetId": "0xusdc0001",
+        "symbol": "USDC",
+        "amount": 420000,
+        "decimals": 6
+      },
+      {
+        "faucetId": "0xeth0001",
+        "symbol": "ETH",
+        "amount": 18.5,
+        "decimals": 18,
+        "usdValue": 61050
+      }
+    ],
+    "0xc1d2e3f4a5b60002": [
+      {
+        "faucetId": "0xusdc0001",
+        "symbol": "USDC",
+        "amount": 180000,
+        "decimals": 6
+      }
+    ]
+  },
+  "totalBalance": 661050,
+  "contacts": [
+    {
+      "id": 1,
+      "uuid": "ct-3001",
+      "name": "Polygon Foundation",
+      "walletAddress": "0xd1e201aabbccddee1234567890abcdef01020304",
+      "email": "grants@polygon.technology",
+      "category": "Partners",
+      "notes": "Ecosystem grant partner"
+    },
+    {
+      "id": 2,
+      "uuid": "ct-3002",
+      "name": "Framework Ventures",
+      "walletAddress": "0xd2f302aabbccddee1234567890abcdef01020304",
+      "email": "deals@framework.ventures",
+      "category": "Investors",
+      "notes": "Lead investor in Pods Finance seed round"
+    },
+    {
+      "id": 3,
+      "uuid": "ct-3003",
+      "name": "ChainSafe Systems",
+      "walletAddress": "0xd3a403aabbccddee1234567890abcdef01020304",
+      "email": "partners@chainsafe.io",
+      "category": "Vendors",
+      "notes": "Smart contract audit and tooling partner"
+    }
+  ],
+  "contactCategories": [
+    {
+      "id": 1,
+      "name": "Investors",
+      "order": 1
+    },
+    {
+      "id": 2,
+      "name": "Vendors",
+      "order": 2
+    },
+    {
+      "id": 3,
+      "name": "Contractors",
+      "order": 3
+    },
+    {
+      "id": 4,
+      "name": "Partners",
+      "order": 4
+    }
+  ],
+  "employeeGroups": [
+    {
+      "id": 1,
+      "name": "Core Team",
+      "shape": "CIRCLE",
+      "color": "#4CAF50",
+      "order": 1,
+      "companyId": 3,
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "name": "Engineering",
+      "shape": "CIRCLE",
+      "color": "#7D52F4",
+      "order": 2,
+      "companyId": 3,
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z"
+    }
+  ],
+  "employees": [
+    {
+      "id": 1,
+      "name": "Guilherme Guimarães",
+      "walletAddress": "mtst1gxm3y1rcbxw9s1hukg6ewiv4ljtfu93_uwxwwebuwtm",
+      "email": "guilherme@pods.finance",
+      "groupId": 1,
+      "companyId": 3,
+      "paymentMethod": "crypto",
+      "token": {
+        "address": "mtst1azk9t7lzrs3m5gpqhds4kuet8gdmnz37_qruqqypuyph",
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      },
+      "network": {
+        "name": "Arc Testnet",
+        "chainId": 0
+      },
+      "order": 1,
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z",
+      "employeeType": "employee",
+      "isActive": true
+    },
+    {
+      "id": 2,
+      "name": "Emanuel Oliveira",
+      "walletAddress": "mtst1hyn2z0sdcyw0t2ivlh7fxjw5mkugv04_vxyxxfcvxun",
+      "email": "emanuel@pods.finance",
+      "groupId": 1,
+      "groupIds": [
+        1,
+        2
+      ],
+      "companyId": 3,
+      "paymentMethod": "crypto",
+      "token": {
+        "address": "mtst1azk9t7lzrs3m5gpqhds4kuet8gdmnz37_qruqqypuyph",
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      },
+      "network": {
+        "name": "Arc Testnet",
+        "chainId": 0
+      },
+      "order": 2,
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z",
+      "employeeType": "employee",
+      "isActive": true
+    },
+    {
+      "id": 3,
+      "name": "Bruno E.",
+      "walletAddress": "",
+      "email": "bruno@pods.finance",
+      "groupId": 1,
+      "companyId": 3,
+      "paymentMethod": "fiat",
+      "fiatDetails": {
+        "country": "Brazil",
+        "bank": "Nubank",
+        "currency": "BRL"
+      },
+      "token": null,
+      "network": null,
+      "order": 3,
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z",
+      "employeeType": "employee",
+      "isActive": true
+    }
+  ],
+  "clients": [
+    {
+      "uuid": "cl-3001",
+      "email": "grants@polygon.technology",
+      "companyName": "Polygon Foundation",
+      "companyType": "Blockchain Foundation",
+      "country": "United States",
+      "city": "San Francisco",
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "uuid": "cl-3002",
+      "email": "deals@framework.ventures",
+      "companyName": "Framework Ventures",
+      "companyType": "Venture Capital",
+      "country": "United States",
+      "city": "New York",
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "tx-301",
+      "type": "RECEIVE",
+      "status": "COMPLETED",
+      "amount": 500000,
+      "currency": "USDC",
+      "from": "Framework Ventures",
+      "fromAddress": "0xd2f302aabbccddee1234567890abcdef01020304",
+      "to": "Protocol Treasury",
+      "toAddress": "0xc1d2e3f4a5b60001",
+      "accountId": "0xc1d2e3f4a5b60001",
+      "category": "Grant",
+      "label": "Seed round funding",
+      "txHash": "0xfc301abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T10:00:00.000Z",
+      "note": "Initial seed funding from Framework Ventures"
+    },
+    {
+      "id": "tx-302",
+      "type": "RECEIVE",
+      "status": "COMPLETED",
+      "amount": 150000,
+      "currency": "USDC",
+      "from": "Polygon Foundation",
+      "fromAddress": "0xd1e201aabbccddee1234567890abcdef01020304",
+      "to": "Grants and Runway",
+      "toAddress": "0xc1d2e3f4a5b60002",
+      "accountId": "0xc1d2e3f4a5b60002",
+      "category": "Grant",
+      "label": "Polygon ecosystem grant",
+      "txHash": "0xfc302abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T09:00:00.000Z",
+      "note": "Ecosystem grant for DeFi options infrastructure on Polygon"
+    },
+    {
+      "id": "tx-303",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 31000,
+      "currency": "USDC",
+      "from": "Protocol Treasury",
+      "fromAddress": "0xc1d2e3f4a5b60001",
+      "to": "Payroll Batch",
+      "toAddress": "multiple",
+      "accountId": "0xc1d2e3f4a5b60001",
+      "category": "Payroll",
+      "label": "October 2025 Payroll",
+      "txHash": "0xfc303abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T10:00:00.000Z",
+      "note": "Monthly payroll for core team"
+    },
+    {
+      "id": "tx-304",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 18500,
+      "currency": "USDC",
+      "from": "Protocol Treasury",
+      "fromAddress": "0xc1d2e3f4a5b60001",
+      "to": "ChainSafe Systems",
+      "toAddress": "0xd3a403aabbccddee1234567890abcdef01020304",
+      "accountId": "0xc1d2e3f4a5b60001",
+      "category": "Vendor",
+      "label": "Smart contract security audit",
+      "txHash": "0xfc304abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T14:00:00.000Z",
+      "note": "Full audit of options vault contracts before mainnet launch"
+    },
+    {
+      "id": "tx-305",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 31000,
+      "currency": "USDC",
+      "from": "Protocol Treasury",
+      "fromAddress": "0xc1d2e3f4a5b60001",
+      "to": "Payroll Batch",
+      "toAddress": "multiple",
+      "accountId": "0xc1d2e3f4a5b60001",
+      "category": "Payroll",
+      "label": "December 2025 Payroll",
+      "txHash": "0xfc305abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T10:00:00.000Z",
+      "note": "Monthly payroll for core team"
+    },
+    {
+      "id": "tx-306",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 8000,
+      "currency": "USDC",
+      "from": "Protocol Treasury",
+      "fromAddress": "0xc1d2e3f4a5b60001",
+      "to": "AWS / Infra",
+      "toAddress": "0xa0b1c2d3e4f50001",
+      "accountId": "0xc1d2e3f4a5b60001",
+      "category": "Vendor",
+      "label": "Q4 2025 infrastructure costs",
+      "txHash": "0xfc306abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T09:00:00.000Z",
+      "note": "Cloud infra, RPC nodes, and monitoring tools"
+    },
+    {
+      "id": "tx-307",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 31000,
+      "currency": "USDC",
+      "from": "Protocol Treasury",
+      "fromAddress": "0xc1d2e3f4a5b60001",
+      "to": "Payroll Batch",
+      "toAddress": "multiple",
+      "accountId": "0xc1d2e3f4a5b60001",
+      "category": "Payroll",
+      "label": "February 2026 Payroll",
+      "txHash": "0xfc307abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T10:00:00.000Z",
+      "note": "Monthly payroll for core team"
+    },
+    {
+      "id": "tx-308",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 31000,
+      "currency": "USDC",
+      "from": "Protocol Treasury",
+      "fromAddress": "0xc1d2e3f4a5b60001",
+      "to": "Payroll Batch",
+      "toAddress": "multiple",
+      "accountId": "0xc1d2e3f4a5b60001",
+      "category": "Payroll",
+      "label": "March 2026 Payroll",
+      "txHash": "0xfc308abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T10:00:00.000Z",
+      "note": "Monthly payroll for core team"
+    },
+    {
+      "id": "tx-309",
+      "type": "RECEIVE",
+      "status": "COMPLETED",
+      "amount": 5200,
+      "currency": "USDC",
+      "from": "Protocol Fees",
+      "fromAddress": "0xfee501aabbccddee1234567890abcdef01020304",
+      "to": "Protocol Treasury",
+      "toAddress": "0xc1d2e3f4a5b60001",
+      "accountId": "0xc1d2e3f4a5b60001",
+      "category": "Other",
+      "label": "Q4 2026 protocol fees",
+      "txHash": "0xfc309abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T12:00:00.000Z",
+      "note": "Accumulated option trading fees from Q4 2026"
+    },
+    {
+      "id": "tx-310",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 12000,
+      "currency": "USDC",
+      "from": "Grants and Runway",
+      "fromAddress": "0xc1d2e3f4a5b60002",
+      "to": "Hackathon Prize Pool",
+      "toAddress": "0xhack01aabbccddee1234567890abcdef01020304",
+      "accountId": "0xc1d2e3f4a5b60002",
+      "category": "Other",
+      "label": "ETHSamba 2026 hackathon prizes",
+      "txHash": "0xfc310abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T15:00:00.000Z",
+      "note": "Hackathon sponsor bounties for ETHSamba Rio de Janeiro"
+    }
+  ],
+  "pendingProposals": [
+    {
+      "id": "prop-301",
+      "uuid": "prop-uuid-301",
+      "accountId": "0xc1d2e3f4a5b60001",
+      "accountName": "Protocol Treasury",
+      "type": "SEND",
+      "proposalCategory": "paying_bill",
+      "status": "PENDING",
+      "amount": 22000,
+      "currency": "USDC",
+      "to": "Certora",
+      "toAddress": "0xd4b504aabbccddee1234567890abcdef01020304",
+      "label": "Formal verification for v2 contracts",
+      "note": "Formal verification of updated option vault logic before v2 launch",
+      "createdBy": "Emanuel Oliveira",
+      "createdAt": "2026-10-01T09:00:00.000Z",
+      "signatures": [
+        {
+          "signer": "Emanuel Oliveira",
+          "status": "SIGNED",
+          "signedAt": "2026-10-01T09:00:00.000Z"
+        }
+      ],
+      "requiredSignatures": 2
+    },
+    {
+      "id": "prop-302",
+      "uuid": "prop-uuid-302",
+      "accountId": "0xc1d2e3f4a5b60002",
+      "accountName": "Grants and Runway",
+      "type": "SEND",
+      "proposalCategory": "paying_bill",
+      "status": "PENDING",
+      "amount": 15000,
+      "currency": "USDC",
+      "to": "Developer Grant - Felix M.",
+      "toAddress": "0xa2b3c4d5e6f70001",
+      "label": "Open source contributor grant",
+      "note": "Reward open-source contributor for Pods SDK integrations",
+      "createdBy": "Guilherme Guimarães",
+      "createdAt": "2026-10-01T10:00:00.000Z",
+      "signatures": [
+        {
+          "signer": "Guilherme Guimarães",
+          "status": "SIGNED",
+          "signedAt": "2026-10-01T10:00:00.000Z"
+        }
+      ],
+      "requiredSignatures": 2
+    }
+  ],
+  "payrolls": [
+    {
+      "id": 1,
+      "uuid": "pr-3001",
+      "name": "March 2026 Payroll",
+      "status": "COMPLETED",
+      "totalAmount": 31000,
+      "currency": "USDC",
+      "employeeCount": 3,
+      "executedAt": "2026-10-01T10:00:00.000Z",
+      "createdAt": "2026-10-01T09:00:00.000Z",
+      "accountId": "0xc1d2e3f4a5b60001",
+      "accountName": "Protocol Treasury",
+      "txHash": "0xfc308abc123def456789aabbccdd0011eeff2233",
+      "recipients": [
+        {
+          "name": "Guilherme Guimarães",
+          "amount": 12000,
+          "walletAddress": "0xc1d2e3f400001111abcdef1234567890abcdef01",
+          "status": "PAID"
+        },
+        {
+          "name": "Emanuel Oliveira",
+          "amount": 10000,
+          "walletAddress": "0xc1d2e3f400002222abcdef1234567890abcdef02",
+          "status": "PAID"
+        },
+        {
+          "name": "Bruno E.",
+          "amount": 9000,
+          "walletAddress": "0xc1d2e3f400003333abcdef1234567890abcdef03",
+          "status": "PAID"
+        }
+      ]
+    }
+  ],
+  "payrollStats": {
+    "totalPaid": 31000,
+    "totalPayrolls": 1,
+    "averagePerPayroll": 31000,
+    "nextPayrollDate": "2026-10-01T00:00:00.000Z"
+  },
+  "invoices": [
+    {
+      "id": 1,
+      "uuid": "inv-3001",
+      "invoiceNumber": "PODS-2026-001",
+      "type": "RECEIVED",
+      "status": "PAID",
+      "amount": 18500,
+      "currency": "USDC",
+      "from": "ChainSafe Systems",
+      "to": "Pods Finance",
+      "toEmail": "guilherme@pods.finance",
+      "description": "Smart contract security audit - options vaults",
+      "dueDate": "2026-10-01T00:00:00.000Z",
+      "paidAt": "2026-10-01T14:00:00.000Z",
+      "createdAt": "2026-10-01T10:00:00.000Z",
+      "items": [
+        {
+          "description": "Full audit of option vault smart contracts",
+          "quantity": 1,
+          "unitPrice": 15000
+        },
+        {
+          "description": "Re-audit after fixes",
+          "quantity": 1,
+          "unitPrice": 3500
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "uuid": "inv-3002",
+      "invoiceNumber": "PODS-2026-002",
+      "type": "SENT",
+      "status": "PAID",
+      "amount": 50000,
+      "currency": "USDC",
+      "from": "Pods Finance",
+      "to": "Framework Ventures",
+      "toEmail": "deals@framework.ventures",
+      "description": "SAFT - Pods Finance token allocation",
+      "dueDate": "2026-10-01T00:00:00.000Z",
+      "paidAt": "2026-10-01T11:00:00.000Z",
+      "createdAt": "2026-10-01T10:00:00.000Z",
+      "items": [
+        {
+          "description": "Token allocation under SAFT agreement",
+          "quantity": 1,
+          "unitPrice": 50000
+        }
+      ]
+    }
+  ],
+  "invoiceStats": {
+    "totalSent": 50000,
+    "totalReceived": 18500,
+    "pendingSent": 0,
+    "pendingReceived": 0,
+    "paidSent": 50000,
+    "paidReceived": 18500,
+    "overdueSent": 0,
+    "overdueReceived": 0
+  },
+  "bills": [
+    {
+      "id": 1,
+      "uuid": "bill-3001",
+      "vendor": "ChainSafe Systems",
+      "description": "Ongoing security retainer Q4 2026",
+      "amount": 8000,
+      "currency": "USDC",
+      "status": "PENDING",
+      "dueDate": "2026-10-01T00:00:00.000Z",
+      "category": "Vendor",
+      "recurring": true,
+      "frequency": "QUARTERLY",
+      "createdAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "uuid": "bill-3002",
+      "vendor": "AWS / Infra",
+      "description": "Q4 2026 cloud infrastructure and RPC nodes",
+      "amount": 8000,
+      "currency": "USDC",
+      "status": "PENDING",
+      "dueDate": "2026-10-01T00:00:00.000Z",
+      "category": "Vendor",
+      "recurring": true,
+      "frequency": "QUARTERLY",
+      "createdAt": "2026-10-01T08:00:00.000Z"
+    }
+  ],
+  "billStats": {
+    "totalPending": 16000,
+    "totalOverdue": 0,
+    "totalPaid": 26500,
+    "billCount": 2
+  },
+  "paymentLinks": [
+    {
+      "id": 1,
+      "uuid": "pl-3001",
+      "code": "pods-finance-grant",
+      "title": "Pods Developer Grant",
+      "description": "Submit your open source contribution to receive a Pods ecosystem grant",
+      "amount": null,
+      "currency": "USDC",
+      "status": "ACTIVE",
+      "recipientAddress": "0xc1d2e3f4a5b60002",
+      "recipientName": "Pods Finance",
+      "timesUsed": 3,
+      "maxUses": null,
+      "expiresAt": null,
+      "createdAt": "2026-10-01T10:00:00.000Z",
+      "payments": []
+    }
+  ],
+  "cardTransactions": [
+    {
+      "id": "ctx-301",
+      "merchant": "Figma",
+      "amount": 75,
+      "currency": "USD",
+      "category": "Software",
+      "date": "2026-10-01T08:00:00.000Z",
+      "status": "COMPLETED"
+    },
+    {
+      "id": "ctx-302",
+      "merchant": "ETHDenver Conference",
+      "amount": 1200,
+      "currency": "USD",
+      "category": "Travel",
+      "date": "2026-10-01T09:00:00.000Z",
+      "status": "COMPLETED"
+    },
+    {
+      "id": "ctx-303",
+      "merchant": "Linear",
+      "amount": 120,
+      "currency": "USD",
+      "category": "Software",
+      "date": "2026-10-01T08:00:00.000Z",
+      "status": "COMPLETED"
+    }
+  ],
+  "card": {
+    "id": "card-301",
+    "last4": "4892",
+    "brand": "Visa",
+    "cardholder": "Guilherme Guimarães",
+    "expiryMonth": 11,
+    "expiryYear": 2028,
+    "cvv": "541",
+    "spendingLimit": 10000,
+    "currentSpend": 1395,
+    "status": "ACTIVE",
+    "frozen": false
+  },
+  "cardPoolBalance": 30000,
+  "invoiceSettings": {
+    "logo": "/pods.jpg",
+    "accentColor": "#4CAF50",
+    "invoicePrefix": "PODS-",
+    "nextInvoiceNumber": 3,
+    "defaultPaymentTerms": "Net 14",
+    "defaultNote": "",
+    "footerText": "Thank you for building with Pods Finance. Questions? Contact us at guilherme@pods.finance.",
+    "companyTaxId": "",
+    "showTaxId": false,
+    "showWalletQr": true
+  },
+  "cards": [
+    {
+      "id": "card-301",
+      "last4": "4892",
+      "brand": "Visa",
+      "cardholder": "Guilherme Guimarães",
+      "expiryMonth": 11,
+      "expiryYear": 2028,
+      "cvv": "541",
+      "spendingLimit": 10000,
+      "currentSpend": 1395,
+      "status": "ACTIVE",
+      "frozen": false,
+      "dailyLimit": 5000,
+      "weeklyLimit": 10000,
+      "monthlyLimit": 10000
+    }
+  ],
+  "rampHistory": [
+    {
+      "id": "ramp-301",
+      "type": "ON_RAMP",
+      "fromCurrency": "BRL",
+      "toCurrency": "USDC",
+      "fromAmount": 250000,
+      "toAmount": 49500,
+      "rate": 0.198,
+      "fee": 250,
+      "status": "COMPLETED",
+      "bankAccount": "Nubank ****2201",
+      "completedAt": "2026-10-01T14:00:00.000Z"
+    },
+    {
+      "id": "ramp-302",
+      "type": "OFF_RAMP",
+      "fromCurrency": "USDC",
+      "toCurrency": "BRL",
+      "fromAmount": 20000,
+      "toAmount": 100800,
+      "rate": 5.04,
+      "fee": 200,
+      "status": "COMPLETED",
+      "bankAccount": "Nubank ****2201",
+      "completedAt": "2026-10-01T10:00:00.000Z"
+    }
+  ],
+  "monthlyFinancials": [
+    {
+      "month": "2026-10",
+      "income": 0,
+      "expenses": 38500,
+      "payroll": 186000,
+      "netFlow": -224500
+    }
+  ]
+}
