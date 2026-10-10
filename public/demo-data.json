@@ -1,0 +1,1857 @@
+{
+  "company": {
+    "id": 1,
+    "uuid": "c0a80101-0000-0000-0000-000000000001",
+    "companyName": "Radcipher",
+    "registrationNumber": "CHE-123.456.789",
+    "country": "Switzerland",
+    "industry": "Privacy Infrastructure",
+    "companySize": "1-10",
+    "website": "https://radcipher.com",
+    "logo": "/Radcipher.png",
+    "createdAt": "2026-10-01T08:00:00.000Z",
+    "updatedAt": "2026-10-01T10:30:00.000Z"
+  },
+  "user": {
+    "id": 1,
+    "uuid": "u0a80101-0000-0000-0000-000000000001",
+    "email": "stoyan@radcipher.com",
+    "role": "ADMIN",
+    "isActive": true,
+    "teamMembership": {
+      "id": 1,
+      "uuid": "tm-0001",
+      "firstName": "Stoyan",
+      "lastName": "Radev",
+      "position": "Founder & CEO",
+      "role": "OWNER",
+      "companyId": 1,
+      "profilePicture": null,
+      "company": {
+        "id": 1,
+        "companyName": "Radcipher"
+      }
+    }
+  },
+  "teamMembers": [
+    {
+      "id": 1,
+      "uuid": "tm-0001",
+      "firstName": "Stoyan",
+      "lastName": "Radev",
+      "email": "stoyan@radcipher.com",
+      "position": "Founder & CEO",
+      "role": "OWNER",
+      "status": "ACTIVE",
+      "walletAddress": "0x1a2b3c4d5e6f7890abcdef1234567890abcdef01",
+      "salary": 12000,
+      "salaryCurrency": "USDC",
+      "profilePicture": null,
+      "joinedAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "uuid": "tm-0002",
+      "firstName": "Daniel",
+      "lastName": "Keller",
+      "email": "daniel@radcipher.com",
+      "position": "CTO & Co-founder",
+      "role": "ADMIN",
+      "status": "ACTIVE",
+      "walletAddress": "0x2b3c4d5e6f7890abcdef1234567890abcdef0102",
+      "salary": 11000,
+      "salaryCurrency": "USDC",
+      "profilePicture": null,
+      "joinedAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "id": 3,
+      "uuid": "tm-0003",
+      "firstName": "Anja",
+      "lastName": "Bühler",
+      "email": "anja@radcipher.com",
+      "position": "Head of Product",
+      "role": "ADMIN",
+      "status": "ACTIVE",
+      "walletAddress": "0x7f3a2b8c4d5e9f1a6b2c8d4e5f9a1b6c2d8e4f5a",
+      "salary": 9500,
+      "salaryCurrency": "USDC",
+      "profilePicture": null,
+      "joinedAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "id": 4,
+      "uuid": "tm-0004",
+      "firstName": "Niklas",
+      "lastName": "Frei",
+      "email": "niklas@radcipher.com",
+      "position": "Senior Engineer",
+      "role": "ADMIN",
+      "status": "ACTIVE",
+      "walletAddress": "0x3c4d5e6f7890abcdef1234567890abcdef010304",
+      "salary": 8500,
+      "salaryCurrency": "USDC",
+      "profilePicture": null,
+      "joinedAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "id": 5,
+      "uuid": "tm-0005",
+      "firstName": "Lara",
+      "lastName": "Steiner",
+      "email": "lara@radcipher.com",
+      "position": "Marketing & BD",
+      "role": "ADMIN",
+      "status": "ACTIVE",
+      "walletAddress": "0x9a3f5b7e1d2c4a8e6f9b1d3c5a7e9f1b3d5c7a9e",
+      "salary": 7500,
+      "salaryCurrency": "USDC",
+      "profilePicture": null,
+      "joinedAt": "2026-10-01T08:00:00.000Z"
+    }
+  ],
+  "teamStats": {
+    "total": 5,
+    "active": 5,
+    "suspended": 0,
+    "pending": 0
+  },
+  "accounts": [
+    {
+      "id": "acc-001",
+      "uuid": "acc-uuid-001",
+      "accountId": "0xa1b2c3d4e5f60001",
+      "name": "Treasury",
+      "description": "Main treasury wallet for Radcipher",
+      "threshold": 2,
+      "companyId": 1,
+      "logo": null,
+      "publicKeys": [
+        "0xabc001",
+        "0xabc002"
+      ],
+      "members": [
+        {
+          "name": "Stoyan Radev",
+          "commitment": "0xabc001",
+          "role": "OWNER"
+        },
+        {
+          "name": "Daniel Keller",
+          "commitment": "0xabc002",
+          "role": "ADMIN"
+        }
+      ],
+      "thresholdControl": {
+        "amountThreshold": 10000,
+        "highSigners": 2,
+        "lowSigners": 1
+      },
+      "createdAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "id": "acc-002",
+      "uuid": "acc-uuid-002",
+      "accountId": "0xa1b2c3d4e5f60002",
+      "name": "Operations",
+      "description": "Day-to-day operations wallet",
+      "threshold": 1,
+      "companyId": 1,
+      "logo": null,
+      "publicKeys": [
+        "0xabc001",
+        "0xabc003"
+      ],
+      "members": [
+        {
+          "name": "Stoyan Radev",
+          "commitment": "0xabc001",
+          "role": "OWNER"
+        },
+        {
+          "name": "Daniel Keller",
+          "commitment": "0xabc003",
+          "role": "ADMIN"
+        }
+      ],
+      "thresholdControl": {
+        "amountThreshold": 5000,
+        "highSigners": 2,
+        "lowSigners": 1
+      },
+      "createdAt": "2026-10-01T08:00:00.000Z"
+    }
+  ],
+  "balances": {
+    "0xa1b2c3d4e5f60001": [
+      {
+        "faucetId": "0xusdc0001",
+        "symbol": "USDC",
+        "amount": 520000,
+        "decimals": 6
+      },
+      {
+        "faucetId": "0xeth0001",
+        "symbol": "ETH",
+        "amount": 12.5,
+        "decimals": 18,
+        "usdValue": 41250
+      }
+    ],
+    "0xa1b2c3d4e5f60002": [
+      {
+        "faucetId": "0xusdc0001",
+        "symbol": "USDC",
+        "amount": 45000,
+        "decimals": 6
+      },
+      {
+        "faucetId": "0xeth0001",
+        "symbol": "ETH",
+        "amount": 0.8,
+        "decimals": 18,
+        "usdValue": 2640
+      }
+    ]
+  },
+  "totalBalance": 608890,
+  "contacts": [
+    {
+      "id": 1,
+      "uuid": "ct-0001",
+      "name": "Circle",
+      "walletAddress": "0x5e0c01aabbccddee1234567890abcdef01020304",
+      "email": "partnerships@circle.com",
+      "category": "Partners",
+      "notes": "USDC issuer, stablecoin infrastructure partner"
+    },
+    {
+      "id": 2,
+      "uuid": "ct-0002",
+      "name": "Bity",
+      "walletAddress": "0xa1c002aabbccddee1234567890abcdef01020304",
+      "email": "partnerships@bity.com",
+      "category": "Partners",
+      "notes": "Swiss crypto exchange, on/off-ramp partner"
+    },
+    {
+      "id": 3,
+      "uuid": "ct-0003",
+      "name": "Yapeal",
+      "walletAddress": "0xc4a003aabbccddee1234567890abcdef01020304",
+      "email": "integrations@yapeal.ch",
+      "category": "Partners",
+      "notes": "Swiss neobank, payment distribution channel"
+    },
+    {
+      "id": 4,
+      "uuid": "ct-0004",
+      "name": "Halborn Security",
+      "walletAddress": "0x4a0044aabbccddee1234567890abcdef01020304",
+      "email": "audits@halborn.com",
+      "category": "Contractors",
+      "notes": "Smart contract and infrastructure security auditor"
+    },
+    {
+      "id": 5,
+      "uuid": "ct-0005",
+      "name": "Greenfield Capital",
+      "walletAddress": "0xbe4005aabbccddee1234567890abcdef01020304",
+      "email": "team@greenfield.xyz",
+      "category": "Investors",
+      "notes": "Pre-seed investor, European crypto fund"
+    },
+    {
+      "id": 6,
+      "uuid": "ct-0006",
+      "name": "Stripe",
+      "walletAddress": "0x54e006aabbccddee1234567890abcdef01020304",
+      "email": "stablecoin-partnerships@stripe.com",
+      "category": "Partners",
+      "notes": "Fiat on-ramp and stablecoin settlement partner"
+    }
+  ],
+  "contactCategories": [
+    {
+      "id": 1,
+      "name": "Investors",
+      "order": 1
+    },
+    {
+      "id": 2,
+      "name": "Vendors",
+      "order": 2
+    },
+    {
+      "id": 3,
+      "name": "Contractors",
+      "order": 3
+    },
+    {
+      "id": 4,
+      "name": "Partners",
+      "order": 4
+    }
+  ],
+  "employeeGroups": [
+    {
+      "id": 1,
+      "name": "Leadership",
+      "shape": "CIRCLE",
+      "color": "#F5A623",
+      "order": 1,
+      "companyId": 1,
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "name": "Engineering",
+      "shape": "SQUARE",
+      "color": "#7D52F4",
+      "order": 2,
+      "companyId": 1,
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "id": 3,
+      "name": "Marketing",
+      "shape": "DIAMOND",
+      "color": "#E9358F",
+      "order": 3,
+      "companyId": 1,
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z"
+    }
+  ],
+  "employees": [
+    {
+      "id": 1,
+      "name": "Stoyan Radev",
+      "walletAddress": "0x1a2b3c4d5e6f7890abcdef1234567890abcdef01",
+      "email": "stoyan@radcipher.com",
+      "groupId": 1,
+      "companyId": 1,
+      "paymentMethod": "crypto",
+      "token": {
+        "address": "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      },
+      "network": {
+        "name": "Starknet",
+        "chainId": 23448594291968336
+      },
+      "order": 1,
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z",
+      "employeeType": "employee",
+      "isActive": true
+    },
+    {
+      "id": 2,
+      "name": "Daniel Keller",
+      "walletAddress": "0x2b3c4d5e6f7890abcdef1234567890abcdef0102",
+      "email": "daniel@radcipher.com",
+      "groupId": 2,
+      "companyId": 1,
+      "paymentMethod": "crypto",
+      "token": {
+        "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      },
+      "network": {
+        "name": "Base",
+        "chainId": 8453
+      },
+      "order": 2,
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z",
+      "employeeType": "employee",
+      "isActive": true
+    },
+    {
+      "id": 3,
+      "name": "Anja Bühler",
+      "walletAddress": "",
+      "email": "anja@radcipher.com",
+      "groupId": 1,
+      "companyId": 1,
+      "paymentMethod": "fiat",
+      "fiatDetails": {
+        "country": "Switzerland",
+        "bank": "UBS",
+        "currency": "CHF"
+      },
+      "token": null,
+      "network": null,
+      "order": 3,
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z",
+      "employeeType": "employee",
+      "isActive": true
+    },
+    {
+      "id": 4,
+      "name": "Niklas Frei",
+      "walletAddress": "0x3c4d5e6f7890abcdef1234567890abcdef010304",
+      "email": "niklas@radcipher.com",
+      "groupId": 2,
+      "companyId": 1,
+      "paymentMethod": "crypto",
+      "token": {
+        "address": "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin"
+      },
+      "network": {
+        "name": "Starknet",
+        "chainId": 23448594291968336
+      },
+      "order": 4,
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z",
+      "employeeType": "employee",
+      "isActive": true
+    },
+    {
+      "id": 5,
+      "name": "Lara Steiner",
+      "walletAddress": "",
+      "email": "lara@radcipher.com",
+      "groupId": 3,
+      "companyId": 1,
+      "paymentMethod": "fiat",
+      "fiatDetails": {
+        "country": "Switzerland",
+        "bank": "Zurich Cantonal Bank",
+        "currency": "CHF"
+      },
+      "token": null,
+      "network": null,
+      "order": 5,
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z",
+      "employeeType": "employee",
+      "isActive": true
+    }
+  ],
+  "clients": [
+    {
+      "uuid": "cl-0001",
+      "email": "partnerships@circle.com",
+      "companyName": "Circle",
+      "companyType": "Stablecoin Issuer",
+      "country": "United States",
+      "city": "Boston",
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "uuid": "cl-0002",
+      "email": "partnerships@bity.com",
+      "companyName": "Bity",
+      "companyType": "Crypto Exchange",
+      "country": "Switzerland",
+      "city": "Neuchâtel",
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "uuid": "cl-0003",
+      "email": "integrations@yapeal.ch",
+      "companyName": "Yapeal",
+      "companyType": "Neobank",
+      "country": "Switzerland",
+      "city": "Zurich",
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "uuid": "cl-0004",
+      "email": "treasury@sygnum.com",
+      "companyName": "Sygnum",
+      "companyType": "Digital Asset Bank",
+      "country": "Switzerland",
+      "city": "Zurich",
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "uuid": "cl-0005",
+      "email": "biz@klarna.com",
+      "companyName": "Klarna",
+      "companyType": "Fintech",
+      "country": "Sweden",
+      "city": "Stockholm",
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "uuid": "cl-0006",
+      "email": "partnerships@stellar.org",
+      "companyName": "Stellar Development Foundation",
+      "companyType": "Blockchain",
+      "country": "United States",
+      "city": "San Francisco",
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "uuid": "cl-0007",
+      "email": "bd@layerzero.foundation",
+      "companyName": "LayerZero",
+      "companyType": "Cross-chain Protocol",
+      "country": "Canada",
+      "city": "Vancouver",
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "uuid": "cl-0008",
+      "email": "ops@paxos.com",
+      "companyName": "Paxos",
+      "companyType": "Stablecoin Infrastructure",
+      "country": "United States",
+      "city": "New York",
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "uuid": "cl-0009",
+      "email": "grants@example.test",
+      "companyName": "Arc Testnet",
+      "companyType": "Blockchain",
+      "country": "United States",
+      "city": "New York",
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "uuid": "cl-0010",
+      "email": "partnerships@starknet.io",
+      "companyName": "Starknet",
+      "companyType": "Layer 2",
+      "country": "Switzerland",
+      "city": "Zug",
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "updatedAt": "2026-10-01T08:00:00.000Z"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "tx-001",
+      "type": "RECEIVE",
+      "status": "COMPLETED",
+      "amount": 300000,
+      "currency": "USDC",
+      "from": "Greenfield Capital",
+      "fromAddress": "0xbe4005aabbccddee1234567890abcdef01020304",
+      "to": "Treasury",
+      "toAddress": "0xa1b2c3d4e5f60001",
+      "accountId": "0xa1b2c3d4e5f60001",
+      "category": "Grant",
+      "label": "Pre-seed round",
+      "txHash": "0xfa001abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T14:30:00.000Z",
+      "note": "Pre-seed funding from Greenfield Capital"
+    },
+    {
+      "id": "tx-002",
+      "type": "RECEIVE",
+      "status": "COMPLETED",
+      "amount": 150000,
+      "currency": "USDC",
+      "from": "Stellar Development Foundation",
+      "fromAddress": "0xef0002aabbccddee1234567890abcdef01020304",
+      "to": "Treasury",
+      "toAddress": "0xa1b2c3d4e5f60001",
+      "accountId": "0xa1b2c3d4e5f60001",
+      "category": "Grant",
+      "label": "Ecosystem grant",
+      "txHash": "0xfa002abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T10:00:00.000Z",
+      "note": "Stellar grant for privacy-preserving settlement infrastructure"
+    },
+    {
+      "id": "tx-003",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 60000,
+      "currency": "USDC",
+      "from": "Treasury",
+      "fromAddress": "0xa1b2c3d4e5f60001",
+      "to": "Operations",
+      "toAddress": "0xa1b2c3d4e5f60002",
+      "accountId": "0xa1b2c3d4e5f60001",
+      "category": "Internal Transfer",
+      "label": "Q4 2026 operations budget",
+      "txHash": "0xfa003abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T09:00:00.000Z",
+      "note": "Quarterly operations fund transfer"
+    },
+    {
+      "id": "tx-004",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 23000,
+      "currency": "USDC",
+      "from": "Operations",
+      "fromAddress": "0xa1b2c3d4e5f60002",
+      "to": "Payroll Batch",
+      "toAddress": "multiple",
+      "accountId": "0xa1b2c3d4e5f60002",
+      "category": "Payroll",
+      "label": "January 2026 Payroll",
+      "txHash": "0xfa004abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T10:00:00.000Z",
+      "note": "Monthly payroll - January 2026"
+    },
+    {
+      "id": "tx-005",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 18000,
+      "currency": "USDC",
+      "from": "Treasury",
+      "fromAddress": "0xa1b2c3d4e5f60001",
+      "to": "Halborn Security",
+      "toAddress": "0x4a0044aabbccddee1234567890abcdef01020304",
+      "accountId": "0xa1b2c3d4e5f60001",
+      "category": "Contractor",
+      "label": "Security audit - Privacy contracts",
+      "txHash": "0xfa005abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T15:30:00.000Z",
+      "note": "Security audit for privacy-preserving payment smart contracts"
+    },
+    {
+      "id": "tx-006",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 23000,
+      "currency": "USDC",
+      "from": "Operations",
+      "fromAddress": "0xa1b2c3d4e5f60002",
+      "to": "Payroll Batch",
+      "toAddress": "multiple",
+      "accountId": "0xa1b2c3d4e5f60002",
+      "category": "Payroll",
+      "label": "February 2026 Payroll",
+      "txHash": "0xfa006abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T10:00:00.000Z",
+      "note": "Monthly payroll - February 2026"
+    },
+    {
+      "id": "tx-007",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 5000,
+      "currency": "USDC",
+      "from": "Operations",
+      "fromAddress": "0xa1b2c3d4e5f60002",
+      "to": "Bity",
+      "toAddress": "0xa1c002aabbccddee1234567890abcdef01020304",
+      "accountId": "0xa1b2c3d4e5f60002",
+      "category": "Vendor",
+      "label": "API integration fee",
+      "txHash": "0xfa007abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T09:00:00.000Z",
+      "note": "Bity API integration and compliance setup"
+    },
+    {
+      "id": "tx-008",
+      "type": "RECEIVE",
+      "status": "COMPLETED",
+      "amount": 75000,
+      "currency": "USDC",
+      "from": "Greenfield Capital",
+      "fromAddress": "0xbe4005aabbccddee1234567890abcdef01020304",
+      "to": "Treasury",
+      "toAddress": "0xa1b2c3d4e5f60001",
+      "accountId": "0xa1b2c3d4e5f60001",
+      "category": "Grant",
+      "label": "Pre-seed - Tranche 2",
+      "txHash": "0xfa008abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T16:00:00.000Z",
+      "note": "Second tranche from pre-seed round"
+    },
+    {
+      "id": "tx-009",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 8500,
+      "currency": "USDC",
+      "from": "Operations",
+      "fromAddress": "0xa1b2c3d4e5f60002",
+      "to": "Toptal",
+      "toAddress": "0x54e006aabbccddee1234567890abcdef01020304",
+      "accountId": "0xa1b2c3d4e5f60002",
+      "category": "Vendor",
+      "label": "Contract designer - Web app UI",
+      "txHash": "0xfa009abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T13:00:00.000Z",
+      "note": "Freelance designer for privacy app flows"
+    },
+    {
+      "id": "tx-010",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 23000,
+      "currency": "USDC",
+      "from": "Operations",
+      "fromAddress": "0xa1b2c3d4e5f60002",
+      "to": "Payroll Batch",
+      "toAddress": "multiple",
+      "accountId": "0xa1b2c3d4e5f60002",
+      "category": "Payroll",
+      "label": "March 2026 Payroll",
+      "txHash": "0xfa010abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T10:00:00.000Z",
+      "note": "Monthly payroll - March 2026"
+    },
+    {
+      "id": "tx-011",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 350,
+      "currency": "USDC",
+      "from": "Operations",
+      "fromAddress": "0xa1b2c3d4e5f60002",
+      "to": "AWS",
+      "toAddress": "0xab5011aabbccddee1234567890abcdef01020304",
+      "accountId": "0xa1b2c3d4e5f60002",
+      "category": "Subscription",
+      "label": "AWS - January",
+      "txHash": "0xfa011abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T08:00:00.000Z",
+      "note": "Cloud infrastructure"
+    },
+    {
+      "id": "tx-012",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 350,
+      "currency": "USDC",
+      "from": "Operations",
+      "fromAddress": "0xa1b2c3d4e5f60002",
+      "to": "AWS",
+      "toAddress": "0xab5011aabbccddee1234567890abcdef01020304",
+      "accountId": "0xa1b2c3d4e5f60002",
+      "category": "Subscription",
+      "label": "AWS - February",
+      "txHash": "0xfa012abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T08:00:00.000Z",
+      "note": "Cloud infrastructure"
+    },
+    {
+      "id": "tx-013",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 350,
+      "currency": "USDC",
+      "from": "Operations",
+      "fromAddress": "0xa1b2c3d4e5f60002",
+      "to": "AWS",
+      "toAddress": "0xab5011aabbccddee1234567890abcdef01020304",
+      "accountId": "0xa1b2c3d4e5f60002",
+      "category": "Subscription",
+      "label": "AWS - March",
+      "txHash": "0xfa013abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T08:00:00.000Z",
+      "note": "Cloud infrastructure"
+    },
+    {
+      "id": "tx-014",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 20,
+      "currency": "USDC",
+      "from": "Operations",
+      "fromAddress": "0xa1b2c3d4e5f60002",
+      "to": "Vercel",
+      "toAddress": "0xbe4014aabbccddee1234567890abcdef01020304",
+      "accountId": "0xa1b2c3d4e5f60002",
+      "category": "Subscription",
+      "label": "Vercel Pro - January",
+      "txHash": "0xfa014abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T08:00:00.000Z",
+      "note": "Frontend hosting"
+    },
+    {
+      "id": "tx-015",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 20,
+      "currency": "USDC",
+      "from": "Operations",
+      "fromAddress": "0xa1b2c3d4e5f60002",
+      "to": "Vercel",
+      "toAddress": "0xbe4014aabbccddee1234567890abcdef01020304",
+      "accountId": "0xa1b2c3d4e5f60002",
+      "category": "Subscription",
+      "label": "Vercel Pro - February",
+      "txHash": "0xfa015abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T08:00:00.000Z",
+      "note": "Frontend hosting"
+    },
+    {
+      "id": "tx-016",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 20,
+      "currency": "USDC",
+      "from": "Operations",
+      "fromAddress": "0xa1b2c3d4e5f60002",
+      "to": "Vercel",
+      "toAddress": "0xbe4014aabbccddee1234567890abcdef01020304",
+      "accountId": "0xa1b2c3d4e5f60002",
+      "category": "Subscription",
+      "label": "Vercel Pro - March",
+      "txHash": "0xfa016abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T08:00:00.000Z",
+      "note": "Frontend hosting"
+    },
+    {
+      "id": "tx-017",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 12000,
+      "currency": "USDC",
+      "from": "Treasury",
+      "fromAddress": "0xa1b2c3d4e5f60001",
+      "to": "Halborn Security",
+      "toAddress": "0x4a0044aabbccddee1234567890abcdef01020304",
+      "accountId": "0xa1b2c3d4e5f60001",
+      "category": "Contractor",
+      "label": "Security audit - Phase 2",
+      "txHash": "0xfa017abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T15:30:00.000Z",
+      "note": "Follow-up audit for off-ramp settlement contracts"
+    },
+    {
+      "id": "tx-018",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 96,
+      "currency": "USDC",
+      "from": "Operations",
+      "fromAddress": "0xa1b2c3d4e5f60002",
+      "to": "Notion",
+      "toAddress": "0xd0f018aabbccddee1234567890abcdef01020304",
+      "accountId": "0xa1b2c3d4e5f60002",
+      "category": "Subscription",
+      "label": "Notion Team - Annual",
+      "txHash": "0xfa018abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T08:00:00.000Z",
+      "note": "Team workspace annual plan"
+    },
+    {
+      "id": "tx-019",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 2,
+      "currency": "ETH",
+      "from": "Treasury",
+      "fromAddress": "0xa1b2c3d4e5f60001",
+      "to": "Gas Reserve",
+      "toAddress": "0xa1b2c3d4e5f60002",
+      "accountId": "0xa1b2c3d4e5f60001",
+      "category": "Internal Transfer",
+      "label": "ETH for gas fees",
+      "txHash": "0xfa019abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T12:00:00.000Z",
+      "note": "Transfer ETH for operations gas"
+    },
+    {
+      "id": "tx-020",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 3000,
+      "currency": "USDC",
+      "from": "Operations",
+      "fromAddress": "0xa1b2c3d4e5f60002",
+      "to": "Google Ads",
+      "toAddress": "0x54e020aabbccddee1234567890abcdef01020304",
+      "accountId": "0xa1b2c3d4e5f60002",
+      "category": "Vendor",
+      "label": "EU launch campaign - March",
+      "txHash": "0xfa020abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T14:00:00.000Z",
+      "note": "Digital marketing for European market launch"
+    },
+    {
+      "id": "tx-021",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 15,
+      "currency": "USDC",
+      "from": "Operations",
+      "fromAddress": "0xa1b2c3d4e5f60002",
+      "to": "Figma",
+      "toAddress": "0xf10021aabbccddee1234567890abcdef01020304",
+      "accountId": "0xa1b2c3d4e5f60002",
+      "category": "Subscription",
+      "label": "Figma Pro - March",
+      "txHash": "0xfa021abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T08:00:00.000Z",
+      "note": "Design tool"
+    },
+    {
+      "id": "tx-022",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 44,
+      "currency": "USDC",
+      "from": "Operations",
+      "fromAddress": "0xa1b2c3d4e5f60002",
+      "to": "GitHub",
+      "toAddress": "0x600022aabbccddee1234567890abcdef01020304",
+      "accountId": "0xa1b2c3d4e5f60002",
+      "category": "Subscription",
+      "label": "GitHub Team - March",
+      "txHash": "0xfa022abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T08:00:00.000Z",
+      "note": "Source code hosting and CI/CD"
+    },
+    {
+      "id": "tx-023",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 3000,
+      "currency": "USDC",
+      "from": "Treasury",
+      "fromAddress": "0xa1b2c3d4e5f60001",
+      "to": "EthCC 2026",
+      "toAddress": "0xe14023aabbccddee1234567890abcdef01020304",
+      "accountId": "0xa1b2c3d4e5f60001",
+      "category": "Other",
+      "label": "EthCC 2026 tickets + booth",
+      "txHash": "0xfa023abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T10:00:00.000Z",
+      "note": "Conference presence for BD and partnerships"
+    },
+    {
+      "id": "tx-024",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 10,
+      "currency": "USDC",
+      "from": "Operations",
+      "fromAddress": "0xa1b2c3d4e5f60002",
+      "to": "Notion",
+      "toAddress": "0xd0f018aabbccddee1234567890abcdef01020304",
+      "accountId": "0xa1b2c3d4e5f60002",
+      "category": "Subscription",
+      "label": "Notion - March",
+      "txHash": "0xfa024abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T08:00:00.000Z",
+      "note": "Team workspace monthly"
+    },
+    {
+      "id": "tx-025",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 600,
+      "currency": "USDC",
+      "from": "Operations",
+      "fromAddress": "0xa1b2c3d4e5f60002",
+      "to": "Hetzner",
+      "toAddress": "0xa1c025aabbccddee1234567890abcdef01020304",
+      "accountId": "0xa1b2c3d4e5f60002",
+      "category": "Vendor",
+      "label": "Node infra - March",
+      "txHash": "0xfa025abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T09:00:00.000Z",
+      "note": "Node infrastructure and prover hosting"
+    },
+    {
+      "id": "tx-026",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 120,
+      "currency": "USDC",
+      "from": "Operations",
+      "fromAddress": "0xa1b2c3d4e5f60002",
+      "to": "Uber",
+      "toAddress": "0x0be026aabbccddee1234567890abcdef01020304",
+      "accountId": "0xa1b2c3d4e5f60002",
+      "category": "Other",
+      "label": "Team dinner transport - Zurich",
+      "txHash": "0xfa026abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T20:00:00.000Z",
+      "note": "Quarterly team meetup in Zurich"
+    },
+    {
+      "id": "tx-027",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 500,
+      "currency": "USDC",
+      "from": "Operations",
+      "fromAddress": "0xa1b2c3d4e5f60002",
+      "to": "Impact Hub Zurich",
+      "toAddress": "0xbeb027aabbccddee1234567890abcdef01020304",
+      "accountId": "0xa1b2c3d4e5f60002",
+      "category": "Vendor",
+      "label": "Coworking space - March",
+      "txHash": "0xfa027abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T08:00:00.000Z",
+      "note": "Hot desk passes Zurich Viadukt"
+    },
+    {
+      "id": "tx-028",
+      "type": "RECEIVE",
+      "status": "COMPLETED",
+      "amount": 10000,
+      "currency": "USDC",
+      "from": "Yapeal",
+      "fromAddress": "0xacb028aabbccddee1234567890abcdef01020304",
+      "to": "Treasury",
+      "toAddress": "0xa1b2c3d4e5f60001",
+      "accountId": "0xa1b2c3d4e5f60001",
+      "category": "Other",
+      "label": "API integration pilot payment",
+      "txHash": "0xfa028abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T11:00:00.000Z",
+      "note": "Pilot payment for private settlement API"
+    },
+    {
+      "id": "tx-029",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 1800,
+      "currency": "USDC",
+      "from": "Treasury",
+      "fromAddress": "0xa1b2c3d4e5f60001",
+      "to": "Crypto Finance Conference",
+      "toAddress": "0xecc029aabbccddee1234567890abcdef01020304",
+      "accountId": "0xa1b2c3d4e5f60001",
+      "category": "Other",
+      "label": "CFC St. Moritz tickets + travel",
+      "txHash": "0xfa029abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T10:00:00.000Z",
+      "note": "Conference tickets for team (3 people)"
+    },
+    {
+      "id": "tx-030",
+      "type": "SEND",
+      "status": "COMPLETED",
+      "amount": 480,
+      "currency": "USDC",
+      "from": "Operations",
+      "fromAddress": "0xa1b2c3d4e5f60002",
+      "to": "GitHub",
+      "toAddress": "0x600022aabbccddee1234567890abcdef01020304",
+      "accountId": "0xa1b2c3d4e5f60002",
+      "category": "Subscription",
+      "label": "GitHub Team - Annual",
+      "txHash": "0xfa030abc123def456789aabbccdd0011eeff2233",
+      "timestamp": "2026-10-01T08:00:00.000Z",
+      "note": "Source code hosting annual plan"
+    }
+  ],
+  "pendingProposals": [
+    {
+      "id": "prop-001",
+      "uuid": "prop-uuid-001",
+      "accountId": "0xa1b2c3d4e5f60001",
+      "accountName": "Treasury",
+      "type": "SEND",
+      "proposalCategory": "paying_payroll",
+      "status": "READY",
+      "amount": 23000,
+      "currency": "USDC",
+      "to": "Payroll Batch",
+      "toAddress": "multiple",
+      "label": "April 2026 Payroll",
+      "note": "Monthly payroll for 2 team members",
+      "createdBy": "Daniel Keller",
+      "createdAt": "2026-10-01T09:00:00.000Z",
+      "signatures": [
+        {
+          "signer": "Daniel Keller",
+          "status": "SIGNED",
+          "signedAt": "2026-10-01T09:00:00.000Z"
+        },
+        {
+          "signer": "Stoyan Radev",
+          "status": "SIGNED",
+          "signedAt": "2026-10-01T10:30:00.000Z"
+        }
+      ],
+      "requiredSignatures": 2
+    },
+    {
+      "id": "prop-002",
+      "uuid": "prop-uuid-002",
+      "accountId": "0xa1b2c3d4e5f60001",
+      "accountName": "Treasury",
+      "type": "SEND",
+      "proposalCategory": "paying_bill",
+      "status": "PENDING",
+      "amount": 15000,
+      "currency": "USDC",
+      "to": "Halborn Security",
+      "toAddress": "0x4a0044aabbccddee1234567890abcdef01020304",
+      "label": "Security audit - Phase 3 (Mainnet)",
+      "note": "Final security audit before mainnet launch",
+      "createdBy": "Stoyan Radev",
+      "createdAt": "2026-10-01T14:00:00.000Z",
+      "signatures": [
+        {
+          "signer": "Stoyan Radev",
+          "status": "SIGNED",
+          "signedAt": "2026-10-01T14:00:00.000Z"
+        }
+      ],
+      "requiredSignatures": 2
+    },
+    {
+      "id": "prop-003",
+      "uuid": "prop-uuid-003",
+      "accountId": "0xa1b2c3d4e5f60001",
+      "accountName": "Treasury",
+      "type": "SEND",
+      "proposalCategory": "deposit_card",
+      "status": "PENDING",
+      "amount": 5000,
+      "currency": "USDC",
+      "to": "Card Pool",
+      "toAddress": "0xcard001",
+      "label": "Top up card pool",
+      "note": "Replenish corporate card spending pool",
+      "createdBy": "Stoyan Radev",
+      "createdAt": "2026-10-01T15:00:00.000Z",
+      "signatures": [
+        {
+          "signer": "Stoyan Radev",
+          "status": "SIGNED",
+          "signedAt": "2026-10-01T15:00:00.000Z"
+        }
+      ],
+      "requiredSignatures": 2
+    },
+    {
+      "id": "prop-004",
+      "uuid": "prop-uuid-004",
+      "accountId": "0xa1b2c3d4e5f60001",
+      "accountName": "Treasury",
+      "type": "SEND",
+      "proposalCategory": "deposit_earn",
+      "status": "PENDING",
+      "amount": 100000,
+      "currency": "USDC",
+      "to": "Earn Vault",
+      "toAddress": "0xearn001",
+      "label": "Deposit to earn vault",
+      "note": "Deposit idle treasury into 4.85% APY vault",
+      "createdBy": "Daniel Keller",
+      "createdAt": "2026-10-01T09:00:00.000Z",
+      "signatures": [],
+      "requiredSignatures": 2
+    },
+    {
+      "id": "prop-005",
+      "uuid": "prop-uuid-005",
+      "accountId": "0xa1b2c3d4e5f60001",
+      "accountName": "Treasury",
+      "type": "SEND",
+      "proposalCategory": "cashout",
+      "status": "PENDING",
+      "amount": 25000,
+      "currency": "USDC",
+      "to": "Bank (UBS CHF Account)",
+      "toAddress": "0xofframp001",
+      "label": "Cashout to UBS",
+      "note": "Off-ramp for European operations and compliance costs",
+      "createdBy": "Stoyan Radev",
+      "createdAt": "2026-10-01T10:30:00.000Z",
+      "signatures": [],
+      "requiredSignatures": 2
+    },
+    {
+      "id": "prop-006",
+      "uuid": "prop-uuid-006",
+      "accountId": "0xa1b2c3d4e5f60001",
+      "accountName": "Treasury",
+      "type": "CONFIG",
+      "proposalCategory": "update_signers",
+      "status": "PENDING",
+      "amount": 0,
+      "currency": "USDC",
+      "to": "",
+      "toAddress": "",
+      "label": "Add backup Treasury signer",
+      "note": "Onboarding new wallet signer for Treasury redundancy",
+      "createdBy": "Stoyan Radev",
+      "createdAt": "2026-10-01T14:00:00.000Z",
+      "signatures": [
+        {
+          "signer": "Stoyan Radev",
+          "status": "SIGNED",
+          "signedAt": "2026-10-01T14:00:00.000Z"
+        }
+      ],
+      "requiredSignatures": 2
+    },
+    {
+      "id": "prop-007",
+      "uuid": "prop-uuid-007",
+      "accountId": "0xa1b2c3d4e5f60001",
+      "accountName": "Treasury",
+      "type": "CONFIG",
+      "proposalCategory": "update_threshold",
+      "status": "PENDING",
+      "amount": 0,
+      "currency": "USDC",
+      "to": "",
+      "toAddress": "",
+      "label": "Increase Treasury threshold to 2-of-3",
+      "note": "Strengthen security after adding new signer",
+      "createdBy": "Daniel Keller",
+      "createdAt": "2026-10-01T08:00:00.000Z",
+      "signatures": [],
+      "requiredSignatures": 2
+    },
+    {
+      "id": "prop-008",
+      "uuid": "prop-uuid-008",
+      "accountId": "0xa1b2c3d4e5f60002",
+      "accountName": "Operations",
+      "type": "SEND",
+      "proposalCategory": "paying_bill",
+      "status": "PENDING",
+      "amount": 5000,
+      "currency": "USDC",
+      "to": "Google Ads",
+      "toAddress": "0x54e020aabbccddee1234567890abcdef01020304",
+      "label": "EU launch campaign - April",
+      "note": "Digital marketing for European user acquisition",
+      "createdBy": "Daniel Keller",
+      "createdAt": "2026-10-01T11:00:00.000Z",
+      "signatures": [],
+      "requiredSignatures": 1
+    }
+  ],
+  "payrolls": [
+    {
+      "id": 1,
+      "uuid": "pr-0001",
+      "name": "January 2026 Payroll",
+      "status": "COMPLETED",
+      "totalAmount": 23000,
+      "currency": "USDC",
+      "employeeCount": 2,
+      "executedAt": "2026-10-01T10:00:00.000Z",
+      "createdAt": "2026-10-01T09:00:00.000Z",
+      "accountId": "0xa1b2c3d4e5f60002",
+      "accountName": "Operations",
+      "txHash": "0xfa004abc123def456789aabbccdd0011eeff2233",
+      "recipients": [
+        {
+          "name": "Stoyan Radev",
+          "amount": 12000,
+          "walletAddress": "0x1a2b3c4d5e6f7890abcdef1234567890abcdef01",
+          "status": "PAID"
+        },
+        {
+          "name": "Daniel Keller",
+          "amount": 11000,
+          "walletAddress": "0x2b3c4d5e6f7890abcdef1234567890abcdef0102",
+          "status": "PAID"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "uuid": "pr-0002",
+      "name": "February 2026 Payroll",
+      "status": "COMPLETED",
+      "totalAmount": 23000,
+      "currency": "USDC",
+      "employeeCount": 2,
+      "executedAt": "2026-10-01T10:00:00.000Z",
+      "createdAt": "2026-10-01T09:00:00.000Z",
+      "accountId": "0xa1b2c3d4e5f60002",
+      "accountName": "Operations",
+      "txHash": "0xfa006abc123def456789aabbccdd0011eeff2233",
+      "recipients": [
+        {
+          "name": "Stoyan Radev",
+          "amount": 12000,
+          "walletAddress": "0x1a2b3c4d5e6f7890abcdef1234567890abcdef01",
+          "status": "PAID"
+        },
+        {
+          "name": "Daniel Keller",
+          "amount": 11000,
+          "walletAddress": "0x2b3c4d5e6f7890abcdef1234567890abcdef0102",
+          "status": "PAID"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "uuid": "pr-0003",
+      "name": "March 2026 Payroll",
+      "status": "COMPLETED",
+      "totalAmount": 23000,
+      "currency": "USDC",
+      "employeeCount": 2,
+      "executedAt": "2026-10-01T10:00:00.000Z",
+      "createdAt": "2026-10-01T09:00:00.000Z",
+      "accountId": "0xa1b2c3d4e5f60002",
+      "accountName": "Operations",
+      "txHash": "0xfa010abc123def456789aabbccdd0011eeff2233",
+      "recipients": [
+        {
+          "name": "Stoyan Radev",
+          "amount": 12000,
+          "walletAddress": "0x1a2b3c4d5e6f7890abcdef1234567890abcdef01",
+          "status": "PAID"
+        },
+        {
+          "name": "Daniel Keller",
+          "amount": 11000,
+          "walletAddress": "0x2b3c4d5e6f7890abcdef1234567890abcdef0102",
+          "status": "PAID"
+        }
+      ]
+    }
+  ],
+  "payrollStats": {
+    "totalPaid": 69000,
+    "totalPayrolls": 3,
+    "averagePerPayroll": 23000,
+    "nextPayrollDate": "2026-10-01T10:00:00.000Z"
+  },
+  "invoices": [
+    {
+      "id": 1,
+      "uuid": "inv-0001",
+      "invoiceNumber": "RC-2026-001",
+      "type": "SENT",
+      "status": "PAID",
+      "amount": 10000,
+      "currency": "USDC",
+      "from": "Radcipher",
+      "to": "Yapeal",
+      "toEmail": "integrations@yapeal.ch",
+      "description": "Private settlement API - Pilot integration",
+      "dueDate": "2026-10-01T00:00:00.000Z",
+      "paidAt": "2026-10-01T11:00:00.000Z",
+      "createdAt": "2026-10-01T10:00:00.000Z",
+      "items": [
+        {
+          "description": "Settlement API integration setup",
+          "quantity": 1,
+          "unitPrice": 7000
+        },
+        {
+          "description": "Technical support (30 hours)",
+          "quantity": 30,
+          "unitPrice": 100
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "uuid": "inv-0002",
+      "invoiceNumber": "RC-2026-002",
+      "type": "SENT",
+      "status": "PENDING",
+      "amount": 15000,
+      "currency": "USDC",
+      "from": "Radcipher",
+      "to": "Bity",
+      "toEmail": "partnerships@bity.com",
+      "description": "Custom privacy off-ramp module for Bity",
+      "dueDate": "2026-10-01T00:00:00.000Z",
+      "paidAt": null,
+      "createdAt": "2026-10-01T10:00:00.000Z",
+      "items": [
+        {
+          "description": "Off-ramp module development",
+          "quantity": 1,
+          "unitPrice": 10000
+        },
+        {
+          "description": "CHF settlement integration",
+          "quantity": 1,
+          "unitPrice": 5000
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "uuid": "inv-0003",
+      "invoiceNumber": "RC-2026-003",
+      "type": "RECEIVED",
+      "status": "PAID",
+      "amount": 18000,
+      "currency": "USDC",
+      "from": "Halborn Security",
+      "to": "Radcipher",
+      "toEmail": "stoyan@radcipher.com",
+      "description": "Smart contract security audit - Privacy contracts",
+      "dueDate": "2026-10-01T00:00:00.000Z",
+      "paidAt": "2026-10-01T15:30:00.000Z",
+      "createdAt": "2026-10-01T10:00:00.000Z",
+      "items": [
+        {
+          "description": "Full security audit of privacy contracts",
+          "quantity": 1,
+          "unitPrice": 15000
+        },
+        {
+          "description": "Detailed report and recommendations",
+          "quantity": 1,
+          "unitPrice": 3000
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "uuid": "inv-0004",
+      "invoiceNumber": "RC-2026-004",
+      "type": "RECEIVED",
+      "status": "PENDING",
+      "amount": 15000,
+      "currency": "USDC",
+      "from": "Halborn Security",
+      "to": "Radcipher",
+      "toEmail": "stoyan@radcipher.com",
+      "description": "Security audit - Phase 3 (Mainnet)",
+      "dueDate": "2026-10-01T00:00:00.000Z",
+      "paidAt": null,
+      "createdAt": "2026-10-01T10:00:00.000Z",
+      "items": [
+        {
+          "description": "Mainnet deployment audit",
+          "quantity": 1,
+          "unitPrice": 12000
+        },
+        {
+          "description": "Remediation verification",
+          "quantity": 1,
+          "unitPrice": 3000
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "uuid": "inv-0005",
+      "invoiceNumber": "RC-2026-005",
+      "type": "SENT",
+      "status": "PENDING",
+      "amount": 20000,
+      "currency": "USDC",
+      "from": "Radcipher",
+      "to": "Sygnum",
+      "toEmail": "treasury@sygnum.com",
+      "description": "Privacy payment gateway - Q4 2026",
+      "dueDate": "2026-10-01T00:00:00.000Z",
+      "paidAt": null,
+      "createdAt": "2026-10-01T10:00:00.000Z",
+      "items": [
+        {
+          "description": "Payment gateway integration license (quarterly)",
+          "quantity": 1,
+          "unitPrice": 15000
+        },
+        {
+          "description": "Integration support and maintenance",
+          "quantity": 1,
+          "unitPrice": 5000
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "uuid": "inv-0006",
+      "invoiceNumber": "RC-2026-006",
+      "type": "RECEIVED",
+      "status": "PAID",
+      "amount": 8500,
+      "currency": "USDC",
+      "from": "Toptal",
+      "to": "Radcipher",
+      "toEmail": "stoyan@radcipher.com",
+      "description": "Contract designer - Web app UI",
+      "dueDate": "2026-10-01T00:00:00.000Z",
+      "paidAt": "2026-10-01T13:00:00.000Z",
+      "createdAt": "2026-10-01T10:00:00.000Z",
+      "items": [
+        {
+          "description": "Web app UX/UI design",
+          "quantity": 1,
+          "unitPrice": 6000
+        },
+        {
+          "description": "Design system and component library",
+          "quantity": 1,
+          "unitPrice": 2500
+        }
+      ]
+    }
+  ],
+  "invoiceStats": {
+    "totalSent": 45000,
+    "totalReceived": 41500,
+    "pendingSent": 35000,
+    "pendingReceived": 15000,
+    "paidSent": 10000,
+    "paidReceived": 26500
+  },
+  "bills": [
+    {
+      "id": 1,
+      "uuid": "bill-0001",
+      "vendor": "Halborn Security",
+      "description": "Security audit - Phase 3 (Mainnet)",
+      "amount": 15000,
+      "currency": "USDC",
+      "status": "PENDING",
+      "dueDate": "2026-10-01T00:00:00.000Z",
+      "category": "Contractor",
+      "recurring": false,
+      "frequency": null,
+      "createdAt": "2026-10-01T10:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "uuid": "bill-0002",
+      "vendor": "Impact Hub Zurich",
+      "description": "Hot desk passes - Monthly",
+      "amount": 500,
+      "currency": "USDC",
+      "status": "OVERDUE",
+      "dueDate": "2026-10-01T00:00:00.000Z",
+      "category": "Vendor",
+      "recurring": true,
+      "frequency": "MONTHLY",
+      "createdAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "id": 3,
+      "uuid": "bill-0003",
+      "vendor": "Bity",
+      "description": "API access and compliance fee - Monthly",
+      "amount": 2000,
+      "currency": "USDC",
+      "status": "PENDING",
+      "dueDate": "2026-10-01T00:00:00.000Z",
+      "category": "Vendor",
+      "recurring": true,
+      "frequency": "MONTHLY",
+      "createdAt": "2026-10-01T08:00:00.000Z"
+    },
+    {
+      "id": 4,
+      "uuid": "bill-0004",
+      "vendor": "Google Ads",
+      "description": "EU launch campaign - April",
+      "amount": 5000,
+      "currency": "USDC",
+      "status": "PENDING",
+      "dueDate": "2026-10-01T00:00:00.000Z",
+      "category": "Vendor",
+      "recurring": false,
+      "frequency": null,
+      "createdAt": "2026-10-01T11:00:00.000Z"
+    },
+    {
+      "id": 5,
+      "uuid": "bill-0005",
+      "vendor": "Hetzner",
+      "description": "Node infrastructure - Monthly",
+      "amount": 600,
+      "currency": "USDC",
+      "status": "PENDING",
+      "dueDate": "2026-10-01T00:00:00.000Z",
+      "category": "Vendor",
+      "recurring": true,
+      "frequency": "MONTHLY",
+      "createdAt": "2026-10-01T08:00:00.000Z"
+    }
+  ],
+  "billStats": {
+    "totalPending": 23100,
+    "totalOverdue": 500,
+    "totalPaid": 52491,
+    "billCount": 5
+  },
+  "paymentLinks": [
+    {
+      "id": 1,
+      "uuid": "pl-0001",
+      "code": "radcipher-settlement-api",
+      "title": "Settlement API Integration",
+      "description": "Payment for Radcipher private settlement API integration services",
+      "amount": 10000,
+      "currency": "USDC",
+      "status": "ACTIVE",
+      "recipientAddress": "0xa1b2c3d4e5f60001",
+      "recipientName": "Radcipher",
+      "timesUsed": 1,
+      "maxUses": null,
+      "expiresAt": null,
+      "createdAt": "2026-10-01T10:00:00.000Z",
+      "payments": [
+        {
+          "id": "pay-001",
+          "payerName": "Yapeal",
+          "payerEmail": "integrations@yapeal.ch",
+          "payer": "0x7d3e8f1a2b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e",
+          "amount": 10000,
+          "status": "COMPLETED",
+          "txid": "0xabc123def456789012345678901234567890abcd",
+          "paymentMethod": "crypto",
+          "paidAt": "2026-10-01T11:00:00.000Z",
+          "createdAt": "2026-10-01T11:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "uuid": "pl-0002",
+      "code": "radcipher-gateway-fee",
+      "title": "Payment Gateway License",
+      "description": "Quarterly license fee for Radcipher private payment gateway",
+      "amount": null,
+      "currency": "USDC",
+      "status": "ACTIVE",
+      "recipientAddress": "0xa1b2c3d4e5f60001",
+      "recipientName": "Radcipher",
+      "timesUsed": 0,
+      "maxUses": null,
+      "expiresAt": "2026-10-01T00:00:00.000Z",
+      "createdAt": "2026-10-01T10:00:00.000Z",
+      "payments": []
+    },
+    {
+      "id": 3,
+      "uuid": "pl-0003",
+      "code": "radcipher-partner-contribution",
+      "title": "Partner Ecosystem Fund",
+      "description": "Contribute to the Radcipher partner ecosystem development fund",
+      "amount": 1000,
+      "currency": "USDC",
+      "status": "ACTIVE",
+      "recipientAddress": "0xa1b2c3d4e5f60001",
+      "recipientName": "Radcipher",
+      "timesUsed": 0,
+      "maxUses": 10,
+      "expiresAt": "2026-12-31T00:00:00.000Z",
+      "createdAt": "2026-10-01T10:00:00.000Z",
+      "payments": []
+    }
+  ],
+  "cardTransactions": [
+    {
+      "id": "ctx-001",
+      "merchant": "Figma",
+      "amount": 15,
+      "currency": "USD",
+      "category": "Software",
+      "date": "2026-10-01T08:00:00.000Z",
+      "status": "COMPLETED"
+    },
+    {
+      "id": "ctx-002",
+      "merchant": "AWS",
+      "amount": 350,
+      "currency": "USD",
+      "category": "Cloud",
+      "date": "2026-10-01T08:00:00.000Z",
+      "status": "COMPLETED"
+    },
+    {
+      "id": "ctx-003",
+      "merchant": "Vercel",
+      "amount": 20,
+      "currency": "USD",
+      "category": "Software",
+      "date": "2026-10-01T08:00:00.000Z",
+      "status": "COMPLETED"
+    },
+    {
+      "id": "ctx-004",
+      "merchant": "Notion",
+      "amount": 10,
+      "currency": "USD",
+      "category": "Software",
+      "date": "2026-10-01T08:00:00.000Z",
+      "status": "COMPLETED"
+    },
+    {
+      "id": "ctx-005",
+      "merchant": "GitHub",
+      "amount": 44,
+      "currency": "USD",
+      "category": "Software",
+      "date": "2026-10-01T08:00:00.000Z",
+      "status": "COMPLETED"
+    },
+    {
+      "id": "ctx-006",
+      "merchant": "Uber",
+      "amount": 120,
+      "currency": "USD",
+      "category": "Travel",
+      "date": "2026-10-01T20:00:00.000Z",
+      "status": "COMPLETED"
+    },
+    {
+      "id": "ctx-007",
+      "merchant": "Impact Hub Zurich",
+      "amount": 500,
+      "currency": "USD",
+      "category": "Office",
+      "date": "2026-10-01T08:00:00.000Z",
+      "status": "COMPLETED"
+    },
+    {
+      "id": "ctx-008",
+      "merchant": "Swiss International Air Lines",
+      "amount": 280,
+      "currency": "USD",
+      "category": "Travel",
+      "date": "2026-10-01T14:00:00.000Z",
+      "status": "COMPLETED"
+    },
+    {
+      "id": "ctx-009",
+      "merchant": "Hiltl",
+      "amount": 95,
+      "currency": "USD",
+      "category": "Meals",
+      "date": "2026-10-01T19:30:00.000Z",
+      "status": "COMPLETED"
+    },
+    {
+      "id": "ctx-010",
+      "merchant": "Hetzner",
+      "amount": 600,
+      "currency": "USD",
+      "category": "Cloud",
+      "date": "2026-10-01T08:00:00.000Z",
+      "status": "COMPLETED"
+    }
+  ],
+  "card": {
+    "id": "card-001",
+    "last4": "4829",
+    "brand": "Visa",
+    "cardholder": "Stoyan Radev",
+    "expiryMonth": 12,
+    "expiryYear": 2028,
+    "cvv": "491",
+    "spendingLimit": 8000,
+    "currentSpend": 2034,
+    "status": "ACTIVE",
+    "frozen": false
+  },
+  "cardPoolBalance": 20000,
+  "invoiceSettings": {
+    "logo": "/Radcipher.png",
+    "accentColor": "#0B1120",
+    "invoicePrefix": "RC-",
+    "nextInvoiceNumber": 7,
+    "defaultPaymentTerms": "Net 30",
+    "defaultNote": "",
+    "footerText": "Thank you for your business. Payment is expected within the terms specified above.",
+    "companyTaxId": "",
+    "showTaxId": false,
+    "showWalletQr": true
+  },
+  "cards": [
+    {
+      "id": "card-001",
+      "last4": "4829",
+      "brand": "Visa",
+      "cardholder": "Stoyan Radev",
+      "expiryMonth": 12,
+      "expiryYear": 2028,
+      "cvv": "491",
+      "spendingLimit": 8000,
+      "currentSpend": 2034,
+      "status": "ACTIVE",
+      "frozen": false,
+      "dailyLimit": 3000,
+      "weeklyLimit": 10000,
+      "monthlyLimit": 8000
+    },
+    {
+      "id": "card-002",
+      "last4": "7213",
+      "brand": "Visa",
+      "cardholder": "Daniel Keller",
+      "expiryMonth": 6,
+      "expiryYear": 2027,
+      "cvv": "328",
+      "spendingLimit": 5000,
+      "currentSpend": 1200,
+      "status": "ACTIVE",
+      "frozen": false,
+      "dailyLimit": 2000,
+      "weeklyLimit": 7000,
+      "monthlyLimit": 5000
+    }
+  ],
+  "rampHistory": [
+    {
+      "id": "ramp-001",
+      "type": "ON_RAMP",
+      "fromCurrency": "CHF",
+      "toCurrency": "USDC",
+      "fromAmount": 18000,
+      "toAmount": 20000,
+      "rate": 1.111,
+      "fee": 30,
+      "status": "COMPLETED",
+      "bankAccount": "UBS ****8841",
+      "completedAt": "2026-10-01T14:00:00.000Z"
+    },
+    {
+      "id": "ramp-002",
+      "type": "OFF_RAMP",
+      "fromCurrency": "USDC",
+      "toCurrency": "CHF",
+      "fromAmount": 10000,
+      "toAmount": 9100,
+      "rate": 0.91,
+      "fee": 25,
+      "status": "COMPLETED",
+      "bankAccount": "ZKB ****2207",
+      "completedAt": "2026-10-01T10:00:00.000Z"
+    },
+    {
+      "id": "ramp-003",
+      "type": "ON_RAMP",
+      "fromCurrency": "CHF",
+      "toCurrency": "USDC",
+      "fromAmount": 13500,
+      "toAmount": 15000,
+      "rate": 1.111,
+      "fee": 22,
+      "status": "COMPLETED",
+      "bankAccount": "UBS ****8841",
+      "completedAt": "2026-10-01T09:00:00.000Z"
+    }
+  ],
+  "monthlyFinancials": [
+    {
+      "month": "2026-10",
+      "income": 85000,
+      "expenses": 52245,
+      "payroll": 69000,
+      "netFlow": -81245
+    }
+  ]
+}
