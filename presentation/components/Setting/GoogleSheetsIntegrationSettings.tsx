@@ -95,11 +95,7 @@ export default function GoogleSheetsIntegrationSettings() {
     const [syncFrequency, setSyncFrequency] = useState("Every 15 minutes");
     const [expanded, setExpanded] = useState(false);
     const handleConnect = () => {
-        setConnectionStep("connecting");
-        setTimeout(() => {
-            setConnectionStep("connected");
-            toast.success("Google Sheets connected successfully");
-        }, 1500);
+        toast.error("Google Sheets connection requires a configured provider");
     };
     const handleDisconnect = () => {
         setConnectionStep("disconnected");

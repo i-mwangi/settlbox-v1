@@ -56,6 +56,7 @@ const MemberCard: React.FC<MemberCardProps> = ({ member, onMenuClick, onEdit, on
 
           
           <div className="flex gap-2 items-center">
+            {Number(member.id) < 0 && <span className="text-sm text-text-secondary">Historical profile</span>}
             {member.role.map((role, index) => (<Chip key={index} label={role}/>))}
             {member.status === TeamMemberStatusEnum.PENDING && (<span className="text-sm italic text-text-secondary">Pending Invite</span>)}
           </div>

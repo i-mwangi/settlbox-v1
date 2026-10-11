@@ -399,16 +399,16 @@ const CreateClientInvoice = () => {
     if (invoiceSent) {
         return (<div className="flex flex-col gap-5 items-center justify-center w-full h-full">
         <img src="/modal/green-circle-check.gif" alt="success" className="w-16 h-16"/>
-        <h1 className="text-4xl font-semibold text-center">Invoice sent successfully</h1>
+        <h1 className="text-4xl font-semibold text-center">Invoice issued successfully</h1>
         <p className="text-base font-medium text-text-secondary text-center">
-          Invoice of <span className="font-bold text-text-primary">{total.toFixed(2)} {formData.token?.symbol || "USDC"}</span>
-          {" has been sent to "}<span className="text-primary-blue">{formData.billToEmail}</span>
+          Invoice of <span className="font-bold text-text-primary">{total} {formData.token?.symbol || "USDC"}</span>
+          {" is ready. Share its payment link with "}<span className="text-primary-blue">{formData.billToEmail}</span>
         </p>
         <div className="flex gap-4 items-center">
           <SecondaryButton text="View Invoice" variant="light" buttonClassName="w-[130px]" icon="/misc/eye-icon.svg" iconPosition="left" onClick={() => {
                 openModal<InvoiceModalProps>("INVOICE_MODAL", {
                     invoice: {
-                        amountDue: total.toFixed(2),
+                        amountDue: total.toString(),
                         billTo: { name: formData.billToContactName || "", company: formData.billToCompanyName || "", address: formData.billToAddress || "", email: formData.billToEmail || "" },
                         paymentToken: { name: n(formData.token?.symbol) || "USDC" },
                         currency: formData.currency || "USD",
@@ -623,7 +623,7 @@ const CreateClientInvoice = () => {
 
       
       {showPreview && (<div className="w-[42%] shrink-0 overflow-y-auto" style={{ ["--invoice-accent" as any]: invoiceSettings?.accentColor || "#194BFA" }}>
-      <InvoicePreview logo={invoiceSettings?.logo} invoiceNumber={createdInvoice?.invoiceNumber || formData.invoiceNumber || ""} date={formatDate(createdInvoice?.issueDate || formData.issueDate || "")} dueDate={formatDate(createdInvoice?.dueDate || formData.dueDate || "")} from={{
+      <InvoicePreview logo={invoiceSettings?.logo} invoiceNumber={createdInvoice?.invoiceNumber || formData.invoiceNumber || ""} date={createdInvoice?.issueDate || formData.issueDate || ""} dueDate={createdInvoice?.dueDate || formData.dueDate || ""} from={{
                 name: formData.name || "", email: formData.email || "", company: formData.companyName || "",
                 address: formData.address || "", token: formData.token?.symbol || "",
                 network: formData.network?.name || "", walletAddress: formData.walletAddress || "",

@@ -44,8 +44,10 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
     }
     if (body.action !== "pay" && body.action !== "refresh") throw new Error("Invalid business record action");
     if (record.status === "paid" || record.status === "cancelled") return Response.json(record);
+    if (body.action === "pay") repository.claimPaymentRoute(config.wallet.companyId, id, "treasury");
     treasury = await openTreasury();
     let payment = treasury.repository.find(id, config.wallet.companyId);
+    if (payment && body.action === "refresh") repository.claimPaymentRoute(config.wallet.companyId, id, "treasury");
     if (!payment && body.action === "pay") {
       record = repository.transition(config.wallet.companyId, id, "processing", ["draft", "processing"]);
       const intent = {

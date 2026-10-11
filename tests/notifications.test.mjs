@@ -5,6 +5,22 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { NotificationRepository } from "../services/server/notifications.ts";
 
+test("notification preferences persist, isolate companies and reject stale edits",()=>{
+  const directory=mkdtempSync(join(tmpdir(),"settlbox-preferences-"));const path=join(directory,"preferences.sqlite");let repository=new NotificationRepository(path);
+  try {
+    assert.deepEqual(repository.preferences("a"),{enabled:false,emails:[],revision:0});
+    const saved=repository.savePreferences("a",{enabled:true,emails:[" Finance@Example.com "],revision:0});
+    assert.deepEqual(saved,{enabled:true,emails:["finance@example.com"],revision:1});
+    assert.deepEqual(repository.preferences("b").emails,[]);
+    assert.throws(()=>repository.savePreferences("a",{enabled:false,emails:[],revision:0}),/changed elsewhere/);
+    repository.close();repository=new NotificationRepository(path);
+    assert.deepEqual(repository.preferences("a"),saved);
+    for(const emails of [["invalid"],["a@example.com","A@example.com"],Array(26).fill("a@example.com")])assert.throws(()=>repository.savePreferences("a",{enabled:false,emails,revision:1}));
+    assert.equal(repository.preferences("a").revision,1);
+    const disabled=repository.savePreferences("a",{enabled:false,emails:[],revision:1});assert.equal(disabled.revision,2);assert.equal(disabled.enabled,false);
+  }finally{repository.close();rmSync(directory,{recursive:true});}
+});
+
 test("notifications deduplicate events and persist company-scoped read state", () => {
   const directory = mkdtempSync(join(tmpdir(), "settlbox-notifications-"));
   const path = join(directory, "business.sqlite");

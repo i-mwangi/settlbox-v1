@@ -165,7 +165,10 @@ export function InvoiceModal({ isOpen, onClose, zIndex, invoice, onConfirm }: Mo
             </p>
           </div>
         </div>
-        {onConfirm && <div className="border-t border-neutral-200 p-4 flex justify-end"><button type="button" disabled={confirming} onClick={() => void handleConfirm()} className="rounded-lg bg-neutral-900 px-4 py-2 text-sm text-white disabled:opacity-50">{confirming ? "Confirming…" : "Confirm invoice and create bill"}</button></div>}
+        <div className="border-t border-neutral-200 p-4 flex justify-end gap-3">
+          <button type="button" disabled={confirming} onClick={onClose} className="rounded-lg border border-neutral-200 px-4 py-2 text-sm">Close</button>
+          {onConfirm && <button type="button" disabled={confirming} onClick={() => void handleConfirm()} className="rounded-lg bg-neutral-900 px-4 py-2 text-sm text-white disabled:opacity-50">{confirming ? "Confirming…" : "Confirm invoice and create bill"}</button>}
+        </div>
       </div>
     </BaseModal>);
 }

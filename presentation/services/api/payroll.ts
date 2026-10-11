@@ -36,10 +36,10 @@ export function useGetPayrolls(query?: PayrollQueryDto) {
   return { ...contracts, isLoading: !isLoaded || contracts.isLoading, data: { payrolls: filtered.slice((page - 1) * limit, page * limit), pagination: { total: filtered.length, page, limit, totalPages: Math.ceil(filtered.length / limit), hasNext: page * limit < filtered.length, hasPrev: page > 1 } } };
 }
 export { useGetPayrolls as default };
-export function useGetPayrollDetails(id?: number) {
+export function useGetPayrollDetails(id?: number, byEmployee = false) {
   const { data } = useDemo();
   const contracts = useContracts();
-  const contract = contracts.data?.find(contract => contract.id === id);
+  const contract = contracts.data?.find(contract => byEmployee ? contract.employee.id === id : contract.id === id);
   return { ...contracts, data: contract && data ? payrollView(contract, data) : undefined };
 }
 export function useGetPayrollStats(_companyId?: unknown, _options?: unknown) {

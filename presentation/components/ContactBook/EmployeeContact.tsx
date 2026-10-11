@@ -291,12 +291,12 @@ export const EmployeeContact = () => {
         const contactGroupIds = getEmployeeGroupIds(contact);
         const contactGroups = (groups || []).filter((cat: any) => contactGroupIds.includes(cat.id));
         const nextPayDate = (() => {
-            if (!isActive)
+            if (!isActive || !contact.payroll?.paydayDay)
                 return null;
             const now = new Date();
-            const payday = 28;
+            const payday = Number(contact.payroll.paydayDay);
             const next = new Date(now.getFullYear(), now.getMonth(), payday);
-            if (next <= now)
+            if (next < new Date(now.getFullYear(), now.getMonth(), now.getDate()))
                 next.setMonth(next.getMonth() + 1);
             return next;
         })();

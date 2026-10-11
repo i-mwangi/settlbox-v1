@@ -109,11 +109,7 @@ export default function SlackIntegrationSettings() {
     const [selectedChannel, setSelectedChannel] = useState("#settlbox-notifications");
     const [expanded, setExpanded] = useState(false);
     const handleConnect = () => {
-        setConnectionStep("connecting");
-        setTimeout(() => {
-            setConnectionStep("connected");
-            toast.success("Slack workspace connected successfully");
-        }, 1500);
+        toast.error("Slack connection requires a configured provider");
     };
     const handleDisconnect = () => {
         setConnectionStep("disconnected");

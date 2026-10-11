@@ -71,6 +71,7 @@ export function CreateEmployeeContactModal({ isOpen, onClose, zIndex }: ModalPro
     const router = useRouter();
     const { isAuthenticated, user } = useAuth();
     const [step, setStep] = useState<1 | 2 | 3>(1);
+    const [employeeType, setEmployeeType] = useState<"employee" | "contractor">("employee");
     const [selectedToken, setSelectedToken] = useState<AssetWithMetadata | null>(DEFAULT_TOKEN);
     const [selectedNetwork, setSelectedNetwork] = useState<{
         icon: string;
@@ -265,7 +266,7 @@ export function CreateEmployeeContactModal({ isOpen, onClose, zIndex }: ModalPro
                 email: data.email?.trim() || undefined,
                 token: tokenPayload || null,
                 network: networkPayload || null,
-                employeeType: "employee",
+                employeeType,
                 isActive: true,
                 paymentMethod: paymentType,
                 fiatDetails: paymentType === "fiat" ? {
@@ -283,7 +284,7 @@ export function CreateEmployeeContactModal({ isOpen, onClose, zIndex }: ModalPro
                 },
             };
             await createEmployee.mutateAsync(employeePayload);
-            toast.success("Employee created successfully");
+            toast.success(`${employeeType === "contractor" ? "Contractor" : "Employee"} created successfully`);
             reset();
             setStep(1);
             setSelectedToken(DEFAULT_TOKEN);
@@ -399,6 +400,13 @@ export function CreateEmployeeContactModal({ isOpen, onClose, zIndex }: ModalPro
           </div>
 
           {step === 1 ? (<>
+              <label className="flex flex-col gap-2 text-sm text-text-primary">
+                Contact type
+                <select value={employeeType} onChange={event => setEmployeeType(event.target.value as "employee" | "contractor")} disabled={createEmployee.isPending} className="rounded-lg border border-primary-divider bg-background p-3">
+                  <option value="employee">Employee</option>
+                  <option value="contractor">Contractor</option>
+                </select>
+              </label>
               <FormInput label="Name" placeholder="Enter contact name" register={nameRegister} error={visibleErrors.name?.message} disabled={createEmployee.isPending} required/>
 
               <FormInput label="Email" placeholder="Enter email" type="email" register={emailRegister} error={visibleErrors.email?.message} disabled={createEmployee.isPending} required/>
@@ -501,7 +509,7 @@ export function CreateEmployeeContactModal({ isOpen, onClose, zIndex }: ModalPro
                 <p className="text-text-primary text-base font-medium">Scheduled pay date</p>
                 <div className="bg-app-background border border-primary-divider rounded-2xl p-3">
                   <div className="grid grid-cols-8 gap-1">
-                    {Array.from({ length: 31 }, (_, i) => i + 1).map(day => (<button key={day} type="button" onClick={() => setSelectedPayDay(day)} className={`w-9 h-9 rounded-full flex items-center justify-center text-sm cursor-pointer ${selectedPayDay === day ? "bg-primary-blue text-white" : "text-text-secondary hover:bg-gray-100"}`}>
+                    {Array.from({ length: 28 }, (_, i) => i + 1).map(day => (<button key={day} type="button" onClick={() => setSelectedPayDay(day)} className={`w-9 h-9 rounded-full flex items-center justify-center text-sm cursor-pointer ${selectedPayDay === day ? "bg-primary-blue text-white" : "text-text-secondary hover:bg-gray-100"}`}>
                         {day}
                       </button>))}
                   </div>

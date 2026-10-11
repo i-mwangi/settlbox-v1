@@ -28,12 +28,12 @@ const StatCard = ({ label, value, sub }: {
     {sub && <span className="text-text-secondary text-xs">{sub}</span>}
   </div>);
 export default function CashoutPage() {
-    const { data, addRampTransaction } = useDemo();
+    const { data } = useDemo();
     const { setTitle, setShowBackArrow } = useTitle();
     const [loading, setLoading] = useState(true);
     const [amount, setAmount] = useState("");
     const [fiat, setFiat] = useState("KES");
-    const [converting, setConverting] = useState(false);
+    const converting = false;
     const [showFiatDropdown, setShowFiatDropdown] = useState(false);
     useEffect(() => { const t = setTimeout(() => setLoading(false), 600); return () => clearTimeout(t); }, []);
     useEffect(() => {
@@ -51,25 +51,7 @@ export default function CashoutPage() {
     const handleCashout = () => {
         if (parsedAmount <= 0)
             return;
-        setConverting(true);
-        setTimeout(() => {
-            addRampTransaction({
-                id: `ramp-${Date.now()}`,
-                type: "OFF_RAMP",
-                fromCurrency: "USDC",
-                toCurrency: fiat,
-                fromAmount: parsedAmount,
-                toAmount: parseFloat(netReceive.toFixed(2)),
-                rate,
-                fee: parseFloat(fee.toFixed(2)),
-                status: "COMPLETED",
-                bankAccount: "DBS Bank ****6721",
-                completedAt: new Date().toISOString(),
-            });
-            setConverting(false);
-            setAmount("");
-            toast.success(`${selectedFiat.symbol}${fmt(netReceive)} sent to DBS Bank ****6721`);
-        }, 1500);
+        toast.error("Bank payouts are not available until a payout provider is connected");
     };
     if (loading || !data) {
         return (<div className="flex w-full h-full flex-col gap-4 px-6 pt-6 pb-5">

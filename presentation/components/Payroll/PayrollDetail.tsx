@@ -1,7 +1,7 @@
 "use client";
 import { n } from "@/presentation/services/utils/normalizeToken";
 import React, { useEffect, useState } from "react";
-import { useSearchParams, useParams } from "next/navigation";
+import { useSearchParams, useParams, usePathname } from "next/navigation";
 import { Table } from "../Common/Table";
 import { TabContainer } from "../Common/TabContainer";
 import { Badge, BadgeStatus } from "../Common/Badge";
@@ -33,7 +33,9 @@ const PayrollDetail = () => {
     const { setTitle, setShowBackArrow, setOnBackClick } = useTitle();
     const { openModal } = useModal();
     const payrollId = parseInt((params?.id as string) || searchParams.get("id") || "0", 10);
-    const { data: payrollData, isLoading, error } = useGetPayrollDetails(payrollId);
+    const byEmployee = usePathname().startsWith("/contact-book/employee/");
+    const { data: payrollData, isLoading, error } = useGetPayrollDetails(payrollId, byEmployee);
+    const { data: contactData, isLoading: contactLoading } = useGetEmployeeById(byEmployee ? payrollId : undefined);
     const { data: groups } = useGetAllEmployeeGroups();
     const { data: employeeData } = useGetEmployeeById(payrollData?.employee.id);
     const { mutateAsync: updateEmployeeMutate } = useUpdateEmployee();
@@ -43,7 +45,8 @@ const PayrollDetail = () => {
     const handlePrepareInvoice = async () => {
         setPreparingInvoice(true);
         try {
-            await generateInvoice(payrollId);
+            if (!payrollData) throw new Error("Payroll contract is required");
+            await generateInvoice(payrollData.id);
             toast.success("Payroll invoice prepared");
         } catch (error) {
             toast.error(error instanceof Error ? error.message : "Unable to prepare payroll invoice");
@@ -253,6 +256,12 @@ const PayrollDetail = () => {
       </div>);
     }
     if (error || !payrollData) {
+        if (!error && byEmployee && (contactData || contactLoading)) return <div className="p-6 flex flex-col gap-4">
+            <h1 className="text-2xl font-semibold">{contactData?.name || "Loading contact…"}</h1>
+            <p className="text-text-secondary">{contactData?.email}</p>
+            <p className="text-text-secondary">No payroll contract has been created for this contact.</p>
+            <SecondaryButton text="Set up payroll contract" variant="light" onClick={() => router.push(`/payroll/create?employeeId=${payrollId}`)}/>
+        </div>;
         return (<div className="p-5 flex flex-col items-center justify-center w-full h-full">
 
         <p className="text-red-500">Failed to load payroll details</p>

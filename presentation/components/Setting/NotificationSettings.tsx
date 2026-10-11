@@ -4,24 +4,33 @@ import SettingHeader from "./SettingHeader";
 import { ToggleSwitch } from "../Common/ToggleSwitch";
 import toast from "react-hot-toast";
 import { SecondaryButton } from "../Common/SecondaryButton";
+import { useQuery,useQueryClient } from "@tanstack/react-query";
+import { workspaceFetch } from "@/presentation/services/api/seeded-workspace";
+import type { NotificationPreferences } from "@/services/server/notifications";
 interface EmailItem {
     id: string;
     email: string;
 }
 export default function NotificationSettings() {
-    const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-    const [emailList, setEmailList] = useState<EmailItem[]>([
-        { id: "1", email: "martin@quantum3lab.com" },
-        { id: "2", email: "bill.sanders@quantum3lab.com" },
-        { id: "3", email: "willie.jenningsquantum3lab.com" },
-        { id: "4", email: "debra.holtquantum3lab.com" },
-        { id: "5", email: "dolores.chambersquantum3lab.com" },
-        { id: "6", email: "deanna.curtisquantum3lab.com" },
-    ]);
+    const client=useQueryClient();
+    type PreferencesResponse={preferences:NotificationPreferences;canEdit:boolean;deliveryConfigured:boolean};
+    const query=useQuery({queryKey:["notification-preferences"],queryFn:()=>workspaceFetch<PreferencesResponse>("/api/notifications/preferences"),retry:false});
+    const [saving,setSaving]=useState(false);
+    const notificationsEnabled=query.data?.preferences.enabled||false;
+    const emailList:EmailItem[]=(query.data?.preferences.emails||[]).map(email=>({id:email,email}));
+    const save=async(enabled:boolean,emails:string[])=>{
+      if(!query.data || !query.data.canEdit || saving)return false;
+      setSaving(true);
+      try {
+        const result=await workspaceFetch<PreferencesResponse>("/api/notifications/preferences","PATCH",{enabled,emails,revision:query.data.preferences.revision});
+        client.setQueryData(["notification-preferences"],result);toast.success("Notification preferences saved");return true;
+      }catch(error){toast.error(error instanceof Error?error.message:"Preferences were not saved");await query.refetch();return false;}
+      finally{setSaving(false);}
+    };
     const [newEmail, setNewEmail] = useState("");
     const [editingId, setEditingId] = useState<string | null>(null);
     const [editingEmail, setEditingEmail] = useState("");
-    const handleAddEmail = () => {
+    const handleAddEmail = async () => {
         if (!newEmail) {
             toast.error("Please enter an email");
             return;
@@ -31,23 +40,16 @@ export default function NotificationSettings() {
             toast.error("Please enter a valid email");
             return;
         }
-        const newItem: EmailItem = {
-            id: Date.now().toString(),
-            email: newEmail,
-        };
-        setEmailList([...emailList, newItem]);
-        setNewEmail("");
-        toast.success("Email added successfully");
+        if(await save(notificationsEnabled,[...emailList.map(item=>item.email),newEmail]))setNewEmail("");
     };
-    const handleDeleteEmail = (id: string) => {
-        setEmailList(emailList.filter(item => item.id !== id));
-        toast.success("Email removed");
+    const handleDeleteEmail = async (id: string) => {
+        await save(notificationsEnabled,emailList.filter(item=>item.id!==id).map(item=>item.email));
     };
     const handleStartEdit = (id: string, email: string) => {
         setEditingId(id);
         setEditingEmail(email);
     };
-    const handleUpdateEmail = () => {
+    const handleUpdateEmail = async () => {
         if (!editingEmail || !editingId)
             return;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -55,10 +57,7 @@ export default function NotificationSettings() {
             toast.error("Please enter a valid email");
             return;
         }
-        setEmailList(emailList.map(item => (item.id === editingId ? { ...item, email: editingEmail } : item)));
-        setEditingId(null);
-        setEditingEmail("");
-        toast.success("Email updated successfully");
+        if(await save(notificationsEnabled,emailList.map(item=>item.id===editingId?editingEmail:item.email))){setEditingId(null);setEditingEmail("");}
     };
     const handleCancelEdit = () => {
         setEditingId(null);
@@ -66,15 +65,18 @@ export default function NotificationSettings() {
     };
     return (<div className="flex flex-col">
       <SettingHeader icon="/misc/notification-icon.svg" title="Notifications"/>
+      {query.error && <p role="alert" className="text-sm">{query.error.message}</p>}
+      {query.isLoading && <p className="text-sm">Loading preferences…</p>}
+      {query.data && !query.data.deliveryConfigured && <p className="text-sm text-text-secondary mb-3">Preferences are saved. Email delivery is not connected.</p>}
 
-      <div className="border border-primary-divider rounded-2xl p-5 flex flex-col gap-4 min-w-[600px]">
+      <fieldset disabled={saving||!query.data?.canEdit} className="border border-primary-divider rounded-2xl p-5 flex flex-col gap-4 min-w-[600px]">
         
         <h2 className="text-lg font-semibold text-text-primary tracking-[-0.36px] leading-none">Email notifications</h2>
 
         
         <div className="flex items-center justify-between w-full">
           <p className="text-sm text-text-primary leading-5 tracking-[-0.21px]">When i receive new invoice</p>
-          <ToggleSwitch enabled={notificationsEnabled} onChange={setNotificationsEnabled}/>
+          <ToggleSwitch key={`${query.data?.preferences.revision}:${saving}`} enabled={notificationsEnabled} onChange={enabled=>{void save(enabled,emailList.map(item=>item.email));}}/>
         </div>
 
         
@@ -124,6 +126,6 @@ export default function NotificationSettings() {
             </button>
           </div>
         </div>
-      </div>
+      </fieldset>
     </div>);
 }

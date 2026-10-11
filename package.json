@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "agent:worker": "node --env-file-if-exists=.env.local scripts/finance-agent-worker.mjs",
     "dev": "next dev --turbopack",
     "build": "next build && node scripts/prepare-standalone.mjs",
     "start": "node --env-file-if-exists=.env.local scripts/start.mjs",
@@ -20,10 +21,14 @@
     "verify:gifts": "node --env-file-if-exists=.env.local --experimental-strip-types scripts/verify-gifts.mjs",
     "seed:reimbursements": "node --env-file-if-exists=.env.local --experimental-strip-types scripts/seed-reimbursements.mjs",
     "seed:provider-history": "node --env-file-if-exists=.env.local --experimental-strip-types scripts/seed-provider-history.mjs",
-    "verify:reimbursements": "node --env-file-if-exists=.env.local scripts/verify-reimbursements.mjs"
+    "verify:reimbursements": "node --env-file-if-exists=.env.local scripts/verify-reimbursements.mjs",
+    "vault:compile": "node scripts/compile-treasury-vault.mjs",
+    "vault:prepare": "node --experimental-strip-types scripts/prepare-treasury-vault.mjs",
+    "vault:deploy": "node --env-file-if-exists=.env.local --experimental-strip-types scripts/deploy-treasury-vault.mjs"
   },
   "dependencies": {
     "@circle-fin/developer-controlled-wallets": "^10.8.1",
+    "@circle-fin/w3s-pw-web-sdk": "^1.1.11",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",

@@ -77,11 +77,7 @@ export default function StripeIntegrationSettings() {
     });
     const [expanded, setExpanded] = useState(false);
     const handleConnect = () => {
-        setConnectionStep("connecting");
-        setTimeout(() => {
-            setConnectionStep("connected");
-            toast.success("Stripe account connected successfully");
-        }, 1500);
+        toast.error("Stripe connection requires a configured provider");
     };
     const handleDisconnect = () => {
         setConnectionStep("disconnected");

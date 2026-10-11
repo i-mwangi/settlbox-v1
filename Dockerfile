@@ -4,12 +4,14 @@ ARG NEXT_PUBLIC_ARC_ENVIRONMENT=testnet
 ARG NEXT_PUBLIC_ARC_RPC_URL=https://rpc.testnet.arc.io
 ARG NEXT_PUBLIC_APP_URL=
 ARG NEXT_PUBLIC_SERVER_URL=
+ARG NEXT_PUBLIC_CIRCLE_APP_ID=
 ENV NEXT_PUBLIC_ARC_ENVIRONMENT=$NEXT_PUBLIC_ARC_ENVIRONMENT
 ENV NEXT_PUBLIC_ARC_RPC_URL=$NEXT_PUBLIC_ARC_RPC_URL
 ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
 ENV NEXT_PUBLIC_SERVER_URL=$NEXT_PUBLIC_SERVER_URL
+ENV NEXT_PUBLIC_CIRCLE_APP_ID=$NEXT_PUBLIC_CIRCLE_APP_ID
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 COPY . .
 RUN npm run build
 
@@ -21,7 +23,7 @@ ENV HOSTNAME=0.0.0.0
 ENV NEXT_PUBLIC_ARC_ENVIRONMENT=testnet
 COPY --from=builder --chown=node:node /app/.next/standalone ./.next/standalone
 COPY --from=builder --chown=node:node /app/public ./public
-COPY --from=builder --chown=node:node /app/scripts/start.mjs /app/scripts/payment-schedule-worker.mjs ./scripts/
+COPY --from=builder --chown=node:node /app/scripts/start.mjs /app/scripts/payment-schedule-worker.mjs /app/scripts/finance-agent-worker.mjs ./scripts/
 COPY --from=builder --chown=node:node /app/services ./services
 COPY --from=builder --chown=node:node /app/types ./types
 RUN mkdir -p /app/.data && chown node:node /app/.data

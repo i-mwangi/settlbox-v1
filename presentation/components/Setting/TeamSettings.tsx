@@ -65,7 +65,7 @@ const TeamSettings = () => {
       
       <div className="flex w-full flex-row gap-2">
         <Card title="Accounts" amount={accounts.length.toString()} info="Admins can submit proposals and cast votes."/>
-        <Card title="Members" amount={teamStats?.total?.toString() || "0"}/>
+        <Card title="Members" amount={teamStats?.total?.toString() || "0"} info={`${teamStats?.historical || 0} historical profiles; ${teamStats?.active || 0} active workspace members.`}/>
       </div>
 
       

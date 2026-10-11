@@ -56,17 +56,17 @@ function HowItWorksModal({ isOpen, onClose }: {
             {
                 step: "1",
                 title: "Deposit idle funds",
-                desc: "Move USDC from any of your multisig wallets into the yield vault.",
+                desc: "USYC subscriptions require an entitled reserve wallet and an approved investment workflow.",
             },
             {
                 step: "2",
                 title: "Earn T-Bill backed yield",
-                desc: `Your funds are invested in short-duration US Treasury Bills, earning ${EARN_APY}% APY. Yield accrues daily and is distributed monthly.`,
+                desc: "USYC reserve value follows provider pricing. Historical APY is not a guaranteed current return.",
             },
             {
                 step: "3",
                 title: "Withdraw anytime",
-                desc: "Withdraw to any wallet within 24 hours (T+1 settlement). No lock-up period, no fees.",
+                desc: "Redemption depends on wallet permissions, provider limits, available liquidity and applicable fees.",
             },
         ].map(({ step, title, desc }) => (<div key={step} className="flex items-start gap-3 bg-app-background rounded-xl p-4">
               <div className="w-7 h-7 rounded-full text-white flex items-center justify-center text-sm font-bold shrink-0" style={{ background: "var(--primary-button)" }}>
@@ -147,8 +147,7 @@ function DepositModal({ isOpen, onClose, accounts, }: {
           <img src="/misc/info-icon.svg" alt="info" className="w-4 h-4 mt-0.5 shrink-0 opacity-40" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}/>
           <p className="text-xs text-text-secondary leading-relaxed">
             Funds are backed by short-duration US Treasury Bills (T-Bills).
-            Yield is accrued daily and distributed monthly. Withdrawals are
-            processed within 24 hours (T+1 settlement).
+            Access, pricing, fees and redemption liquidity are determined by the provider.
           </p>
         </div>
 
@@ -209,8 +208,7 @@ function WithdrawModal({ isOpen, onClose, accounts, }: {
         <div className="bg-app-background rounded-[12px] border-b border-primary-divider p-3 flex items-start gap-2">
           <img src="/misc/info-icon.svg" alt="info" className="w-4 h-4 mt-0.5 shrink-0 opacity-40" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}/>
           <p className="text-xs text-text-secondary leading-relaxed">
-            Withdrawals are processed within 24 hours due to T+1 settlement on underlying T-Bills.
-            No fees are charged for withdrawals.
+            Redemption requires current provider permissions and available liquidity. Fees may apply.
           </p>
         </div>
 
@@ -297,7 +295,7 @@ export default function EarnPage() {
       </div>);
     }
     return (<>
-      <div className="flex w-full h-full flex-col overflow-y-auto"><p className="px-6 pt-4 text-sm text-text-secondary">Historical yield records. Deposits and withdrawals require a configured provider.</p>{error && <p role="alert">{error.message}</p>}
+      <div className="flex w-full h-full flex-col overflow-y-auto">{error && <p role="alert">{error.message}</p>}
         
         <div className="flex w-full items-start justify-between gap-4 px-6 pt-6 pb-3">
           <div className="flex flex-col gap-0.5">
@@ -308,7 +306,7 @@ export default function EarnPage() {
               </button>
             </div>
             <p className="text-[14px] text-text-secondary">
-              Put idle treasury funds to work in T-Bill backed yield, earning daily and withdrawable anytime.
+              Manage treasury reserves and view yield activity.
             </p>
           </div>
           <div className="flex shrink-0 gap-2">
@@ -319,7 +317,7 @@ export default function EarnPage() {
 
         
         <div className="flex w-full flex-row gap-2 px-6 pb-2">
-          <StatCard title="Current APY" text={<span className="num text-2xl leading-none" style={{ color: "var(--badge-success-text)" }}>
+          <StatCard title="APY" text={<span className="num text-2xl leading-none" style={{ color: "var(--badge-success-text)" }}>
                 {EARN_APY}%
               </span>}/>
           <StatCard title="Total Deposited" text={<span className="num text-text-primary text-2xl leading-none">
@@ -360,8 +358,7 @@ export default function EarnPage() {
             <span className="text-text-primary text-lg font-medium">Earnings Summary</span>
             <div className="flex-1 flex flex-col">
               {[
-            { label: "This Month", value: MONTHLY_YIELD, sub: "Mar 2026" },
-            { label: "Last Month", value: MONTHLY_YIELD, sub: "Feb 2026" },
+            { label: "Recorded Monthly Yield", value: MONTHLY_YIELD, sub: "Monthly" },
             { label: "Total Earned", value: TOTAL_EARNED, sub: "All time" },
         ].map(({ label, value, sub }) => (<div key={label} className="flex items-center justify-between py-3 border-b border-primary-divider last:border-0">
                   <div className="flex flex-col gap-0.5">

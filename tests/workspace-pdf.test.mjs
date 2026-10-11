@@ -3,7 +3,13 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { PDFDocument } from "pdf-lib";
 import { renderWorkspacePdf } from "../services/server/workspace-pdf.ts";
-import { formatInvoiceAmount } from "../types/invoice-format.ts";
+import { formatInvoiceAmount, formatInvoiceDate } from "../types/invoice-format.ts";
+
+test("invoice date formatting preserves unambiguous issue and due dates",()=>{
+  assert.equal(formatInvoiceDate("2026-10-11T13:00:00.000Z"),"11.10.2026");
+  assert.equal(formatInvoiceDate("2026-11-10T13:00:00.000Z"),"10.11.2026");
+  assert.equal(formatInvoiceDate("2026-10-31"),"31.10.2026");
+});
 
 test("invoice amounts preserve USDC precision", () => {
   assert.equal(formatInvoiceAmount("0.001"), "0.001");

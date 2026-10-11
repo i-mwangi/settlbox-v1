@@ -1,5 +1,6 @@
 import { resolve } from "node:path";
 import { startPaymentScheduleWorker } from "./payment-schedule-worker.mjs";
+import { startFinanceAgentWorker } from "./finance-agent-worker.mjs";
 
 process.env.HOSTNAME ||= "127.0.0.1";
 for (const [name, fallback] of Object.entries({
@@ -14,4 +15,6 @@ for (const [name, fallback] of Object.entries({
 }
 const stopScheduleWorker = startPaymentScheduleWorker();
 process.once("exit", stopScheduleWorker);
+const stopFinanceWorker = startFinanceAgentWorker();
+process.once("exit", stopFinanceWorker);
 await import("../.next/standalone/server.js");

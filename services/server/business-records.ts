@@ -36,6 +36,7 @@ export class BusinessRecordRepository {
       CREATE TABLE IF NOT EXISTS payment_schedules(id TEXT PRIMARY KEY,company_id TEXT NOT NULL,status TEXT NOT NULL,next_date TEXT NOT NULL,record TEXT NOT NULL);
       CREATE INDEX IF NOT EXISTS due_payment_schedules ON payment_schedules(company_id,status,next_date);
       CREATE INDEX IF NOT EXISTS business_record_listing ON business_records(company_id,kind);`);
+    this.database.exec("CREATE TABLE IF NOT EXISTS business_payment_routes(company_id TEXT NOT NULL,record_id TEXT NOT NULL,route TEXT NOT NULL,PRIMARY KEY(company_id,record_id))");
   }
 
   create(companyId: string, input: unknown, requestId?: string): BusinessRecord {
@@ -52,6 +53,11 @@ export class BusinessRecordRepository {
   get(companyId: string, id: string): BusinessRecord | undefined {
     const row = this.database.prepare("SELECT record FROM business_records WHERE id=? AND company_id=?").get(id, companyId);
     return row && typeof row.record === "string" ? JSON.parse(row.record) as BusinessRecord : undefined;
+  }
+  claimPaymentRoute(companyId: string, id: string, route: "treasury" | "vault") {
+    this.database.prepare("INSERT OR IGNORE INTO business_payment_routes VALUES(?,?,?)").run(companyId, id, route);
+    const saved = this.database.prepare("SELECT route FROM business_payment_routes WHERE company_id=? AND record_id=?").get(companyId, id);
+    if (saved?.route !== route) throw new Error("This obligation is assigned to a different payment workflow");
   }
 
   createBatch(companyId: string, requestId: string, values: unknown): BusinessRecord[] {

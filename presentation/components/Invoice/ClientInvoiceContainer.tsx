@@ -84,7 +84,7 @@ const ClientInvoiceContainer = () => {
             setCheckedRows(invoiceDatas?.map((_: any, idx: number) => idx) || []);
         }
     };
-    const { data: invoicesResponse, isLoading } = useQuery({
+    const { data: invoicesResponse, isLoading, error: invoiceError } = useQuery({
         queryKey: ["b2b-invoices", activeTab],
         queryFn: () => getB2BInvoices({
             page: 1,
@@ -173,7 +173,7 @@ const ClientInvoiceContainer = () => {
         </div>),
         };
     });
-    const isAllChecked = checkedRows.length === invoiceDatas?.length;
+    const isAllChecked = invoiceDatas.length > 0 && checkedRows.length === invoiceDatas.length;
     return (<div className="relative flex w-full h-full flex-col">
       
       <div className="flex w-full items-start justify-between gap-4 px-6 pt-6 pb-3">
@@ -200,12 +200,13 @@ const ClientInvoiceContainer = () => {
             { id: "draft", label: "Draft" },
             { id: "paid", label: "Paid" },
         ]} activeTab={activeTab} setActiveTab={setActiveTab} textSize="sm"/>
-        <span className="text-sm text-text-secondary">{invoiceDatas.length} invoices</span>
+        <span className="text-sm text-text-secondary">{isLoading ? "Loading invoices…" : `${invoiceDatas.length} invoices`}</span>
       </div>
 
       
       <div className="w-full p-5">
-        <Table headers={[
+        {invoiceError && <p role="alert" className="text-sm">{invoiceError.message}</p>}
+        <Table noDataMessage={isLoading ? "Loading invoices…" : invoiceError ? "Invoices could not be loaded" : "No results found"} headers={[
             <div className="flex justify-center items-center">
               <CustomCheckbox checked={isAllChecked as boolean} onChange={handleCheckAll}/>
             </div>,
@@ -266,7 +267,7 @@ const ClientInvoiceContainer = () => {
             };
             const handleCopyInvoiceLink = async () => {
                 try {
-                    const link = `${window.location.origin}/invoice-review/b2b?id=${invoice.uuid}`;
+                    const link = `${window.location.origin}/invoice-review/b2b?uuid=${invoice.uuid}`;
                     await navigator.clipboard.writeText(link);
                     toast.success("Invoice link copied to clipboard");
                 }
