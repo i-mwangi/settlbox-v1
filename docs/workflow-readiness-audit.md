@@ -61,3 +61,8 @@ Before this audit, 106 automated tests and TypeScript checks passed. Live Earn b
 - Found list/detail share URLs using `id` while the legacy public page expected `uuid`. More importantly, its invoice loader read browser-local sample data instead of the issued canonical record.
 - Replaced the public server entry with an issued/paid canonical invoice lookup and redirect to its durable payment checkout; drafts, cancelled and unknown records cannot expose a collection link. Both existing `id` URLs and canonical `uuid` URLs are accepted.
 - The issued QA invoice now resolves to checkout `d2f1056e-93fb-4e42-ab95-cb3f325b6179`, with 0.001 USDC payable to the configured company wallet on Arc Testnet. Fixed checkout total rounding that incorrectly displayed 0.00 USDC. No external payer submission has been made.
+
+- Invoice collection receipt verified on Arc chain 5042002: transaction `0xd4e5f3655f0d8fcd2ddd4d8980b9c176996fc5bfda958e7091d2e302331db4e2`, successful at block 66719185, sends 1000000000000000 native base units (0.001 USDC) from `0xE487dD5D9cd9562678c759D1d82c0b8821Daa53e` to the company wallet. The existing durable link record contains this receipt; its recorded timestamp precedes this verification, so this is not claimed as a newly created transaction.
+- Workspace reads previously projected invoice state without reconciling verified collection records. Added shared invoice reconciliation for the business-records API and workspace view, with a regression test for persistence after reopening, repeat reads and company isolation.
+
+- Browser invoice detail now displays Paid after canonical reconciliation. Full suite: 109 tests pass.
