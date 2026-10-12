@@ -1,90 +1,64 @@
 "use client";
-
-import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { AgentPlanRequest, AgentRun } from "@/types/agent";
-import type { TreasuryVaultStatus } from "@/types/treasury-vault";
+import { useEffect, useRef, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { workspaceFetch } from "@/presentation/services/api/seeded-workspace";
 import { useDemo } from "@/presentation/contexts/DemoProvider";
-import HumanWallet from "./HumanWallet";
-import VaultPayments, { QueueVaultPayment } from "./VaultPayments";
-import Automation from "./Automation";
+import type { AgentChatTurn } from "@/types/agent-chat";
+import type { AgentAction } from "@/types/agent";
+import AdvancedAgentControls from "./Advanced";
+import PaymentReview from "./PaymentReview";
 
+const suggestions = ["What needs my attention?", "Help me pay an outstanding bill", "How much can we keep available?"];
 export default function AgentPage() {
   const { activeEntityId } = useDemo();
   const enabled = activeEntityId === "entity-3";
   const client = useQueryClient();
-  const [throughDate, setThroughDate] = useState(() => new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10));
-  const [reserveUsdc, setReserveUsdc] = useState("0");
-  const [pendingRequest, setPendingRequest] = useState<AgentPlanRequest | null>(null);
-  const history = useQuery({ queryKey: ["agent-runs"], enabled, queryFn: () => workspaceFetch<AgentRun[]>("/api/agent-runs"), retry: false });
-  const vault = useQuery({ queryKey: ["treasury-vault"], enabled, queryFn: () => workspaceFetch<TreasuryVaultStatus>("/api/treasury/vault"), retry: false, staleTime: 0 });
-  const prepare = useMutation({
-    mutationFn: (request: AgentPlanRequest) => workspaceFetch<AgentRun>("/api/agent-runs", "POST", request),
-    onSuccess: async () => { setPendingRequest(null); await client.invalidateQueries({ queryKey: ["agent-runs"] }); },
-  });
-  const run = history.data?.[0];
-  const submit = () => {
-    const request = pendingRequest ?? { requestId: crypto.randomUUID(), throughDate, reserveUsdc };
-    setPendingRequest(request);
-    prepare.mutate(request);
+  const [advanced, setAdvanced] = useState(false);
+  const session = useQuery({ queryKey: ["agent-chat-session"], enabled, gcTime: 0, queryFn: () => workspaceFetch<{ principal: { id: string; role: string } }>("/api/operator/session"), retry: false });
+  const canChat = enabled && !!session.data && ["OWNER", "ADMIN"].includes(session.data.principal.role);
+  const history = useQuery({ queryKey: ["agent-chat", activeEntityId, session.data?.principal.id], enabled: canChat, gcTime: 0, queryFn: () => workspaceFetch<AgentChatTurn[]>("/api/agent-chat"), retry: false });
+  const [message, setMessage] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [pending, setPending] = useState<{ message: string; requestId: string; throughDate: string; reserveUsdc: string } | null>(null);
+  const [review, setReview] = useState<{ action: AgentAction; runId: string } | null>(null);
+  const end = useRef<HTMLDivElement>(null);
+  useEffect(() => { end.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }); }, [history.data?.length, busy]);
+  useEffect(() => { setPending(null); setMessage(""); setError(""); setReview(null); }, [activeEntityId]);
+  const send = async (text = message) => {
+    if (!text.trim() || busy || !canChat) return;
+    const date = new Date(); date.setDate(date.getDate() + 30);
+    const throughDate = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;
+    const input = pending && pending.message === text.trim() ? pending : { message: text.trim(), requestId: crypto.randomUUID(), throughDate, reserveUsdc: "0" };
+    setPending(input); setBusy(true); setError("");
+    try { await workspaceFetch<AgentChatTurn>("/api/agent-chat", "POST", input); setMessage(""); setPending(null); await client.invalidateQueries({ queryKey: ["agent-chat", activeEntityId, session.data?.principal.id] }); await client.invalidateQueries({ queryKey: ["agent-runs"] }); }
+    catch (failure) { setError(failure instanceof Error ? failure.message : "Your message could not be sent"); }
+    finally { setBusy(false); }
   };
-  return <section className="w-full p-6 space-y-6">
-    <header>
-      <h1 className="text-2xl font-semibold text-text-primary">Finance agent</h1>
-      <p className="text-sm text-text-secondary">Prepare a review plan from saved obligations and the connected company treasury.</p>
-    </header>
-    {enabled && <div className="rounded-2xl border border-primary-divider bg-background p-5 space-y-3">
-      <h2 className="text-lg font-semibold">Treasury vault</h2>
-      {vault.isLoading && <p role="status" className="text-sm text-text-secondary">Checking vault status…</p>}
-      {vault.error && <p role="alert" className="text-red-600 text-sm">{vault.error.message}</p>}
-      {vault.data?.state === "not_configured" && <p className="text-sm text-text-secondary">{vault.data.message}</p>}
-      {vault.data?.state === "verified" && <>
-        <p className="text-sm">Verified on Arc Testnet · {vault.data.paused ? "Paused" : "Enabled"} · {vault.data.balanceUsdc} USDC held by the vault</p>
-        <p className="text-sm text-text-secondary break-all">Vault: {vault.data.address}</p>
-        <p className="text-sm text-text-secondary">Payment limit: {vault.data.policy.paymentLimitUsdc} USDC · Daily limit: {vault.data.policy.dailyLimitUsdc} USDC · Required approvals above {vault.data.policy.approvalThresholdUsdc} USDC: {vault.data.policy.requiredApprovals}</p>
-        {!vault.data.approvalCapacityReady && <p className="text-sm text-red-600">The configured number of approvers is not available.</p>}
-        <p className="text-sm text-text-secondary">Observed at block {vault.data.blockNumber}. Contract rules cover funds held by this vault. Circle execution requires a queued obligation and valid on-chain approvals.</p>
-      </>}
-    </div>}
-    {enabled && <HumanWallet administrator={vault.data?.state === "verified" ? vault.data.administrator : undefined} />}
-    {enabled && <VaultPayments />}
-    {enabled && <Automation />}
-    <div className="rounded-2xl border border-primary-divider bg-background p-5 space-y-4">
-      <p className="text-sm text-text-secondary">Preparing a plan sends no payments. Vault queueing and execution are separate actions; required approvals are signed through Circle.</p>
-      <p className="text-sm text-text-secondary">Vault plans use only funds held by the vault. The contract liquidity floor is reserved separately from the additional amount below.</p>
-      {!enabled && <p role="status">Select the company treasury workspace to prepare a plan.</p>}
-      <div className="flex flex-wrap items-end gap-4">
-        <label className="flex flex-col gap-2 text-sm">Plan through
-          <input aria-label="Plan through" type="date" value={throughDate} disabled={prepare.isPending} onChange={event => { setThroughDate(event.target.value); setPendingRequest(null); }} className="rounded-lg border border-primary-divider p-2 bg-background" />
-        </label>
-        <label className="flex flex-col gap-2 text-sm">Additional liquidity reserve (USDC)
-          <input aria-label="Additional liquidity reserve (USDC)" inputMode="decimal" value={reserveUsdc} disabled={prepare.isPending} onChange={event => { setReserveUsdc(event.target.value); setPendingRequest(null); }} className="rounded-lg border border-primary-divider p-2 bg-background" />
-        </label>
-        <button disabled={!enabled || prepare.isPending} onClick={submit} className="rounded-lg bg-[#1b1b1b] text-white px-4 py-2 disabled:opacity-50">{prepare.isPending ? "Preparing…" : pendingRequest ? "Retry plan" : "Prepare plan"}</button>
+  return <section className="mx-auto w-full max-w-5xl p-4 md:p-6 space-y-5">
+    <header><h1 className="text-2xl font-semibold text-text-primary">Finance agent</h1><p className="mt-1 text-sm text-text-secondary">Tell me what you need. We'll review it together.</p></header>
+    {!enabled ? <p role="status" className="rounded-2xl border border-primary-divider p-5">Select the company treasury workspace to chat.</p> : <div className="rounded-2xl border border-primary-divider bg-background overflow-hidden">
+      <div className="border-b border-primary-divider px-5 py-3 text-xs text-text-secondary">Arc Testnet  -  Payments need your authorization</div>
+      <div role="log" aria-label="Finance conversation" aria-live="polite" className="max-h-[60dvh] min-h-[260px] overflow-y-auto overscroll-contain p-5 space-y-6">
+        {!history.data?.length && <div className="py-8 space-y-4"><h2 className="text-xl font-semibold">How can I help with your business today?</h2><p className="text-sm text-text-secondary">Ask about upcoming bills, treasury balances or a payment you want to review.</p><div className="flex flex-wrap gap-2">{suggestions.map(text => <button key={text} disabled={busy || !canChat || history.isLoading} onClick={() => { setMessage(text); void send(text); }} className="rounded-xl border border-primary-divider px-4 py-3 text-sm text-left disabled:opacity-50">{text}</button>)}</div></div>}
+        {history.data?.map((turn, index) => <article key={turn.id} className="space-y-4">
+          <div className="ml-auto max-w-[85%] w-fit rounded-2xl bg-[#1b1b1b] px-4 py-3 text-sm text-white whitespace-pre-wrap break-words">{turn.message}</div>
+          <div className="max-w-[95%] space-y-3"><p className="text-xs font-medium text-text-secondary">Settlbox</p><p className="text-sm leading-6 whitespace-pre-wrap break-words">{turn.answer}</p>
+            {index === history.data.length - 1 && <div className="space-y-2">{turn.run.actions.filter(action => !turn.recordIds || turn.recordIds.includes(action.recordId)).map(action => <div key={action.recordId} className="rounded-xl border border-primary-divider p-4 space-y-2"><div className="flex flex-wrap justify-between gap-2"><p className="text-sm font-medium">{action.title}</p><p className="text-sm">{action.amountUsdc} USDC</p></div><p className="text-xs text-text-secondary">Due {action.dueDate}  -  {action.disposition === "blocked" ? "Needs attention" : action.tool === "review_receivable" ? "Incoming invoice" : "Ready for review"}</p>{action.disposition === "blocked" && <p className="text-sm text-text-secondary">{action.reasons.join(". ")}</p>}{action.tool === "review_payment" && <button disabled={session.data?.principal.role !== "OWNER"} onClick={() => setReview({ action, runId: turn.run.id })} className="rounded-lg border border-primary-divider px-3 py-2 text-sm">{action.disposition === "blocked" ? "View details" : "Review payment"}</button>}</div>)}<p className="text-xs text-text-secondary">Snapshot from {new Date(turn.createdAt).toLocaleString()}. Payment details are checked again before sending.</p></div>}
+          </div>
+        </article>)}
+        {busy && pending && <div className="ml-auto max-w-[85%] w-fit rounded-2xl bg-[#1b1b1b] px-4 py-3 text-sm text-white whitespace-pre-wrap break-words">{pending.message}</div>}
+        {busy && <p role="status" className="text-sm text-text-secondary">Checking your treasury and saved obligations...</p>}
+        <div ref={end} />
       </div>
-      {(history.error || prepare.error) && <p role="alert" className="text-red-600">{prepare.error?.message ?? history.error?.message}</p>}
-    </div>
-    {enabled && run && <div className="rounded-2xl border border-primary-divider bg-background p-5 space-y-4">
-      <h2 className="text-lg font-semibold">Latest plan</h2>
-      <p className="text-sm text-text-secondary">Saved {new Date(run.createdAt).toLocaleString()} · Plan through {run.request.throughDate}</p>
-      {run.aiReview && <div className="rounded-xl border border-primary-divider p-4 space-y-2">
-        <h3 className="font-semibold">AI finance review</h3>
-        <p className="text-sm text-text-secondary">Azure · {run.aiReview.model} · Advisory only</p>
-        <p className="text-sm whitespace-pre-wrap">{run.aiReview.summary}</p>
-      </div>}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {[ [run.fundingSource === "treasury_vault" ? "Observed vault balance" : "Observed treasury balance", run.balanceUsdc], ["Obligations through planning date", run.obligationsUsdc], ["Additional liquidity reserve", run.reserveUsdc] ].map(([label, amount]) => <div key={label} className="rounded-xl border border-primary-divider p-4"><p className="text-sm text-text-secondary">{label}</p><p className="font-semibold break-all">{amount} USDC</p></div>)}
-      </div>
-      <p className="text-sm text-text-secondary">This is a saved snapshot. Payment execution must recheck the current balance, policy and approvals. Historical sample balances are excluded.</p>
-      {run.actions.length === 0 ? <p>No canonical obligations or receivables fall within this period.</p> : <ul className="divide-y divide-primary-divider">{run.actions.map(action => <li key={action.recordId} className="py-4 space-y-1">
-        <div className="flex flex-wrap justify-between gap-2"><span className="font-medium">{action.title}</span><span>{action.amountUsdc} USDC · {action.disposition === "blocked" ? "Blocked" : "Review required"}</span></div>
-        <p className="text-sm text-text-secondary">{action.kind} · {action.dueDate} · {action.reasons.join(". ")}</p>
-        {action.tool === "review_payment" && action.disposition === "review" && <QueueVaultPayment runId={run.id} recordId={action.recordId} />}
-      </li>)}</ul>}
-      <a href="/transactions" className="text-primary-blue text-sm">Open payment approvals</a>
+      <form className="border-t border-primary-divider p-4 space-y-3" onSubmit={event => { event.preventDefault(); void send(); }}>
+        {session.data && !canChat && <p role="status" className="text-sm">An owner or admin can use finance chat.</p>}
+        {(error || history.error || session.error) && <p role="alert" className="text-sm text-red-600">{error || history.error?.message || session.error?.message}</p>}
+        <div className="flex items-end gap-3"><textarea aria-label="Message the finance agent" placeholder="Ask about your business's money..." value={message} maxLength={2000} rows={2} disabled={busy || !canChat} onKeyDown={event => { if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); void send(); } }} onChange={event => { setMessage(event.target.value); setPending(null); }} className="min-w-0 flex-1 resize-y rounded-xl border border-primary-divider bg-background p-3 text-sm focus:outline-blue-600" /><button type="submit" disabled={busy || !canChat || !message.trim()} className="rounded-xl bg-[#1b1b1b] px-5 py-3 text-sm text-white disabled:opacity-50">{busy ? "Thinking..." : pending ? "Retry" : "Send"}</button></div>
+      </form>
     </div>}
-    {enabled && history.isLoading && <p role="status">Loading saved runs…</p>}
-    {enabled && !history.isLoading && !history.error && !run && <p>No planning runs yet.</p>}
+    <nav aria-label="Finance workspace shortcuts" className="flex flex-wrap gap-3 text-sm">{[["/invoice","Invoices"],["/bill","Bills"],["/contact-book","Contractors"],["/reimbursement","Reimbursements"]].map(([href,label]) => <a key={href} href={href} className="rounded-xl border border-primary-divider px-4 py-2">{label}</a>)}</nav>
+    {enabled && <details onToggle={event => setAdvanced(event.currentTarget.open)} className="rounded-2xl border border-primary-divider bg-background"><summary className="cursor-pointer p-5 text-sm font-medium">Wallet, automation and audit settings</summary>{advanced && <AdvancedAgentControls />}</details>}
+    {review && <PaymentReview key={review.action.recordId} {...review} onClose={() => setReview(null)} />}
   </section>;
 }
