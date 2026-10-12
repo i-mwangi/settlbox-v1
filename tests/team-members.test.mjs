@@ -251,6 +251,16 @@ test("member sessions enforce current roles and lose access immediately after su
       requireOperatorSession(request("/api/business-records", "POST")).role,
       "ADMIN",
     );
+    for (const role of ["ADMIN", "REVIEWER", "VIEWER"]) {
+      fixtureData.repository.update("company", member.id, {role});
+      for (const path of ["/api/business-records", "/api/reimbursements", "/api/uploads", "/api/agent-runs", "/api/payroll-contracts"]) {
+        assert.equal(requireOperatorSession(request(path)).role,role);
+        if (["OWNER","ADMIN"].includes(role)) assert.equal(requireOperatorSession(request(path,"POST")).role,role);
+        else assert.throws(()=>requireOperatorSession(request(path,"POST")),/role/);
+      }
+      if (role === "VIEWER") assert.throws(()=>requireOperatorSession(request("/api/treasury/payments/id/approve","POST")),/role/);
+      else assert.equal(requireOperatorSession(request("/api/treasury/payments/id/approve","POST")).role,role);
+    }
     fixtureData.repository.remove("company", member.id);
     assert.throws(
       () => requireOperatorSession(request("/api/treasury")),

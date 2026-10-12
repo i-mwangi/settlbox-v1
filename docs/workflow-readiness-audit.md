@@ -1,6 +1,17 @@
 # Workflow readiness audit — updated October 12, 2026
 
-This is the Phase 1 source audit and verification backlog. A repository test or implemented endpoint does not prove a complete browser journey. Two small Arc Testnet settlements have been verified: the agent vault bill and the direct company-wallet reimbursement. These do not establish completion of every business workflow.
+This audit records verified behavior and remaining acceptance work. Four small Arc Testnet settlements have been verified: the agent vault bill, direct company-wallet reimbursement, incoming invoice collection and contractor payment. Automated failure checks complement these live journeys; they do not establish mainnet readiness or external provider availability.
+
+## Latest verification — October 12
+
+- Contractor `PAY-3-1`, canonical record `10c2e84a-672a-40db-a920-3ef409c17263`, is paid in durable storage. Successful Arc transaction `0x24a733d5b2c1978fc404e930e34f5c6018aee19d3ac4fea03a7d09a4372c8876` at block 66720854 transferred 0.001 USDC from the company wallet to `0xa2F8a545bD0FC4C2dCf2D7A71631803Cfb52FB01`. The user explicitly authorized this recipient and completed approval. Vault permissions were not changed by that direct-payment authorization.
+- All 115 automated tests pass, including separate-process journal reopening, stale provider response rejection, immutable payment instructions/provider identity, bounded retries, stop during planning, company isolation and current-role permissions.
+- An isolated production HTTP harness verified owner-only automation controls, unauthorized and cross-origin upload rejection, corrupt and oversized image rejection, valid receipt persistence across a real server restart and company-scoped receipt reads. It submitted no financial transaction. Run with `node --experimental-strip-types scripts/verify-workflow-boundaries.mjs` after a production build.
+- Receipt uploads now fully decode PNG/JPEG content with bounded pixel and byte limits; storage is company-scoped. Existing single-company receipts retain a fixed legacy owner marker.
+- Worker stop and additional reserve checks are repeated immediately before provider submission. A successful stop cannot retract an already submitted transaction; reconciliation continues to determine its actual outcome.
+- Production dependency audit after compatible updates reports zero known advisories. Sharp is a direct patched dependency for receipt decoding; targeted PostCSS, gRPC, Undici and UUID overrides avoid a framework major upgrade or Circle SDK downgrade. The SDK uses UUID v4, whose public API is preserved. Development lint dependency advisories remain; this is not a claim that every development dependency has a clean audit.
+
+The table and dated notes below retain the earlier audit history. Their pending invoice collection, contractor settlement and receipt boundary checks are superseded by the evidence above. USYC execution remains an implementation gap as well as an external entitlement dependency; it must not be described as completed merely because its read adapter exists.
 
 | Workflow | Evidence and current state | Required acceptance checks |
 |---|---|---|

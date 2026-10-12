@@ -22,7 +22,7 @@ export async function vaultPaymentContext(companyId: string) {
 function matches(payment: VaultPayment, observed: readonly [string,bigint,bigint,bigint,number,number]) {
   if (observed[0].toLowerCase() !== payment.recipient.toLowerCase() || observed[1] !== parseAmount(payment.amount) || observed[2].toString() !== payment.expiresAt) throw new Error("On-chain payment terms differ from the saved obligation");
 }
-export async function queueVaultPayment(companyId: string, principal: string, runId: string, recordId: string) {
+export async function queueVaultPayment(companyId: string, principal: string, runId: string, recordId: string, active: () => boolean = () => true) {
   const context = await vaultPaymentContext(companyId);
   const journal = openVaultPayments(); const records = openBusinessRecords(); const runs = openAgentRuns();
   try {
@@ -40,11 +40,13 @@ export async function queueVaultPayment(companyId: string, principal: string, ru
       const allowed = await context.reader.readContract({ address: context.vault.address as Hex, abi: treasuryVaultAbi, functionName: "recipients", args: [record.recipient] });
       if (!allowed) throw new Error("Recipient is not allowed by the vault");
       if (parseAmount(context.vault.balanceUsdc) < amount + parseAmount(context.vault.policy.liquidityFloorUsdc)) throw new Error("Fund the vault without consuming its liquidity floor before queueing");
+      if (!active()) throw new Error("Worker stopped before queue reservation");
       payment = journal.reserve({ id: vaultPaymentId(companyId, context.vault.address, recordId), companyId, recordId, runId, recipient: record.recipient, amount: record.amount, expiresAt: String(Math.floor(Date.now()/1000) + 86400), createdAt: new Date().toISOString(), requestedBy: principal, status: "queue_pending" }, parseAmount(context.vault.balanceUsdc) - parseAmount(context.vault.policy.liquidityFloorUsdc) - parseAmount(run!.request.reserveUsdc));
     }
     if (payment.queueProviderId) return payment;
     if (context.vault.paused) throw new Error("The vault is paused; the saved request can be retried after activation");
     const client = initiateDeveloperControlledWalletsClient({ apiKey: process.env.CIRCLE_API_KEY!, entitySecret: process.env.CIRCLE_ENTITY_SECRET! });
+    if (!active()) throw new Error("Worker stopped before queue submission");
     const response = await client.createContractExecutionTransaction({ walletId: context.executor.walletId, contractAddress: context.vault.address, abiFunctionSignature: "queuePayment(bytes32,address,uint256,uint64)", abiParameters: [payment.id, payment.recipient, parseAmount(payment.amount).toString(), payment.expiresAt], idempotencyKey: vaultProviderKey(payment.id, "queue"), fee: { type: "level", config: { feeLevel: "MEDIUM" } } });
     if (!response.data?.id) throw new Error("Circle submission is unresolved; retry the same obligation");
     return journal.patch(payment, { queueProviderId: response.data.id }, "Circle queue request accepted; awaiting chain confirmation");
@@ -91,14 +93,15 @@ export async function reconcileVaultPayment(companyId: string, recordId: string)
   } finally { journal.close(); }
 }
 
-export async function executeVaultPayment(companyId: string, recordId: string) {
+export async function executeVaultPayment(companyId: string, recordId: string, control: { active: () => boolean; reserveUsdc: string } = { active: () => true, reserveUsdc: "0" }) {
   let payment = await reconcileVaultPayment(companyId, recordId);
   if (payment.executeProviderId || payment.status === "paid") return payment;
   if (payment.status !== "ready") throw new Error("Payment requires valid on-chain approvals before execution");
   const { vault, executor } = await vaultPaymentContext(companyId);
   if (vault.paused) throw new Error("Vault is paused");
-  if (parseAmount(vault.balanceUsdc) < parseAmount(payment.amount) + parseAmount(vault.policy.liquidityFloorUsdc)) throw new Error("Insufficient vault liquidity");
+  if (parseAmount(vault.balanceUsdc) < parseAmount(payment.amount) + parseAmount(vault.policy.liquidityFloorUsdc) + parseAmount(control.reserveUsdc)) throw new Error("Insufficient vault liquidity");
   const client = initiateDeveloperControlledWalletsClient({ apiKey: process.env.CIRCLE_API_KEY!, entitySecret: process.env.CIRCLE_ENTITY_SECRET! });
+  if (!control.active()) throw new Error("Worker stopped before execution submission");
   const response = await client.createContractExecutionTransaction({ walletId: executor.walletId, contractAddress: vault.address, abiFunctionSignature: "executePayment(bytes32)", abiParameters: [payment.id], idempotencyKey: vaultProviderKey(payment.id, "execute"), fee: { type: "level", config: { feeLevel: "MEDIUM" } } });
   if (!response.data?.id) throw new Error("Circle execution is unresolved; retry this same payment");
   const journal = openVaultPayments();

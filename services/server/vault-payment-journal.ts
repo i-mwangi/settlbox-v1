@@ -44,12 +44,21 @@ export class VaultPaymentJournal {
     } catch(error) { this.db.exec("ROLLBACK"); throw error; }
   }
   patch(payment: VaultPayment, update: Partial<VaultPayment>, event: string) {
+    this.db.exec("BEGIN IMMEDIATE");
+    try {
     const current = this.get(payment.companyId, payment.recordId);
     if (!current) throw new Error("Vault payment not found");
+    if (JSON.stringify(current) !== JSON.stringify(payment)) throw new Error("Payment changed; refresh before retrying");
+    if (Object.keys(update).some(key => !["status", "queueProviderId", "executeProviderId", "transactionHash"].includes(key))) throw new Error("Payment instructions cannot be changed");
+    if (["paid", "cancelled", "expired", "policy_changed"].includes(current.status) && update.status && update.status !== current.status) throw new Error("Terminal payment cannot be changed");
+    for (const key of ["queueProviderId", "executeProviderId", "transactionHash"] as const) {
+      if (current[key] && update[key] !== undefined && update[key] !== current[key]) throw new Error("Provider payment identity cannot be changed");
+    }
     const next = { ...current, ...update };
     const changed = this.db.prepare("UPDATE vault_payments SET record=? WHERE company_id=? AND record_id=? AND record=?").run(JSON.stringify(next), payment.companyId, payment.recordId, JSON.stringify(current));
     if (!changed.changes) throw new Error("Payment changed; refresh before retrying");
-    this.event(next, event); return next;
+    this.event(next, event); this.db.exec("COMMIT"); return next;
+    } catch (error) { this.db.exec("ROLLBACK"); throw error; }
   }
   event(payment: VaultPayment, event: string) { this.db.prepare("INSERT INTO vault_payment_events(company_id,payment_id,event,created_at) VALUES(?,?,?,?)").run(payment.companyId, payment.id, event, new Date().toISOString()); }
   events(company: string) { return this.db.prepare("SELECT payment_id,event,created_at FROM vault_payment_events WHERE company_id=? ORDER BY id DESC LIMIT 200").all(company); }

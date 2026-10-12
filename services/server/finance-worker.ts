@@ -29,9 +29,9 @@ export async function runFinanceWorker(companyId: string) {
           if (!payment || !active()) throw new Error("Worker stopped or payment unavailable");
           if (parseAmount(context.vault.balanceUsdc) < parseAmount(payment.amount) + parseAmount(context.vault.policy.liquidityFloorUsdc) + parseAmount(lease.config.reserveUsdc)) throw new Error("Worker liquidity reserve prevents execution");
         } finally { journal.close(); }
-        return executeVaultPayment(companyId, recordId);
+        return executeVaultPayment(companyId, recordId, { active, reserveUsdc: lease.config.reserveUsdc });
       },
-      queue: (runId, recordId) => queueVaultPayment(companyId, "finance-worker", runId, recordId),
+      queue: (runId, recordId) => queueVaultPayment(companyId, "finance-worker", runId, recordId, active),
       candidates: async () => {
         const records = openBusinessRecords(); const runs = openAgentRuns();
         try {

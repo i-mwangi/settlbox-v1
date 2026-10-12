@@ -57,3 +57,22 @@ test('stop after reconciliation prevents execution',async()=>{
   let active=true;const worker=tools({active:()=>active,list:()=>[{recordId:'a',status:'queue_pending'}],reconcile:async id=>{active=false;return {recordId:id,status:'ready'};}});
   await financeWorkerCycle(config,worker);assert.deepEqual(worker.calls,[]);
 });
+
+test('uncertain execution is reconciled on the next cycle without another submission',async()=>{
+  let state='ready';
+  const worker=tools({list:()=>[{recordId:'a',status:state}],reconcile:async()=>({recordId:'a',status:state})});
+  worker.execute=async id=>{worker.calls.push(`execute:${id}`);state='execution_pending';throw new Error('response lost after submission');};
+  await financeWorkerCycle({...config,autoQueue:false},worker);
+  await financeWorkerCycle({...config,autoQueue:false},worker);
+  assert.deepEqual(worker.calls,['execute:a']);
+  state='paid';
+  await financeWorkerCycle({...config,autoQueue:false},worker);
+  assert.deepEqual(worker.calls,['execute:a']);
+});
+
+test('stop while AI planning is pending prevents queue requests',async()=>{
+  let active=true;
+  const worker=tools({active:()=>active,candidates:async()=>{active=false;return {runId:'run',recordIds:['a']};}});
+  await financeWorkerCycle(config,worker);
+  assert.deepEqual(worker.calls,[]);
+});
