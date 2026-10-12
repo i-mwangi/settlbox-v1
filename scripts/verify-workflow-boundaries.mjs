@@ -58,6 +58,10 @@ try {
   assert.equal(login.status,200);cookies.OWNER=login.headers.get('set-cookie').split(';')[0];
   assert.equal((await request('/api/agent-worker')).status,200);
   for(const role of ['ADMIN','REVIEWER','VIEWER']) assert.equal((await request('/api/agent-worker',{role})).status,403);
+  for(const role of ['OWNER','ADMIN']) assert.equal((await request('/api/agent-chat',{role})).status,200);
+  assert.equal((await request('/api/agent-chat',{role:'UNAUTHENTICATED'})).status,401);
+  for(const role of ['REVIEWER','VIEWER']) assert.ok([401,403].includes((await request('/api/agent-chat',{role,method:'POST',body:'{}'})).status));
+  assert.equal((await request('/api/agent-chat',{method:'POST',body:'{}',origin:'https://untrusted.example'})).status,401);
   const png=await sharp({create:{width:3,height:3,channels:3,background:'#ffffff'}}).png().toBuffer();
   for(const role of ['REVIEWER','VIEWER','UNAUTHENTICATED']) assert.equal((await request('/api/uploads',{role,method:'POST',body:imageForm(png)})).status,401);
   assert.equal((await request('/api/uploads',{method:'POST',body:imageForm(png),origin:'https://untrusted.example'})).status,401);
@@ -72,5 +76,5 @@ try {
   writeFileSync(configPath,JSON.stringify({...config,wallet:{...config.wallet,companyId:'another-isolated-company'}}));
   assert.equal((await request(receipt.url)).status,404);
   writeFileSync(configPath,JSON.stringify(config));
-  console.log('PASS: production HTTP roles, owner-only automation, CSRF, corrupt/oversize receipts, company isolation and server-restart persistence. No payment submitted.');
+  console.log('PASS: production HTTP roles, finance chat authorization, owner-only automation, CSRF, corrupt/oversize receipts, company isolation and server-restart persistence. No payment submitted.');
 } finally {await stop();}
