@@ -339,7 +339,7 @@ export const PaymentLinkPreview = ({ recipient, recipientAvatar, paymentWalletAd
           
           <div className="mt-auto flex h-[52px] items-center justify-between gap-2 rounded-xl border border-neutral-200 bg-neutral-50 px-3">
             <span className="shrink-0 whitespace-nowrap text-[11px] uppercase tracking-wide text-neutral-400">Total payable</span>
-            <span className="whitespace-nowrap text-[16px] font-bold leading-none text-[#161616]">{parseFloat(amount || "0").toFixed(2)} {receiveTokenSymbol}</span>
+            <span className="whitespace-nowrap text-[16px] font-bold leading-none text-[#161616]">{amount || "0"} {receiveTokenSymbol}</span>
           </div>
         </div>
       </div>

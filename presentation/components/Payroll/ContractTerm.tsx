@@ -65,7 +65,7 @@ export const ContractTerm = ({ selectedPayDay, setSelectedPayDay, register, erro
           <p className="text-text-primary text-[18px]">Scheduled pay date</p>
           <div className="bg-background border border-primary-divider rounded-2xl p-3">
             <div className="grid grid-cols-8">
-              {Array.from({ length: 31 }, (_, i) => i + 1).map(day => (<button key={day} onClick={() => setSelectedPayDay(day)} className={`w-10 h-10 rounded-full flex items-center justify-center text-[16px] cursor-pointer ${selectedPayDay === day ? "bg-primary-blue text-white" : "text-text-secondary hover:bg-gray-100"}`}>
+              {Array.from({ length: 28 }, (_, i) => i + 1).map(day => (<button key={day} onClick={() => setSelectedPayDay(day)} className={`w-10 h-10 rounded-full flex items-center justify-center text-[16px] cursor-pointer ${selectedPayDay === day ? "bg-primary-blue text-white" : "text-text-secondary hover:bg-gray-100"}`}>
                   {day}
                 </button>))}
             </div>

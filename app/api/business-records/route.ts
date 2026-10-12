@@ -2,6 +2,7 @@ import { requireOperatorSession, requireSameOrigin } from "@/services/server/ope
 import { openBusinessRecords } from "@/services/server/business-records";
 import { readTreasuryConfiguration } from "@/services/server/treasury-runtime";
 import { openPaymentLinks } from "@/services/server/payment-links";
+import { reconcileInvoiceCollections } from "@/services/server/invoice-reconciliation";
 
 export const runtime = "nodejs";
 
@@ -12,11 +13,7 @@ export async function GET(request: Request) {
   const links = openPaymentLinks();
   try {
     const companyId = readTreasuryConfiguration().wallet.companyId;
-    const records = repository.list(companyId).map(record => {
-      if (record.kind !== "invoice" || record.status !== "issued" || !record.paymentLinkCode) return record;
-      const settlement = links.get(record.paymentLinkCode)?.records[0];
-      return settlement ? repository.transition(companyId, record.id, "paid", ["issued"], { transactionHash: settlement.txid }) : record;
-    });
+    const records = reconcileInvoiceCollections(companyId, repository, links);
     return Response.json(records, { headers: { "Cache-Control": "no-store" } });
   } finally { links.close(); repository.close(); }
 }

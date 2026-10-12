@@ -44,6 +44,7 @@ export enum SidebarLink {
     Client = "client",
     GlobalAccount = "global-account",
     Earn = "earn",
+    Agent = "agent",
     Reimbursement = "reimbursement"
 }
 export enum SubmenuType {
@@ -161,6 +162,15 @@ export const actionItems = [
         label: "Cashout",
         isActive: false,
         link: SidebarLink.Ramp,
+        disabled: false,
+        badgeCount: 0,
+    },
+    {
+        icon: "/sidebar/earn.svg",
+        filledIcon: "/sidebar/filled-earn.svg",
+        label: "Finance agent",
+        isActive: false,
+        link: SidebarLink.Agent,
         disabled: false,
         badgeCount: 0,
     },

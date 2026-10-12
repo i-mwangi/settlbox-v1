@@ -147,7 +147,7 @@ export const ClientInvoiceReviewContainer = () => {
 
     const searchParams = useSearchParams();
 
-    const invoiceUUID = searchParams.get("uuid") || "";
+    const invoiceUUID = searchParams.get("uuid") || searchParams.get("id") || "";
 
     const { address: walletAddress, openModal: openParaModal, client } = useArcPayment();
 

@@ -63,6 +63,20 @@ export class SqlitePaymentRepository implements PaymentRepository {
     this.database.prepare("INSERT OR IGNORE INTO treasury_approvals(payment_id, principal_id) VALUES(?, ?)").run(paymentId, principalId);
   }
 
+  planningCommitments(companyId: string, walletId: string) {
+    const today = new Date().toISOString().slice(0, 10);
+    const rows = this.database.prepare("SELECT intent,execution,reserved_at FROM treasury_payments WHERE company_id=? AND wallet_id=? AND json_extract(execution,'$.status') IN ('ready','processing','submitted','confirmed')").all(companyId, walletId);
+    let reserved = 0n;
+    let committedToday = 0n;
+    for (const row of rows) {
+      const execution = readJson<PaymentExecution>(row.execution);
+      const amount = parseBaseUnits(readJson<PaymentIntent>(row.intent).amount.baseUnits);
+      if (execution.status !== "confirmed") reserved += amount;
+      if (String(row.reserved_at).startsWith(today)) committedToday += amount;
+    }
+    return { reservedBaseUnits: reserved.toString(), committedTodayBaseUnits: committedToday.toString() };
+  }
+
   async reserveAuthorizedAtomically(payment: PaymentIntent, authorize: (authorization: PaymentAuthorization) => "ready" | "awaiting_approval") {
     this.database.exec("BEGIN IMMEDIATE");
     try {

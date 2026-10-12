@@ -77,7 +77,7 @@ export function AddMemberModal({ isOpen, onClose, onMembersSelected, selectedMem
     const [search, setSearch] = useState("");
     useEffect(() => {
         if (teamMembersData && user) {
-            const mappedMembers: MemberData[] = teamMembersData
+            const mappedMembers: MemberData[] = teamMembersData.filter(tm => tm.id > 0)
                 .filter(tm => {
                 const email = (tm as any).user?.email ?? (tm as any).email;
                 return email && email !== user?.email;

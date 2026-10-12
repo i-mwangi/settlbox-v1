@@ -9,5 +9,5 @@ export function ReimbursementActions({ record, busy, execute }: { record: Reimbu
     try { const result = await execute(operation, record.id); toast.success(`Expense status: ${result.status}`); }
     catch (reason) { toast.error(reason instanceof Error ? reason.message : "Action failed"); }
   }
-  return <div className="flex gap-2">{operations.map(operation => <button key={operation} disabled={busy} onClick={() => { void run(operation); }}>{operation}</button>)}{record.transactionHash && <a href={`https://explorer.testnet.arc.io/tx/${record.transactionHash}`} target="_blank" rel="noreferrer">Explorer</a>}</div>;
+  return <div className="flex gap-2" onClick={event => event.stopPropagation()}>{operations.map(operation => <button type="button" key={operation} disabled={busy} onClick={() => { void run(operation); }}>{operation}</button>)}{record.transactionHash && <a href={`https://explorer.testnet.arc.io/tx/${record.transactionHash}`} target="_blank" rel="noreferrer">Explorer</a>}</div>;
 }

@@ -544,7 +544,7 @@ export default function CardPage() {
     }
     const cards = data.cards ?? [data.card];
     const selectedCard = selectedCardId ? cards.find((c) => c.id === selectedCardId) : null;
-    return (<><p className="px-6 pt-4 text-sm text-text-secondary">Historical card records. Card operations require a configured provider.</p>
+    return (<>
       {selectedCard ? (<CardDetail card={selectedCard} data={data} onBack={() => setSelectedCardId(null)} onToggleFreeze={() => {
                 toast.error("Card controls require a configured provider");
             }} onOpenSettings={() => setShowLimitsModal(true)}/>) : (<CardOverview cards={cards} poolBalance={data.cardPoolBalance || 0} onSelectCard={(c) => setSelectedCardId(c.id)} onAddCard={() => setShowAddModal(true)} onTopUp={() => setShowTopUpModal(true)}/>)}

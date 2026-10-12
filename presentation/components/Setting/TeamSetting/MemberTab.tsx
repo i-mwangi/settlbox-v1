@@ -44,7 +44,7 @@ const MemberTab: React.FC<MemberTabProps> = ({ onMenuClick }) => {
         const t = setTimeout(() => setDebouncedQuery(query), 300);
         return () => clearTimeout(t);
     }, [query]);
-    const { data: teamMembers = [], isLoading } = useGetCompanyTeamMembers(companyId, { search: debouncedQuery }, { enabled: !!companyId });
+    const { data: teamMembers = [], isLoading, error } = useGetCompanyTeamMembers(companyId, { search: debouncedQuery }, { enabled: !!companyId });
     const members = useMemo<Member[]>(() => {
         return teamMembers.map((m: TeamMemberResponseDto) => ({
             id: String(m.id),
@@ -67,6 +67,7 @@ const MemberTab: React.FC<MemberTabProps> = ({ onMenuClick }) => {
 
       
       <div className="grid grid-cols-3 gap-2 w-full">
+        {error && <p role="alert" className="text-sm text-red-600">{error instanceof Error ? error.message : "Could not load workspace members"}</p>}
         {isLoading && <p className="text-sm text-text-secondary">Loading...</p>}
         {!isLoading && teamMembers.length === 0 && <p className="text-sm text-text-secondary">No members found</p>}
         {teamMembers.map((m: TeamMemberResponseDto) => {
@@ -105,7 +106,7 @@ const MemberTab: React.FC<MemberTabProps> = ({ onMenuClick }) => {
                     },
                 });
             };
-            return (<MemberCard key={member.id} member={member} onMenuClick={onMenuClick} onEdit={handleEdit} onRemove={handleRemove}/>);
+            return (<MemberCard key={member.id} member={member} onMenuClick={onMenuClick} onEdit={m.id > 0 ? handleEdit : undefined} onRemove={m.id > 0 ? handleRemove : undefined}/>);
         })}
       </div>
     </div>);

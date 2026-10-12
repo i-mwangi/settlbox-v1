@@ -10,7 +10,7 @@ export function useAuthGuard(_redirectTo: string = "/login") {
     useEffect(() => {
         if (!isLoaded)
             return;
-        const isPublicRoute = PUBLIC_ROUTES.some(route => pathname?.startsWith(route));
+        const isPublicRoute = pathname === "/team-invite" || PUBLIC_ROUTES.some(route => pathname?.startsWith(route));
         if (isPublicRoute)
             return;
         if (!isLoggedIn) {

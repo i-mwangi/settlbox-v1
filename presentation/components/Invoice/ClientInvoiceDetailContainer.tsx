@@ -1,4 +1,5 @@
 "use client";
+import { formatInvoiceAmount } from "@/types/invoice-format";
 import { n } from "@/presentation/services/utils/normalizeToken";
 import React, { use, useEffect, useState } from "react";
 import BillDetailActionTooltip from "../Common/ToolTip/BillDetailActionTooltip";
@@ -9,7 +10,7 @@ import toast from "react-hot-toast";
 import { useModal } from "@/presentation/contexts/ModalManagerProvider";
 import { InvoiceModalProps } from "@/presentation/types/modal";
 import { useRouter, useSearchParams } from "next/navigation";
-import { getB2BInvoiceByUUID, downloadB2BInvoicePdf, cancelB2BInvoice } from "@/presentation/services/api/invoice";
+import { getB2BInvoiceByUUID, downloadB2BInvoicePdf, cancelB2BInvoice, sendB2BInvoice, updateB2BInvoice } from "@/presentation/services/api/invoice";
 import { InvoiceStatusEnum } from "@/presentation/types/enums";
 import { CategoryBadge } from "../ContactBook/ContactBookContainer";
 import { useGetAllEmployeeGroups } from "@/presentation/services/api/employee";
@@ -22,6 +23,38 @@ const ClientInvoiceDetailContainer = () => {
     const invoiceUUID = searchParams.get("id") || "";
     const [isLoading, setIsLoading] = useState(false);
     const [invoice, setInvoice] = useState<any>(null);
+    const [isIssuing, setIsIssuing] = useState(false);
+    const [editing, setEditing] = useState(false);
+    const [saving, setSaving] = useState(false);
+    const [draftDueDate, setDraftDueDate] = useState("");
+    const [draftItems, setDraftItems] = useState<{ description: string; quantity: string; unitPrice: string }[]>([]);
+    const startEditing = () => {
+        setDraftDueDate(invoice.dueDate?.slice(0, 10) || "");
+        setDraftItems(invoice.items.map((item: any) => ({ description: item.description, quantity: String(item.quantity), unitPrice: String(item.unitPrice) })));
+        setEditing(true);
+    };
+    const saveDraft = async () => {
+        if (saving) return;
+        setSaving(true);
+        try {
+            if (!draftDueDate || !draftItems.length || draftItems.some(item => !item.description.trim() || !/^\d+(\.\d{1,6})?$/.test(item.unitPrice) || !Number.isFinite(Number(item.quantity)) || Number(item.quantity) <= 0)) throw new Error("Enter a due date, description, positive quantity and USDC price with up to six decimals");
+            const updated = await updateB2BInvoice(invoiceUUID, { dueDate: draftDueDate, items: draftItems.map((item, order) => ({ description: item.description.trim(), quantity: item.quantity, unitPrice: item.unitPrice, total: String(Number(item.quantity) * Number(item.unitPrice)), order })) });
+            setInvoice(updated);
+            setEditing(false);
+            toast.success("Invoice draft updated");
+        } catch (error) { toast.error(error instanceof Error ? error.message : "Unable to update draft"); }
+        finally { setSaving(false); }
+    };
+    const handleIssueInvoice = async () => {
+        setIsIssuing(true);
+        try {
+            await sendB2BInvoice(invoiceUUID);
+            await loadInvoice();
+            toast.success("Invoice issued. Copy its link to share it.");
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : "Failed to issue invoice");
+        } finally { setIsIssuing(false); }
+    };
     const { data: groups } = useGetAllEmployeeGroups();
     const { setTitle, setShowBackArrow } = useTitle();
     useEffect(() => {
@@ -36,7 +69,7 @@ const ClientInvoiceDetailContainer = () => {
     }, [invoice?.invoiceNumber]);
     const handleCopyInvoiceLink = async () => {
         try {
-            const link = `${window.location.origin}/invoice-review/b2b?id=${invoiceUUID}`;
+            const link = `${window.location.origin}/invoice-review/b2b?uuid=${invoiceUUID}`;
             await navigator.clipboard.writeText(link);
             toast.success("Invoice link copied to clipboard");
         }
@@ -146,6 +179,9 @@ const ClientInvoiceDetailContainer = () => {
         </div>
 
         <div className="flex shrink-0 flex-row gap-2">
+          {invoice.status === InvoiceStatusEnum.DRAFT && !editing && <SecondaryButton text="Edit draft" variant="light" onClick={startEditing}/>}
+          <SecondaryButton text="Download PDF" variant="light" onClick={handleDownloadPDF}/>
+          {invoice.status === InvoiceStatusEnum.DRAFT && <SecondaryButton text={isIssuing ? "Issuing…" : "Issue invoice"} variant="light" disabled={isIssuing || editing} onClick={handleIssueInvoice}/>}
           <SecondaryButton text="View invoice PDF" variant="light" buttonClassName="w-fit whitespace-nowrap" onClick={() => {
             openModal<InvoiceModalProps>("INVOICE_MODAL", {
                 invoice: {
@@ -213,6 +249,13 @@ const ClientInvoiceDetailContainer = () => {
                 return (<BillDetailActionTooltip onEdit={handleCopyInvoiceLink} onDuplicate={handleDownloadPDF} onRemove={handleDeleteInvoice} showDelete={!isPaidOrCancelled}/>);
             }}/>}
 
+      {editing && <form className="mx-6 mb-6 rounded-2xl border border-primary-divider p-4 flex flex-col gap-4" onSubmit={event => { event.preventDefault(); void saveDraft(); }}>
+        <label className="text-sm">Due date<input aria-label="Draft due date" type="date" value={draftDueDate} disabled={saving} onChange={event => setDraftDueDate(event.target.value)} className="ml-3 rounded-lg border border-primary-divider p-2" required/></label>
+        {draftItems.map((item, index) => <div key={index} className="flex gap-3">
+          {(["description", "quantity", "unitPrice"] as const).map(field => <label key={field} className="flex flex-col gap-1 text-sm">{field === "unitPrice" ? "Unit price (USDC)" : field === "quantity" ? "Quantity" : "Description"}<input aria-label={`Item ${index + 1} ${field}`} value={item[field]} disabled={saving} onChange={event => setDraftItems(items => items.map((row, rowIndex) => rowIndex === index ? { ...row, [field]: event.target.value } : row))} className="rounded-lg border border-primary-divider p-2" required/></label>)}
+        </div>)}
+        <div className="flex gap-3"><button type="submit" disabled={saving} className="rounded-lg bg-neutral-900 px-4 py-2 text-sm text-white">{saving ? "Saving…" : "Save changes"}</button><SecondaryButton text="Cancel editing" variant="light" disabled={saving} onClick={() => setEditing(false)}/></div>
+      </form>}
       <div className="w-full flex flex-row gap-10 px-6 pb-6">
         <div className="flex-1 flex flex-col gap-6 w-full">
           
@@ -316,10 +359,10 @@ const ClientInvoiceDetailContainer = () => {
                   <p className="text-sm text-gray-900 font-medium">{item.description}</p>
                   <p className="text-sm text-gray-900 font-medium text-center">{item.quantity}</p>
                   <p className="text-sm text-gray-900 font-medium text-right">
-                    {Number(item.unitPrice).toFixed(2)} {n(invoice.paymentToken?.name)}
+                    {formatInvoiceAmount(item.unitPrice)} {n(invoice.paymentToken?.name)}
                   </p>
                   <p className="text-sm text-gray-900 font-medium text-right">
-                    {Number(item.total).toFixed(2)} {n(invoice.paymentToken?.name)}
+                    {formatInvoiceAmount(item.total)} {n(invoice.paymentToken?.name)}
                   </p>
                 </div>))}
 
@@ -329,7 +372,7 @@ const ClientInvoiceDetailContainer = () => {
                 <div />
                 <p className="text-sm text-gray-900 font-medium text-right">Subtotal</p>
                 <p className="text-base text-gray-900 font-semibold text-right">
-                  {Number(invoice.subtotal).toFixed(2)} {n(invoice.paymentToken?.name)}
+                  {formatInvoiceAmount(invoice.subtotal)} {n(invoice.paymentToken?.name)}
                 </p>
               </div>
 
@@ -339,7 +382,7 @@ const ClientInvoiceDetailContainer = () => {
                 <div />
                 <p className="text-sm text-gray-900 font-medium text-right">Amount due</p>
                 <p className="text-base text-gray-900 font-semibold text-right">
-                  {Number(invoice.total).toFixed(2)} {n(invoice.paymentToken?.name)}
+                  {formatInvoiceAmount(invoice.total)} {n(invoice.paymentToken?.name)}
                 </p>
               </div>
             </div>
@@ -360,6 +403,7 @@ const ClientInvoiceDetailContainer = () => {
                 invoice.confirmedAt && { label: "Invoice confirmed", date: formatDateTime(invoice.confirmedAt), done: true },
                 invoice.paidAt && { label: "Invoice paid", date: formatDateTime(invoice.paidAt), done: true },
                 invoice.status !== InvoiceStatusEnum.PAID &&
+                    invoice.status !== InvoiceStatusEnum.DRAFT &&
                     invoice.status !== InvoiceStatusEnum.CANCELLED && {
                     label: "Awaiting payment",
                     date: "In progress",

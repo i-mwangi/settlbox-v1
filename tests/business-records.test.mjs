@@ -6,6 +6,7 @@ import { join } from "node:path";
 import { randomUUID } from "node:crypto";
 import { BusinessRecordRepository, validateBusinessRecord } from "../services/server/business-records.ts";
 import { PaymentLinkRepository } from "../services/server/payment-links.ts";
+import { reconcileInvoiceCollections } from "../services/server/invoice-reconciliation.ts";
 
 const details = { kind: "invoice", title: "Consulting", counterparty: "Customer", recipient: `0x${"1".repeat(40)}`, amount: "0.001", dueDate: "2026-10-09", description: "Consulting services" };
 
@@ -96,6 +97,29 @@ test("verified settlement prevents cancellation of an issued invoice", () => {
     assert.equal(links.record(link.code, `0x${"b".repeat(64)}`, details.recipient, details.amount).records.length, 1);
     assert.throws(() => repository.cancel("company", draft.id), /settled/);
     assert.equal(repository.get("company", draft.id).status, "issued");
+  } finally { links.close(); repository.close(); rmSync(directory, { recursive: true }); }
+});
+
+test("invoice collection reconciliation persists once and isolates companies", () => {
+  const directory = mkdtempSync(join(tmpdir(), "settlbox-collection-"));
+  const path = join(directory, "business.sqlite");
+  let repository = new BusinessRecordRepository(path);
+  const links = new PaymentLinkRepository(path);
+  try {
+    const draft = repository.create("company", details);
+    const link = links.create({ ...details, paymentWalletAddress: details.recipient }, draft.id);
+    repository.transition("company", draft.id, "issued", ["draft"], { paymentLinkCode: link.code });
+    assert.equal(reconcileInvoiceCollections("company", repository, links)[0].status, "issued");
+    links.record(link.code, `0x${"b".repeat(64)}`, details.recipient, details.amount);
+    assert.deepEqual(reconcileInvoiceCollections("another", repository, links), []);
+    assert.equal(repository.get("company", draft.id).status, "issued");
+    const paid = reconcileInvoiceCollections("company", repository, links)[0];
+    assert.equal(paid.status, "paid");
+    assert.equal(paid.transactionHash, `0x${"b".repeat(64)}`);
+    repository.close();
+    repository = new BusinessRecordRepository(path);
+    assert.deepEqual(reconcileInvoiceCollections("company", repository, links)[0], paid);
+    assert.equal(links.get(link.code).records.length, 1);
   } finally { links.close(); repository.close(); rmSync(directory, { recursive: true }); }
 });
 

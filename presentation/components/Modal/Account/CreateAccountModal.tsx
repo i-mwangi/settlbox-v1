@@ -108,6 +108,7 @@ export function CreateAccountModal({ isOpen, onClose, zIndex }: ModalProp<Create
     useEffect(() => {
         if (teamMembersData && user && !isInitialized) {
             const currentUserMember = teamMembersData.find(tm => {
+                  if (tm.id <= 0) return false;
                 const email = (tm as any).user?.email ?? (tm as any).email;
                 return email === user.email;
             });

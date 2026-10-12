@@ -1,7 +1,8 @@
 "use client";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { n } from "@/presentation/services/utils/normalizeToken";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useGetEmployeeById } from "@/presentation/services/api/employee";
 import { PrimaryButton } from "../Common/PrimaryButton";
 import { useForm } from "react-hook-form";
 import { MODAL_IDS, PermissionRequiredModalProps } from "@/presentation/types/modal";
@@ -70,6 +71,9 @@ interface CreatePayrollProps {
     onDirtyChange?: (dirty: boolean) => void;
 }
 const CreatePayroll = ({ onReview, initialFormData, initialToken, initialNetwork, initialPayDay = 1, onDirtyChange, }: CreatePayrollProps) => {
+    const requestedEmployeeId = Number(useSearchParams().get("employeeId")) || undefined;
+    const { data: requestedEmployee } = useGetEmployeeById(requestedEmployeeId);
+    const initializedEmployee = useRef<number | undefined>(undefined);
     const [selectedToken, setSelectedToken] = useState<AssetWithMetadata | null>(initialToken || null);
     const [selectedNetwork, setSelectedNetwork] = useState<{
         icon: string;
@@ -93,6 +97,25 @@ const CreatePayroll = ({ onReview, initialFormData, initialToken, initialNetwork
             description: "",
         },
     });
+    useEffect(() => {
+        if (!requestedEmployee || initialFormData || initializedEmployee.current === requestedEmployee.id) return;
+        initializedEmployee.current = requestedEmployee.id;
+        setValue("employee", requestedEmployee.name, { shouldValidate: true });
+        setValue("employeeId", requestedEmployee.id, { shouldValidate: true });
+        setValue("employeeEmail", requestedEmployee.email, { shouldValidate: true });
+        setValue("walletAddress", requestedEmployee.walletAddress, { shouldValidate: true });
+        const terms = (requestedEmployee as any).payroll;
+        if (terms) {
+            setValue("duration", String(terms.duration), { shouldValidate: true });
+            setValue("durationUnit", terms.durationUnit, { shouldValidate: true });
+            setValue("monthlyAmount", terms.monthlyAmount, { shouldValidate: true });
+            setValue("description", terms.description, { shouldValidate: true });
+            setValue("note", terms.note, { shouldValidate: true });
+            setSelectedPayDay(terms.paydayDay);
+        }
+        setSelectedNetwork({ icon: "/chain/arc.svg", name: "Arc Testnet", value: "5042002" });
+        setSelectedToken({ amount: "0", faucetId: "native-usdc", metadata: { symbol: "USDC", decimals: 18, maxSupply: 0 } });
+    }, [requestedEmployee, initialFormData, setValue]);
     useEffect(() => {
         const dirty = isFormDirty || !!selectedToken || !!selectedNetwork;
         if (dirty) {
@@ -133,7 +156,7 @@ const CreatePayroll = ({ onReview, initialFormData, initialToken, initialNetwork
                 decimals: selectedToken.metadata.decimals,
                 name: selectedToken.metadata.symbol,
             },
-            contractTerm: ContractTermEnum.PERMANENT,
+            contractTerm: requestedEmployee?.employeeType === "contractor" ? ContractTermEnum.CONTRACTOR : ContractTermEnum.PERMANENT,
             payrollCycle: durationValue,
             amount: monthlyAmount,
             payday: selectedPayDay,

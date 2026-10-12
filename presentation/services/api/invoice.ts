@@ -256,7 +256,7 @@ export const createB2BInvoice = async (_data: import("@/presentation/types/dto/i
     const recipientCompany = _data.unregisteredCompany || client;
     const invoice: DemoInvoice = {
         id: Date.now(), uuid: crypto.randomUUID(), invoiceNumber: `INV-${Date.now()}`,
-        type: "SENT", status: "DRAFT", amount: _data.items.reduce((sum, item) => sum + Number(item.total), 0), currency: "USDC",
+        type: "SENT", status: "DRAFT", amount: _data.items.reduce((sum, item) => sum + Number(item.quantity) * Number(item.unitPrice), 0), currency: "USDC",
         from: _data.fromDetails?.contactName || _data.fromDetails?.companyName || workspace.data.company.companyName, to: recipientCompany?.companyName || _data.unregisteredCompany?.contactName || "Client", toEmail: recipientCompany?.email || "",
         issuerCompany: _data.fromDetails?.companyName || workspace.data.company.companyName,
         issuerEmail: _data.fromDetails?.email || workspace.data.user.email,
@@ -273,7 +273,7 @@ export const updateB2BInvoice = async (uuid: string, input: import("@/presentati
     const workspace = await readWorkspace();
     const current = workspace.data.invoices.find(invoice => invoice.uuid === uuid);
     if (!current || current.status !== "DRAFT" || current.businessRecordId) throw new Error("Only unsubmitted invoice drafts can be edited");
-    const invoices = workspace.data.invoices.map(invoice => invoice.uuid === uuid ? { ...invoice, ...(input.dueDate ? { dueDate: input.dueDate } : {}), ...(input.items ? { items: input.items.map(item => ({ description: item.description, quantity: Number(item.quantity), unitPrice: Number(item.unitPrice) })), amount: input.items.reduce((sum, item) => sum + Number(item.total), 0) } : {}) } : invoice);
+    const invoices = workspace.data.invoices.map(invoice => invoice.uuid === uuid ? { ...invoice, ...(input.dueDate ? { dueDate: input.dueDate } : {}), ...(input.items ? { items: input.items.map(item => ({ description: item.description, quantity: Number(item.quantity), unitPrice: Number(item.unitPrice) })), amount: input.items.reduce((sum, item) => sum + Number(item.quantity) * Number(item.unitPrice), 0) } : {}) } : invoice);
     await saveWorkspaceFields([{ field: "invoices", value: invoices }], workspace);
     window.dispatchEvent(new Event("settlbox-workspace-refresh"));
     return getB2BInvoiceByUUID(uuid);
