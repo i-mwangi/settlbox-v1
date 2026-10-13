@@ -1,4 +1,5 @@
 "use client";
+import InboundMcpSettings from "./InboundMcpSettings";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { workspaceFetch } from "@/presentation/services/api/seeded-workspace";
@@ -24,5 +25,6 @@ export default function McpSettings() {
       {!connection.tools.length && <p className="text-[14px] text-text-secondary">Discover this server's tools to choose what the finance agent can use.</p>}
       {connection.tools.map(tool => <label key={tool.name} className="flex items-start gap-3 rounded-xl border border-primary-divider p-3"><input type="checkbox" disabled={busy} checked={connection.enabledTools.includes(tool.name)} onChange={event => void perform({ action: "save", connection: { ...connection, enabledTools: event.target.checked ? [...connection.enabledTools, tool.name] : connection.enabledTools.filter(name => name !== tool.name) } })} /><span className="min-w-0"><span className="block text-[14px] font-medium break-all">{tool.name}</span><span className="block text-[12px] text-text-secondary break-words">{tool.description || "External tool"}</span></span></label>)}
     </article>)}
+    <InboundMcpSettings />
   </section>;
 }

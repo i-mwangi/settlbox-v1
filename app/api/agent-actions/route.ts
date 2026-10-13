@@ -9,6 +9,7 @@ import { arcTestnet } from "@/services/arc/network";
 import { treasuryVaultAbi } from "@/services/arc/treasury-vault";
 import { verifiedAgentExecutor } from "@/services/server/agent-executor";
 import { openVaultPayments } from "@/services/server/vault-payments";
+import { openInboundMcp } from "@/services/server/inbound-mcp";
 export const runtime = "nodejs";
 const headers = { "Cache-Control": "no-store" };
 async function handle(request: Request) {
@@ -19,16 +20,18 @@ async function handle(request: Request) {
   try {
     if (request.method === "GET") {
       const payments = openVaultPayments();
-      try { return Response.json(store.list(company, principal.id).map(proposal => {
+      try { const visible = [...new Map([...store.list(company, principal.id), ...store.pendingExternal(company, principal.id)].map(proposal => [proposal.id, proposal])).values()]; return Response.json(visible.map(proposal => {
         if (proposal.operation.tool !== "payment.review" || proposal.status === "completed") return proposal;
         const payment = payments.get(company, String(proposal.operation.arguments.recordId));
         return payment?.status === "paid" ? store.settledPayment(company, principal.id, proposal.id, { amount: payment.amount, recipient: payment.recipient, transactionHash: payment.transactionHash, status: payment.status }) : proposal;
       }), { headers }); } finally { payments.close(); }
     }
     const body = await request.json();
-    if (typeof body.id !== "string" || !["confirm", "cancel", "verify"].includes(body.action) || Object.keys(body).some(key => !["id", "action"].includes(key))) throw new Error("Choose a saved proposal; its details cannot be changed during approval");
+    if (typeof body.id !== "string" || !["confirm", "cancel", "verify", "review"].includes(body.action) || Object.keys(body).some(key => !["id", "action"].includes(key))) throw new Error("Choose a saved proposal; its details cannot be changed during approval");
     if (body.action === "cancel") return Response.json(store.cancel(company, principal.id, body.id), { headers });
+    const inbound = openInboundMcp(); try { inbound.assertProposalActive(company, principal.id, body.id); } finally { inbound.close(); }
     const existing = store.get(company, principal.id, body.id);
+    if (body.action === "review") { if (existing?.operation.tool !== "payment.review" || existing.status !== "pending" || Date.parse(existing.expiresAt) <= Date.now()) throw new Error("Payment review unavailable"); return Response.json(existing, { headers }); }
     if (existing?.status === "completed") return Response.json(existing, { headers });
     if (existing?.operation.tool === "vault.authorize") {
       const a = existing.operation.arguments;

@@ -18,6 +18,9 @@ export class AgentProposalRepository {
   list(company: string, principal: string): AgentProposal[] {
     return this.db.prepare("SELECT record FROM agent_proposals WHERE company=? AND principal=? ORDER BY rowid DESC LIMIT 30").all(company, principal).map(row => JSON.parse(String(row.record)));
   }
+  pendingExternal(company: string, principal: string): AgentProposal[] {
+    return this.db.prepare("SELECT record FROM agent_proposals WHERE company=? AND principal=? AND state='pending' AND turn_id LIKE 'mcp:%' ORDER BY rowid DESC LIMIT 100").all(company, principal).map(row => JSON.parse(String(row.record)));
+  }
   prepare(company: string, principal: string, turnId: string, operation: AgentOperation, before?: unknown) {
     const existing = this.db.prepare("SELECT record FROM agent_proposals WHERE company=? AND principal=? AND turn_id=?").get(company, principal, turnId);
     if (existing) {
