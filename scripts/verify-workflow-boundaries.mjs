@@ -2,11 +2,13 @@ import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { randomUUID, randomBytes } from 'node:crypto';
+import { randomUUID, randomBytes, createHash } from 'node:crypto';
 import { createServer } from 'node:net';
 import sharp from 'sharp';
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
 import { TeamMemberRepository } from '../services/server/team-members.ts';
+import { AgentProposalRepository } from '../services/server/agent-proposals.ts';
+import { SeededWorkspaceRepository } from '../services/server/seeded-workspace.ts';
 import { createOperatorSession, sessionCookie } from '../services/server/operator-session.ts';
 
 // This harness never loads .env.local or contacts a financial provider.
@@ -18,6 +20,9 @@ const configPath=resolve(root,'config.json');
 writeFileSync(configPath,JSON.stringify(config));
 const variables={SETTLBOX_BUSINESS_DATABASE:resolve(root,'business.sqlite'),SETTLBOX_SESSION_DATABASE:resolve(root,'sessions.sqlite'),SETTLBOX_TREASURY_CONFIG:configPath,SETTLBOX_UPLOAD_DIRECTORY:resolve(root,'uploads')};
 Object.assign(process.env,variables);
+const workspaceSeed=new SeededWorkspaceRepository(variables.SETTLBOX_BUSINESS_DATABASE);
+try { workspaceSeed.seed(config.wallet.companyId,'entity-3',JSON.parse(readFileSync('public/demo-data-entity-3.json','utf8'))); }
+finally {workspaceSeed.close();}
 const listener=createServer();
 await new Promise(done=>listener.listen(0,'127.0.0.1',done));
 const port=listener.address().port;
@@ -62,6 +67,47 @@ try {
   assert.equal((await request('/api/agent-chat',{role:'UNAUTHENTICATED'})).status,401);
   for(const role of ['REVIEWER','VIEWER']) assert.ok([401,403].includes((await request('/api/agent-chat',{role,method:'POST',body:'{}'})).status));
   assert.equal((await request('/api/agent-chat',{method:'POST',body:'{}',origin:'https://untrusted.example'})).status,401);
+  for(const path of ['/api/agent-actions','/api/mcp-connections']) {
+    assert.equal((await request(path)).status,200);
+    for(const role of ['ADMIN','REVIEWER','VIEWER','UNAUTHENTICATED']) assert.equal((await request(path,{role})).status,403);
+    assert.equal((await request(path,{method:'POST',body:'{}',origin:'https://untrusted.example'})).status,403);
+  }
+  const proposals=new AgentProposalRepository(variables.SETTLBOX_BUSINESS_DATABASE);
+  async function approveOperation(tool,args) {
+    const proposal=proposals.prepare(config.wallet.companyId,'workspace-operator',randomUUID(),{tool,arguments:args});
+    const response=await request('/api/agent-actions',{method:'POST',body:JSON.stringify({action:'confirm',id:proposal.id})});
+    assert.equal(response.status,200);
+    const saved=await response.json();assert.equal(saved.status,'completed',JSON.stringify(saved));
+    const replay=await request('/api/agent-actions',{method:'POST',body:JSON.stringify({action:'confirm',id:proposal.id})});
+    assert.deepEqual(await replay.json(),saved);
+    assert.equal((await request('/api/agent-actions',{method:'POST',body:JSON.stringify({action:'confirm',id:proposal.id,arguments:{amount:'999'}})})).status,409);
+    return saved.result;
+  }
+  try {
+    await request('/api/seeded-workspace?entity=entity-3');
+    const invoice=await approveOperation('business.create',{kind:'invoice',title:'Isolated chat invoice',counterparty:'Verification Client',recipient:config.wallet.address,amount:'0.001',dueDate:'2026-11-12',description:'No money is sent'});
+    const view=await (await request('/api/seeded-workspace?entity=entity-3')).json();
+    assert.equal(view.data.invoices.filter(row=>row.businessRecordId===invoice.id).length,1,'Chat draft must appear in the normal invoice list');
+    const stale=proposals.prepare(config.wallet.companyId,'workspace-operator',randomUUID(),{tool:'business.cancel',arguments:{id:invoice.id},precondition:createHash('sha256').update(JSON.stringify(invoice)).digest('hex')});
+    const edit=await request(`/api/business-records/${invoice.id}`,{method:'PATCH',body:JSON.stringify({action:'edit',data:{kind:'invoice',title:'Updated isolated chat invoice',counterparty:invoice.counterparty,recipient:invoice.recipient,amount:invoice.amount,dueDate:invoice.dueDate,description:'Changed after review'}})});
+    assert.equal(edit.status,200);
+    const staleResult=await (await request('/api/agent-actions',{method:'POST',body:JSON.stringify({action:'confirm',id:stale.id})})).json();
+    assert.equal(staleResult.status,'uncertain');assert.match(staleResult.error,/changed after review/);
+    const issued=await approveOperation('business.issue',{id:invoice.id});assert.equal(issued.status,'issued');assert.ok(issued.paymentLinkCode);
+    await approveOperation('business.cancel',{id:invoice.id});
+    const employee=await approveOperation('workspace.save',{resource:'employees',data:{name:'Isolated Contractor',walletAddress:'0x'+'1'.repeat(40),email:'contractor@example.invalid',employeeType:'contractor'}});
+    const contract=await approveOperation('contract.create',{employeeId:employee.id,amount:'0.001',payday:15,payrollCycle:2,joiningDate:'2026-10-12',contractTerm:'CONTRACTOR',description:'Isolated verification'});
+    const prepared=await approveOperation('contract.prepare',{id:contract.id,period:0});
+    await approveOperation('contract.confirm',{invoiceId:prepared.uuid});
+    await approveOperation('contract.status',{id:contract.id,action:'pause'});
+    const expense=await approveOperation('expense.create',{employeeName:'Isolated Contractor',recipient:'0x'+'1'.repeat(40),description:'Verification expense',category:'Other',date:'2026-10-12',amountExact:'0.001',currency:'USDC',receiptUrl:null,receiptName:null});
+    await approveOperation('expense.review',{id:expense.id,action:'approve',note:'Isolated review'});
+    const payable=await approveOperation('expense.prepare',{id:expense.id});assert.equal(payable.kind,'reimbursement');assert.equal(payable.status,'draft');
+    const schedule=await approveOperation('schedule.create',{frequency:'monthly',payment:{kind:'bill',title:'Isolated recurring bill',counterparty:'Verification Vendor',recipient:'0x'+'1'.repeat(40),amount:'0.001',dueDate:'2026-11-12',description:'Verification only'},endDate:null});
+    await approveOperation('schedule.status',{id:schedule.id,status:'paused'});
+    const normalScreen=await request('/api/seeded-workspace/action',{method:'POST',body:JSON.stringify({entity:'entity-3',field:'invoices',id:invoice.id,action:'refresh'})});
+    assert.equal(normalScreen.status,200,'Normal invoice actions must resolve a chat-created canonical record');
+  } finally {proposals.close();}
   const png=await sharp({create:{width:3,height:3,channels:3,background:'#ffffff'}}).png().toBuffer();
   for(const role of ['REVIEWER','VIEWER','UNAUTHENTICATED']) assert.equal((await request('/api/uploads',{role,method:'POST',body:imageForm(png)})).status,401);
   assert.equal((await request('/api/uploads',{method:'POST',body:imageForm(png),origin:'https://untrusted.example'})).status,401);
@@ -76,5 +122,5 @@ try {
   writeFileSync(configPath,JSON.stringify({...config,wallet:{...config.wallet,companyId:'another-isolated-company'}}));
   assert.equal((await request(receipt.url)).status,404);
   writeFileSync(configPath,JSON.stringify(config));
-  console.log('PASS: production HTTP roles, finance chat authorization, owner-only automation, CSRF, corrupt/oversize receipts, company isolation and server-restart persistence. No payment submitted.');
+  console.log('PASS: production HTTP roles, finance chat authorization and confirmed invoice/contractor/reimbursement/schedule journeys, owner-only automation, CSRF, corrupt/oversize receipts, company isolation and server-restart persistence. No payment submitted.');
 } finally {await stop();}

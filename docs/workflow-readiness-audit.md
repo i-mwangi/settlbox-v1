@@ -78,3 +78,19 @@ Before this audit, 106 automated tests and TypeScript checks passed. Live Earn b
 - Workspace reads previously projected invoice state without reconciling verified collection records. Added shared invoice reconciliation for the business-records API and workspace view, with a regression test for persistence after reopening, repeat reads and company isolation.
 
 - Browser invoice detail now displays Paid after canonical reconciliation. Full suite: 109 tests pass.
+
+### Conversational operations and MCP — October 12
+
+The Finance agent now prepares supported record changes and opens their exact review automatically. Advanced controls moved to Settings. Owner-confirmed proposals are company/principal scoped, immutable, atomic and durable across restarts; ambiguous provider outcomes cannot be blindly retried. Existing route validators and contract limits remain authoritative. External MCP tools use explicit owner enablement and per-call review through remote HTTPS Streamable HTTP.
+
+Browser: a real Azure request opened a draft invoice review and confirmation saved the canonical invoice without issuance or payment. Follow-up found the invoice list omitted canonical records without workspace links; projection and normal-screen action resolution were corrected, with a regression test for visibility, changed terms and deduplication. Final browser persistence verification is pending until production restart.
+
+125 automated tests pass, including MCP initialization/JSON/SSE discovery, changed-definition consent invalidation, network guards, immutable action claims, future payment identity and relevant follow-up context. Production npm audit reports zero known advisories. The new condensed Circle approval-to-execution UI has not submitted an additional live payment; prior backend settlement evidence remains above.
+
+Remaining gaps are explicit: USYC execution needs implementation as well as Circle entitlement; provider-backed fiat/cards/accounts need adapters and credentials; outbound MCP does not supply an inbound Settlbox server, OAuth or local stdio. Initial wallet setup and receipt uploads retain dedicated screens. This is not a claim that every application feature is operable through chat.
+
+### Production confirmation — October 13
+
+Final production build and TypeScript passed. All 126 automated tests pass, including the shared contact store regression: a chat-created contractor can create a real agreement, and an active agreement prevents deletion. The isolated production HTTP harness passed confirmed invoice create/issue/cancel, shared contractor create/prepare/confirm/pause, reimbursement create/approve/materialize, and schedule create/pause. It also passed canonical invoice visibility, stale-review rejection, duplicate confirmation, role/CSRF boundaries, receipt rejection, company isolation and restart persistence. No payment was submitted by these checks. The local production app and its existing workers were restored.
+
+Browser confirmation after renewed sign-in: the Chat workflow verification invoice appears in the regular invoice list as a 0.001 USDC draft due November 12. Settings → MCP connections renders its endpoint and token-reference form; Finance controls is a separate Settings entry. Browser proofs are local ignored artifacts. No external MCP endpoint or credential was added during UI inspection.
