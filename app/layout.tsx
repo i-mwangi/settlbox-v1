@@ -4,6 +4,17 @@ import { ClientLayoutWrapper } from "../components/ClientLayoutWrapper";
 import localFont from "next/font/local";
 import { ThemeProvider } from "@/contexts/ThemeProvider";
 
+const inter = localFont({
+  src: "../public/fonts/inter-variable.ttf",
+  variable: "--font-inter",
+  weight: "400 700",
+  style: "normal",
+  display: "swap",
+});
+const geistMono = localFont({ src: "../public/fonts/geist-mono-variable.ttf", variable: "--font-geist-mono", weight: "100 900", display: "swap" });
+const nanumPenScript = localFont({ src: "../public/fonts/nanum-pen-script.ttf", variable: "--font-nanum-pen-script", weight: "400", display: "swap" });
+const anton = localFont({ src: "../public/fonts/anton.ttf", variable: "--font-anton", weight: "400", display: "swap" });
+
 const repetitionScrolling = localFont({
   src: "../public/fonts/repet___.ttf",
   variable: "--font-repetition-scrolling",
@@ -47,7 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body
-        className={`${repetitionScrolling.variable} font-sans antialiased`}
+        className={`${inter.className} ${inter.variable} ${geistMono.variable} ${nanumPenScript.variable} ${anton.variable} ${repetitionScrolling.variable} antialiased`}
         suppressHydrationWarning
       >
         <ThemeProvider defaultTheme="light" storageKey="ui-theme">

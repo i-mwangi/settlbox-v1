@@ -4,6 +4,7 @@ import { openSeededWorkspace } from "@/services/server/seeded-workspace";
 import { openBusinessRecords } from "@/services/server/business-records";
 import { readTreasuryConfiguration } from "@/services/server/treasury-runtime";
 import { workspaceView } from "@/services/server/workspace-view";
+import { projectWorkspaceSettlement } from "@/services/server/workspace-settlement";
 import { workspaceEntity } from "@/types/seeded-workspace";
 import { PATCH as performBusinessAction } from "@/app/api/business-records/[id]/route";
 import type { BusinessRecord } from "@/types/business";
@@ -24,7 +25,8 @@ export async function POST(request: Request) {
     const config = readTreasuryConfiguration();
     const field = input.field as "invoices" | "bills" | "payrolls" | "pendingProposals";
     const workspace = workspaceRepository.get(config.wallet.companyId, entity);
-    const source = workspace.data[field].find(record => record.uuid === input.id || String(record.id) === input.id);
+    const projected = projectWorkspaceSettlement(workspace.data, businessRepository.list(config.wallet.companyId), config.wallet.address);
+    const source = projected[field].find(record => record.uuid === input.id || String(record.id) === input.id);
     if (!source) throw new Error("Record not found");
     const record = source as unknown as Record<string, unknown>;
     if (["PAID", "EXECUTED", "COMPLETED"].includes(String(record.status)) && !record.businessRecordId) throw new Error("This is imported history. Create a new draft to test an Arc payment");

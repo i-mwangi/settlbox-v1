@@ -9,10 +9,12 @@ import NotificationSettings from "./NotificationSettings";
 import SlackIntegrationSettings from "./SlackIntegrationSettings";
 import GoogleSheetsIntegrationSettings from "./GoogleSheetsIntegrationSettings";
 import StripeIntegrationSettings from "./StripeIntegrationSettings";
+import AdvancedAgentControls from "@/app/agent/Advanced";
+import McpSettings from "./McpSettings";
 import TeamSettings from "./TeamSettings";
 import TeamAccountContainer from "./TeamSetting/TeamAccountContainer";
 import InvoiceSettingsTab from "./TeamSetting/InvoiceSettingsTab";
-type TabType = "account" | "notifications" | "company" | "team" | "integrations" | "google-sheets" | "stripe" | "invoice";
+type TabType = "finance" | "mcp" | "account" | "notifications" | "company" | "team" | "integrations" | "google-sheets" | "stripe" | "invoice";
 interface SettingTab {
     id: TabType;
     icon: string;
@@ -26,11 +28,15 @@ const generalSettingTabs: SettingTab[] = [
 ];
 const teamSettingTabs: SettingTab[] = [{ id: "team", icon: "/misc/team-icon.svg", label: "My team" }];
 const integrationSettingTabs: SettingTab[] = [
+    { id: "finance", icon: "/misc/integration-icon.svg", label: "Finance controls" },
+    { id: "mcp", icon: "/misc/integration-icon.svg", label: "MCP connections" },
     { id: "integrations", icon: "/misc/integration-icon.svg", label: "Slack" },
     { id: "google-sheets", icon: "/misc/integration-icon.svg", label: "Google Sheets" },
     { id: "stripe", icon: "/misc/integration-icon.svg", label: "Stripe" },
 ];
 const tabLabels: Record<TabType, string> = {
+    finance: "Finance controls",
+    mcp: "MCP connections",
     account: "Account",
     notifications: "Notifications",
     company: "Company",
@@ -83,12 +89,12 @@ export default function SettingContainer() {
               </div>
 
               
-              {generalSettingTabs.map(tab => (<div key={tab.id} className={`flex gap-4 items-center px-5 py-3 rounded-lg w-full cursor-pointer transition-colors ${activeTab === tab.id ? "bg-app-background" : "hover:bg-app-background/50"}`} onClick={() => setActiveTab(tab.id)}>
+              {generalSettingTabs.map(tab => (<button type="button" aria-pressed={activeTab === tab.id} key={tab.id} className={`flex gap-4 items-center px-5 py-3 rounded-lg w-full cursor-pointer transition-colors ${activeTab === tab.id ? "bg-app-background" : "hover:bg-app-background/50"}`} onClick={() => setActiveTab(tab.id)}>
                   <div className="flex gap-2 items-center">
                     <img src={tab.icon} alt={tab.label} className="w-5"/>
                     <p className="font-medium text-sm text-text-primary tracking-[-0.56px] leading-5">{tab.label}</p>
                   </div>
-                </div>))}
+                </button>))}
 
               
               <div className="flex items-center px-4 py-0 w-full">
@@ -96,12 +102,12 @@ export default function SettingContainer() {
               </div>
 
               
-              {teamSettingTabs.map(tab => (<div key={tab.id} className={`flex gap-4 items-center px-5 py-3 rounded-lg w-full cursor-pointer transition-colors ${activeTab === tab.id ? "bg-app-background" : "hover:bg-app-background/50"}`} onClick={() => setActiveTab(tab.id)}>
+              {teamSettingTabs.map(tab => (<button type="button" aria-pressed={activeTab === tab.id} key={tab.id} className={`flex gap-4 items-center px-5 py-3 rounded-lg w-full cursor-pointer transition-colors ${activeTab === tab.id ? "bg-app-background" : "hover:bg-app-background/50"}`} onClick={() => setActiveTab(tab.id)}>
                   <div className="flex gap-2 items-center">
                     <img src={tab.icon} alt={tab.label} className="w-5"/>
                     <p className="font-medium text-sm text-text-primary tracking-[-0.56px] leading-5">{tab.label}</p>
                   </div>
-                </div>))}
+                </button>))}
 
               
               <div className="flex items-center px-4 py-0 w-full">
@@ -109,12 +115,12 @@ export default function SettingContainer() {
               </div>
 
               
-              {integrationSettingTabs.map(tab => (<div key={tab.id} className={`flex gap-4 items-center px-5 py-3 rounded-lg w-full cursor-pointer transition-colors ${activeTab === tab.id ? "bg-app-background" : "hover:bg-app-background/50"}`} onClick={() => setActiveTab(tab.id)}>
+              {integrationSettingTabs.map(tab => (<button type="button" aria-pressed={activeTab === tab.id} key={tab.id} className={`flex gap-4 items-center px-5 py-3 rounded-lg w-full cursor-pointer transition-colors ${activeTab === tab.id ? "bg-app-background" : "hover:bg-app-background/50"}`} onClick={() => setActiveTab(tab.id)}>
                   <div className="flex gap-2 items-center">
                     <img src={tab.icon} alt={tab.label} className="w-5"/>
                     <p className="font-medium text-sm text-text-primary tracking-[-0.56px] leading-5">{tab.label}</p>
                   </div>
-                </div>))}
+                </button>))}
             </div>
           </div>
         </div>
@@ -131,6 +137,8 @@ export default function SettingContainer() {
             {activeTab === "integrations" && <SlackIntegrationSettings />}
             {activeTab === "google-sheets" && <GoogleSheetsIntegrationSettings />}
             {activeTab === "stripe" && <StripeIntegrationSettings />}
+            {activeTab === "mcp" && <McpSettings />}
+            {activeTab === "finance" && <AdvancedAgentControls />}
             {activeTab === "invoice" && <InvoiceSettingsTab />}
           </div>
         </div>
