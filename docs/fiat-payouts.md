@@ -26,7 +26,7 @@ Save the recipient's exact name, email, country, bank/operator and account numbe
 
 Preparation persists an immutable account snapshot and exact local currency amount. Review expires after 15 minutes. Authorization atomically claims the saved payout once; only the owner who prepared it can submit. Timeouts, unknown responses and restarts cannot trigger a resend. Status checks query the same provider reference and require matching amount/currency/reference. Sandbox results use `sandbox_success`, never `paid`, and do not modify invoices, contractors or reimbursements. The audit trail records preparation, human authorization and reconciliation.
 
-Finance chat can find destination codes, save/verify recipients, prepare payouts, authorize an exact saved payout, cancel drafts and query status. Every operation uses the same server services and review pop-up. Fiat amounts are KES/NGN/GHS, separate from USDC. Preparation never submits funds. The Cashout screen no longer presents hardcoded FX rates, fees or a fictional linked bank account.
+Finance chat can find destination codes, save/verify recipients, prepare payouts, authorize an exact saved payout, cancel drafts and query status. Every operation uses the same server services and review pop-up. Fiat amounts are KES/NGN/GHS, separate from USDC. Preparation never submits funds. Cashout retains its amount and currency controls and history. Live conversion is unavailable; it does not show invented FX rates, fees or linked bank accounts. Recipient preparation and sandbox execution belong in Finance agent chat.
 
 ## Remaining provider work
 
@@ -54,4 +54,12 @@ Configure a private random `SETTLBOX_PAYOUT_STATUS_TOKEN` of at least 32 charact
 
 Database leases prevent overlapping checks of the same payout and expire after a process crash. Recent in-flight submissions receive a two-minute grace period before crash recovery. Provider failures back off from one minute to at most one hour; retries query the original reference and never resend it. Terminal payouts are removed from the polling queue. Drafts awaiting human review are excluded.
 
-Cashout and Settings refresh their saved payout lists every minute, including the status of an already submitted payout in its review dialog. Pending review details remain unchanged. Missing worker configuration leaves manual status checks available. Running multiple worker processes is safe because claims and completion are bound to durable lease tokens.
+The status worker reconciles saved payouts independently of the screen being viewed. Finance agent can query their current saved status. Pending review details remain unchanged. Missing worker configuration leaves manual status checks available. Running multiple worker processes is safe because claims and completion are bound to durable lease tokens.
+
+## Live funding prerequisites
+
+Owner confirmation on October 13: the business has neither Kora live approval nor Circle USYC entitlement. The sandbox adapter remains test-only.
+
+Kora's current stablecoin receiving guide lists USDC on ETH, SOL and TRX. It requires approved compliance details, a customer wallet for the exact currency/network, signed deposit notifications and a charge-query verification. It does not establish that an Arc deposit or a stablecoin balance automatically funds KES, NGN or GHS payouts for this merchant. Source: https://developers.korapay.com/docs/stable-coins
+
+Before implementing a live funding transfer, confirm the merchant's enabled USDC network, provider-assigned deposit address, local-currency conversion/quote API, fees and settlement policy. Then add immutable expiring quotes, an explicitly authorized funding request, network-bound address verification and transaction/charge reconciliation. Any cross-chain leg must be verified separately and tracked durably; a bridge success must not mark a fiat payout delivered. Never send Arc Testnet assets to production deposit addresses. No live funding transfer is enabled by the Cashout controls.

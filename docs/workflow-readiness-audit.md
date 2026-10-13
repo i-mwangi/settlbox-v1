@@ -116,3 +116,9 @@ Verification: full regression suite passed 136 tests; subsequent focused checks 
 Added a status-only worker for existing Kora payout references, with durable claims, bounded batches, restart recovery and exponential backoff. A dedicated server-only token authorizes status checks and cannot submit payouts. The browser refreshes submitted payout status automatically while retaining manual checks and immutable pending reviews.
 
 Verification: 142 automated tests pass, TypeScript and the production build pass, and the isolated production HTTP harness passes restricted worker capability, uncertain-outcome recovery and restart persistence. The configured local worker endpoint returned HTTP 200 with zero eligible checks. Authenticated browser inspection confirmed the automatic-check caption. No new payout was submitted during this increment. Live provider payouts and funding remain disabled.
+
+### Cashout restoration and external access — October 13
+
+Restored the previous Cashout amount field, receiving-currency selector, primary button and withdrawal history, preserving existing typography. Removed the embedded recipient/payout workflow and sandbox explanations. Removed payout-operation controls from Settings; provider configuration remains there and operations use Finance agent chat. Fixed sample FX rates, fees and fictional bank details were not restored. The Cashout button reports live unavailability and never submits funds.
+
+The owner confirmed neither Kora live approval nor Circle USYC entitlement is available. Kora currently documents USDC receiving networks ETH, SOL and TRX, not Arc. Its stablecoin wallet guide does not establish an Arc-to-local-currency funding/FX route for this merchant. Live keys remain disabled. USYC still needs a reserve execution implementation, entitlement and separate subscription/redemption verification; access alone will not complete it.

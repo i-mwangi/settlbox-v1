@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import PayoutWorkflow from "./PayoutWorkflow";
 type Destination = { name: string; code: string; slug: string };
 export default function PayoutSettings() {
   const [keyEnv, setKeyEnv] = useState("SETTLBOX_KORA_COMPANY_TEST_KEY");
@@ -42,6 +41,6 @@ export default function PayoutSettings() {
     <button className={`${button} self-start`} disabled={busy || !connected} onClick={() => act("destinations")}>{busy ? "Checking…" : "Check available destinations"}</button>
     {message && <p role="status">{message}</p>}
     {!!destinations.length && <ul className="max-h-80 overflow-y-auto border border-border rounded-lg divide-y divide-border">{destinations.map(item => <li className="p-3" key={`${item.code}-${item.slug}`}>{item.name}</li>)}</ul>}
-    <PayoutWorkflow key={String(connected)} />
+
   </section>;
 }

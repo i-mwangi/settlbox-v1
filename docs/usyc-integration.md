@@ -11,3 +11,14 @@ Subscriptions and redemptions remain disabled. This is a read integration, not a
 Remaining implementation: a dedicated reserve controller with human-authorized investments, obligation-aware liquidity floor, capped allocations, exact Teller allowances, price/fee bounds, persistent idempotent requests and reconciliation of subscription/redemption events and balances. Verify the controller's own entitlement before holding USYC there. Test mint and redemption separately once access is available. Provider permissions and wallet balances must be checked again when submitting.
 
 No new keys or environment values are needed for read access. It uses the existing company treasury configuration and `NEXT_PUBLIC_ARC_RPC_URL`. Credentials remain server-side.
+
+## Execution implementation sequence
+
+Access is currently unapproved (owner confirmation, October 13). This does not make the execution code complete. The following work remains separate from the read adapter:
+
+1. Implement a dedicated reserve controller using the verified Teller asset/share dependencies, capped exposure and a liquid USDC floor. The existing payment vault must retain its constrained payment interface. Use exact allowances, bounded minimum output, expiry, pause and replay protection; investments must require human authorization.
+2. Persist immutable subscription/redemption requests and their policy, amount, quote and wallet identity. Revalidate balances, entitlements, current obligations and provider limits before submission. Unknown transaction outcomes must reconcile the same hash rather than resend.
+3. Expose reserve proposals through Finance agent and the existing human authorization popup. Keep Earn's original interface and typography. Never present shares or estimated valuation as spendable USDC.
+4. Test deposit/redemption, fees, price movement, expired approvals, allowance cleanup, pause, duplicates, interrupted workers and reverted transactions against isolated contracts. After entitlement, verify both subscription and redemption on Arc Testnet before enabling execution.
+
+Mainnet execution requires separately verified chain configuration and production access. Testnet entitlement and addresses must never silently enable mainnet.
