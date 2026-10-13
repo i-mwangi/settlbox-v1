@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { AgentProposalRepository } from '../services/server/agent-proposals.ts';
 import { validateAgentOperation } from '../services/server/agent-tools.ts';
 import { McpConnectionRepository, discoverMcp, callMcp, toolFingerprint } from '../services/server/mcp-connections.ts';
-import { mcpUrl, publicAddress } from '../services/server/mcp-network.ts';
+import { mcpUrl, publicAddress, pinnedMcpLookup } from '../services/server/mcp-network.ts';
 import { SeededWorkspaceRepository } from '../services/server/seeded-workspace.ts';
 import { changeAgentWorkspace, readAgentWorkspace } from '../services/server/agent-workspace.ts';
 import { PayrollContractRepository } from '../services/server/payroll-contracts.ts';
@@ -95,4 +95,17 @@ test('official MCP client initializes, discovers and calls only unchanged enable
   await assert.rejects(callMcp(enabled,tool.name,{reference:'INV-1'},discovered[0].fingerprint,transport,()=>false),/disabled before/);assert.equal(called,1);
   changed=true;await assert.rejects(callMcp(enabled,tool.name,{reference:'INV-1'},discovered[0].fingerprint,transport),/changed/);assert.equal(called,1);
   await assert.rejects(callMcp({...enabled,enabledTools:[]},tool.name,{reference:'INV-1'},discovered[0].fingerprint,transport),/no longer enabled/);
+});
+
+
+test('pinned MCP DNS lookup supports Node socket address-list mode without another DNS resolution', () => {
+  const lookup = pinnedMcpLookup('8.8.8.8', 4);
+  lookup('untrusted-rebound.example', {all:true}, (error, addresses) => {
+    assert.equal(error, null); assert.deepEqual(addresses, [{address:'8.8.8.8',family:4}]);
+  });
+  lookup('untrusted-rebound.example', {all:false}, (error, address, family) => {
+    assert.equal(error, null); assert.equal(address,'8.8.8.8'); assert.equal(family,4);
+  });
+  assert.throws(() => pinnedMcpLookup('127.0.0.1',4));
+  assert.throws(() => pinnedMcpLookup('8.8.8.8',0));
 });
