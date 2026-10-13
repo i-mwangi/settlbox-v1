@@ -12,7 +12,7 @@ async function handle(request: Request) {
   const payouts = openFiatPayouts();
   try {
     const company = readTreasuryConfiguration().wallet.companyId;
-    if (request.method === "GET") return Response.json({ connection: store.get(company), markets: payoutMarkets, liveEnabled: false, recipients: payouts.recipients(company), payouts: payouts.list(company), events: payouts.events(company) }, { headers });
+    if (request.method === "GET") return Response.json({ connection: store.get(company), markets: payoutMarkets, liveEnabled: false, statusWorkerConfigured: Boolean(process.env.SETTLBOX_PAYOUT_STATUS_TOKEN && process.env.SETTLBOX_PAYOUT_STATUS_TOKEN.length >= 32), recipients: payouts.recipients(company), payouts: payouts.list(company), events: payouts.events(company) }, { headers });
     const raw = await request.text(); if (raw.length > 2000) throw new Error("Request is too large");
     const body = JSON.parse(raw);
     if (body.action === "save") return Response.json(store.save(company, body.keyEnv), { headers });

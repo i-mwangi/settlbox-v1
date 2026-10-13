@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { FiatRecipient, FiatPayout } from "@/types/fiat-payout";
 type Destination = { name: string; code: string; slug: string };
-type Snapshot = { recipients: FiatRecipient[]; payouts: FiatPayout[]; events: { at: string; event: string; payout: string }[]; connection: unknown };
+type Snapshot = { recipients: FiatRecipient[]; payouts: FiatPayout[]; events: { at: string; event: string; payout: string }[]; connection: unknown; statusWorkerConfigured: boolean };
 export default function PayoutWorkflow() {
   const [snapshot, setSnapshot] = useState<Snapshot>();
   const [country, setCountry] = useState("KE"); const [channel, setChannel] = useState("mobile_money");
@@ -16,9 +16,15 @@ export default function PayoutWorkflow() {
   async function reload() {
     const response = await fetch("/api/payout-provider", { cache: "no-store" }); const data = await response.json();
     if (!response.ok) throw new Error(data.error); setSnapshot(data);
+    setReview(current => current && current.status !== "pending_review" ? data.payouts.find((row: FiatPayout) => row.id === current.id) || current : current);
   }
   useEffect(() => { void reload().catch(error => setMessage(error.message)); }, []);
-  useEffect(() => { if (review) dialog.current?.showModal(); }, [review]);
+  useEffect(() => {
+    if (busy) return;
+    const timer = setInterval(() => { void reload().catch(() => {}); }, 60000);
+    return () => clearInterval(timer);
+  }, [busy]);
+  useEffect(() => { if (review && !dialog.current?.open) dialog.current?.showModal(); }, [review]);
   async function action(body: Record<string, unknown>, stable = false) {
     setBusy(true); setMessage("");
     try {
@@ -54,6 +60,7 @@ export default function PayoutWorkflow() {
     <button className={`${button} self-start`} disabled={busy || !selected || selected.verification === "unverified"} onClick={async () => { const row = await action({ action: "prepare", recipientId, amount, narration }, true); if (row) setReview(row); }}>Prepare sandbox payout</button>
     {message && <p role="status">{message}</p>}
     <h3 className="font-semibold">Saved sandbox payouts</h3>
+    {snapshot?.statusWorkerConfigured && <p className="text-[12px] text-text-secondary">Submitted payouts are checked automatically while the server is running.</p>}
     {!snapshot?.payouts.length && <p className="text-text-secondary">No sandbox payouts yet.</p>}
     {snapshot?.payouts.map(row => <article key={row.id} className="rounded-xl border border-primary-divider p-4"><p>{row.amount} {row.currency} · {row.recipient.name} · {row.status.replaceAll("_", " ")}</p><p className="text-[12px] text-text-secondary break-all">{row.reference}</p>{row.error && <p>{row.error}</p>}<div className="mt-3 flex gap-2">{row.status === "pending_review" ? <><button className={button} disabled={busy} onClick={() => setReview(row)}>Review sandbox payout</button><button className={button} disabled={busy} onClick={() => void action({ action: "cancel", id: row.id })}>Cancel draft</button></> : <button className={button} disabled={busy} onClick={() => void action({ action: "status", id: row.id })}>Check provider status</button>}</div></article>)}
     <details><summary className="cursor-pointer">Payout audit trail</summary><ul className="mt-3 max-h-64 overflow-y-auto space-y-2">{snapshot?.events.map((event, index) => <li key={index} className="text-[12px]">{event.at} · {event.event}</li>)}</ul></details>

@@ -30,7 +30,7 @@ Finance chat can find destination codes, save/verify recipients, prepare payouts
 
 ## Remaining provider work
 
-- A signed webhook endpoint is implemented at `/api/payout-provider/webhook`. It checks Kora's HMAC over the event data and re-queries the provider before changing any payout state. Delivery requires a publicly reachable deployment and registering that URL in Kora. Localhost reconciliation uses explicit status checks; sandbox processing outcomes may remain pending.
+- A signed webhook endpoint is implemented at `/api/payout-provider/webhook`. It checks Kora's HMAC over the event data and re-queries the provider before changing any payout state. Delivery requires a publicly reachable deployment and registering that URL in Kora. Localhost reconciliation can run automatically through the status worker below; manual checks remain available.
 - Provider confirmation of UAE/US merchant eligibility, supported payout corridors and stablecoin-to-fiat funding.
 - Production funding via a supported network, potentially CCTP from Arc. Arc Testnet assets cannot fund real fiat payouts.
 - Reviewable fee/FX quotes before live authorization; no invented conversion rates.
@@ -47,3 +47,11 @@ Sandbox provider results must never mark a real invoice, contractor payment or r
 - `scripts/verify-fiat-payouts.mjs` verifies production HTTP and chat-dispatch boundaries against an isolated fake provider, without real credentials or funds.
 
 References: [Kora payout API](https://developers.korapay.com/docs/payout-via-api), [Kora test/live modes](https://developers.korapay.com/docs/test-live-modes), [technical support FAQ](https://support.korapay.com/hc/en-us/articles/31129494583186-Kora-Technical-Support-Developer-FAQ).
+
+## Automatic status reconciliation
+
+Configure a private random `SETTLBOX_PAYOUT_STATUS_TOKEN` of at least 32 characters. The production startup script runs a status-only worker, and the Docker image includes it. It checks up to three due saved references per minute. This credential cannot save recipients, configure provider accounts, prepare drafts or submit payments. The worker endpoint ignores execution payloads and only reconciles existing requests.
+
+Database leases prevent overlapping checks of the same payout and expire after a process crash. Recent in-flight submissions receive a two-minute grace period before crash recovery. Provider failures back off from one minute to at most one hour; retries query the original reference and never resend it. Terminal payouts are removed from the polling queue. Drafts awaiting human review are excluded.
+
+Cashout and Settings refresh their saved payout lists every minute, including the status of an already submitted payout in its review dialog. Pending review details remain unchanged. Missing worker configuration leaves manual status checks available. Running multiple worker processes is safe because claims and completion are bound to durable lease tokens.
