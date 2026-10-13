@@ -51,7 +51,7 @@ async function handle(request: Request) {
     }
     if (body.action === "verify" || existing?.operation.tool === "payment.review") throw new Error("This operation requires its secure payment screen");
     const proposal = store.claim(company, principal.id, body.id);
-    try { const result = await dispatchAgentOperation(request, proposal.operation, proposal.id); return Response.json(store.finish(company, principal.id, proposal.id, result?.isError ? "failed" : "completed", result), { headers }); }
+    try { const result = await dispatchAgentOperation(request, proposal.operation, proposal.id); return Response.json(store.finish(company, principal.id, proposal.id, result?.isError ? "failed" : proposal.operation.tool === "payout.submit" && result?.status === "uncertain" ? "uncertain" : "completed", result), { headers }); }
     catch (failure) {
       // A transport failure can follow a side effect. Never blindly repeat a dispatched call.
       return Response.json(store.finish(company, principal.id, proposal.id, "uncertain", undefined, failure instanceof Error ? failure.message : "The result is unresolved. Check current records before another action."), { headers });

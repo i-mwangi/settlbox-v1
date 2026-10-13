@@ -22,6 +22,8 @@ import * as providerHistory from "@/app/api/provider-history/route";
 import * as links from "@/app/api/payment-links/route";
 import * as vaultPayments from "@/app/api/agent-payments/route";
 import * as linkItem from "@/app/api/payment-links/[code]/route";
+import * as payoutProvider from "@/app/api/payout-provider/route";
+import { openFiatPayouts } from "./fiat-payouts";
 
 type Method = "GET" | "POST" | "PATCH" | "DELETE";
 function requestFor(source: Request, path: string, method: Method, body?: unknown, id?: string) {
@@ -46,11 +48,21 @@ export async function agentWorkspaceContext(source: Request): Promise<Record<str
   const mcp = openMcpConnections();
   try { entries.push(["externalTools", mcp.list(readTreasuryConfiguration().wallet.companyId).flatMap(connection => connection.tools.filter(tool => connection.enabledTools.includes(tool.name)).map(tool => ({ connectionId: connection.id, connectionName: connection.name, name: tool.name, description: tool.description, inputSchema: tool.inputSchema, fingerprint: tool.fingerprint })))]); }
   finally { mcp.close(); }
+  const fiat = openFiatPayouts();
+  try { entries.push(["payout", { mode: "sandbox", recipients: fiat.recipients(readTreasuryConfiguration().wallet.companyId), payouts: fiat.list(readTreasuryConfiguration().wallet.companyId) }]); }
+  finally { fiat.close(); }
   return { companyWallet: readTreasuryConfiguration().wallet.address, today: new Date().toISOString().slice(0, 10), ...Object.fromEntries(entries) };
 }
 const digest = (value: unknown) => createHash("sha256").update(JSON.stringify(value)).digest("hex");
 export function operationTarget(operation: AgentOperation, context: Record<string, unknown>): unknown {
   const a = operation.arguments;
+  if (operation.tool.startsWith("payout.")) {
+    const fiat = context.payout as { recipients: { id: string }[]; payouts: { id: string }[] };
+    if (operation.tool === "payout.prepare") return fiat.recipients.find(item => item.id === a.recipientId);
+    if (operation.tool === "payout.verify") return fiat.recipients.find(item => item.id === a.id);
+    if (["payout.submit", "payout.status", "payout.cancel"].includes(operation.tool)) return fiat.payouts.find(item => item.id === a.id);
+    return null;
+  }
   if (operation.tool.startsWith("business.") && operation.tool !== "business.create") return (context.records as {id:string}[])?.find(item => item.id === a.id);
   if (operation.tool.startsWith("workspace.")) {
     const rows = context[String(a.resource)];
@@ -78,6 +90,10 @@ export async function dispatchAgentOperation(source: Request, saved: AgentOperat
   const context = await agentWorkspaceContext(source);
   if (saved.precondition && digest(operationTarget(operation, context)) !== saved.precondition) throw new Error("This record changed after review. Ask again for its current details.");
   const call = (path: string, method: Method, body: unknown) => requestFor(source, path, method, body, id);
+  if (tool.startsWith("payout.")) {
+    const action = tool.split(".")[1];
+    return result(await payoutProvider.POST(call("/api/payout-provider", "POST", action === "recipient" ? { action, recipient: a } : action === "submit" ? { action, id: a.id, confirmSandbox: true } : { ...a, action })));
+  }
   if (tool === "business.create") {
     if (a.kind === "invoice" && a.recipient !== readTreasuryConfiguration().wallet.address) throw new Error("Invoice recipient must be the company treasury");
     return result(await business.POST(call("/api/business-records", "POST", a)));

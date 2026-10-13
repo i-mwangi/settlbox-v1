@@ -11,10 +11,11 @@ import GoogleSheetsIntegrationSettings from "./GoogleSheetsIntegrationSettings";
 import StripeIntegrationSettings from "./StripeIntegrationSettings";
 import AdvancedAgentControls from "@/app/agent/Advanced";
 import McpSettings from "./McpSettings";
+import PayoutSettings from "./PayoutSettings";
 import TeamSettings from "./TeamSettings";
 import TeamAccountContainer from "./TeamSetting/TeamAccountContainer";
 import InvoiceSettingsTab from "./TeamSetting/InvoiceSettingsTab";
-type TabType = "finance" | "mcp" | "account" | "notifications" | "company" | "team" | "integrations" | "google-sheets" | "stripe" | "invoice";
+type TabType = "finance" | "mcp" | "payouts" | "account" | "notifications" | "company" | "team" | "integrations" | "google-sheets" | "stripe" | "invoice";
 interface SettingTab {
     id: TabType;
     icon: string;
@@ -28,6 +29,7 @@ const generalSettingTabs: SettingTab[] = [
 ];
 const teamSettingTabs: SettingTab[] = [{ id: "team", icon: "/misc/team-icon.svg", label: "My team" }];
 const integrationSettingTabs: SettingTab[] = [
+    { id: "payouts", icon: "/misc/integration-icon.svg", label: "Fiat payouts" },
     { id: "finance", icon: "/misc/integration-icon.svg", label: "Finance controls" },
     { id: "mcp", icon: "/misc/integration-icon.svg", label: "MCP connections" },
     { id: "integrations", icon: "/misc/integration-icon.svg", label: "Slack" },
@@ -36,6 +38,7 @@ const integrationSettingTabs: SettingTab[] = [
 ];
 const tabLabels: Record<TabType, string> = {
     finance: "Finance controls",
+    payouts: "Fiat payouts",
     mcp: "MCP connections",
     account: "Account",
     notifications: "Notifications",
@@ -138,6 +141,7 @@ export default function SettingContainer() {
             {activeTab === "google-sheets" && <GoogleSheetsIntegrationSettings />}
             {activeTab === "stripe" && <StripeIntegrationSettings />}
             {activeTab === "mcp" && <McpSettings />}
+            {activeTab === "payouts" && <PayoutSettings />}
             {activeTab === "finance" && <AdvancedAgentControls />}
             {activeTab === "invoice" && <InvoiceSettingsTab />}
           </div>
