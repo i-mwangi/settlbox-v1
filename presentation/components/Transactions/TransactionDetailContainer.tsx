@@ -1,4 +1,5 @@
 "use client";
+import LiveTransactionDetails from "./LiveTransactionDetails";
 import { n } from "@/presentation/services/utils/normalizeToken";
 import { useGetProposal, useCancelProposal, useSignProposal, useSubmitRejection, useGetMultisigAccount, useGetConsumableNotes, } from "@/presentation/services/api/multisig";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -35,7 +36,7 @@ const TransactionDetailContainer = ({ proposalId: proposalIdProp, inModal = fals
     const { address: signerAddress } = useArcWallet();
     const { client: arcClient } = useArcPayment();
     const { accountCacheMap } = usePSMProvider();
-    const { data: proposal, isLoading, refetch: refetchProposal } = useGetProposal(isNaN(proposalId) ? rawProposalId as any : proposalId);
+    const { data: proposal, isLoading, refetch: refetchProposal } = useGetProposal(rawProposalId);
     const [receiptPreview, setReceiptPreview] = useState<any>(null);
     const { data: multisigAccount } = useGetMultisigAccount(proposal?.accountId, { enabled: !!proposal?.accountId });
     useEffect(() => {
@@ -290,7 +291,7 @@ const TransactionDetailContainer = ({ proposalId: proposalIdProp, inModal = fals
         return () => { cancelled = true; };
     }, [arcClient, sendFaucetId, enrichedMatch]);
     const sendTokenSymbol = enrichedMatch?.symbol || sendFaucetMeta?.symbol || token?.symbol || (proposal?.bills?.[0]?.paymentToken as any)?.name || "TOKEN";
-    const sendTokenDecimals = enrichedMatch?.decimals ?? sendFaucetMeta?.decimals ?? token?.decimals ?? 0;
+    const sendTokenDecimals = token?.decimals ?? enrichedMatch?.decimals ?? sendFaucetMeta?.decimals ?? 0;
     const displayAmount = token?.amount
         ? (() => {
             try {
@@ -301,11 +302,13 @@ const TransactionDetailContainer = ({ proposalId: proposalIdProp, inModal = fals
             }
         })()
         : proposal?.amount || "-";
-    if (isLoading || !proposal) {
+    if (isLoading) {
         return (<div className="flex items-center justify-center w-full h-full">
         <div className="w-12 h-12 border-4 border-primary-blue border-t-transparent rounded-full animate-spin"/>
       </div>);
     }
+    if (!proposal) return <p role="status" className="p-6 text-sm text-text-secondary">Transaction not found. Close this window and refresh the transaction list.</p>;
+    if (proposal.businessRecordId) return <LiveTransactionDetails payment={proposal} />;
     const statusBadge = getStatusBadge(proposal.status);
     const pendingCount = pendingMembers.length;
     return (<div className={`flex w-full flex-col bg-background ${inModal ? "" : "h-full"}`}>

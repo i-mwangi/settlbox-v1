@@ -50,6 +50,7 @@ export class FiatPayoutRepository {
   constructor(path: string) {
     this.db = new DatabaseSync(path);
     this.db.exec("PRAGMA busy_timeout=5000; CREATE TABLE IF NOT EXISTS fiat_recipients(company TEXT NOT NULL,id TEXT NOT NULL,record TEXT NOT NULL,PRIMARY KEY(company,id)); CREATE TABLE IF NOT EXISTS fiat_payouts(company TEXT NOT NULL,id TEXT NOT NULL,principal TEXT NOT NULL,request_id TEXT NOT NULL,record TEXT NOT NULL,PRIMARY KEY(company,id),UNIQUE(company,principal,request_id)); CREATE TABLE IF NOT EXISTS fiat_payout_events(id INTEGER PRIMARY KEY,company TEXT NOT NULL,payout TEXT NOT NULL,at TEXT NOT NULL,event TEXT NOT NULL,principal TEXT NOT NULL);");
+    this.db.exec("CREATE TABLE IF NOT EXISTS fiat_payout_checks(company TEXT NOT NULL,payout TEXT NOT NULL,next_attempt INTEGER NOT NULL,lease_until INTEGER NOT NULL DEFAULT 0,lease_token TEXT,failures INTEGER NOT NULL DEFAULT 0,last_checked INTEGER,last_error TEXT,PRIMARY KEY(company,payout)); CREATE INDEX IF NOT EXISTS fiat_checks_due ON fiat_payout_checks(company,next_attempt,lease_until)");
   }
   close() { this.db.close(); }
   recipients(company: string): FiatRecipient[] { return this.db.prepare("SELECT record FROM fiat_recipients WHERE company=? ORDER BY rowid DESC LIMIT 200").all(company).map(row => JSON.parse(String(row.record))); }
@@ -69,6 +70,29 @@ export class FiatPayoutRepository {
   public(value: StoredPayout): FiatPayout { const { credentialHash: _key, principal: _principal, requestId: _request, ...safe } = value; return safe; }
   list(company: string): FiatPayout[] { return this.db.prepare("SELECT record FROM fiat_payouts WHERE company=? ORDER BY rowid DESC LIMIT 100").all(company).map(row => this.public(JSON.parse(String(row.record)))); }
   events(company: string) { return this.db.prepare("SELECT payout,at,event,principal FROM fiat_payout_events WHERE company=? ORDER BY id DESC LIMIT 100").all(company); }
+  claimChecks(company: string, now = Date.now()) {
+    this.db.exec("BEGIN IMMEDIATE");
+    try {
+      this.db.prepare("DELETE FROM fiat_payout_checks WHERE company=? AND NOT EXISTS(SELECT 1 FROM fiat_payouts WHERE fiat_payouts.company=fiat_payout_checks.company AND fiat_payouts.id=fiat_payout_checks.payout AND json_extract(record,'$.status') IN ('submitting','processing','uncertain'))").run(company);
+      this.db.prepare("INSERT OR IGNORE INTO fiat_payout_checks(company,payout,next_attempt) SELECT company,id,? FROM fiat_payouts WHERE company=? AND (json_extract(record,'$.status') IN ('processing','uncertain') OR (json_extract(record,'$.status')='submitting' AND json_extract(record,'$.updatedAt')<=?))").run(now, company, new Date(now - 120000).toISOString());
+      const rows = this.db.prepare("SELECT payout,failures FROM fiat_payout_checks WHERE company=? AND next_attempt<=? AND lease_until<=? ORDER BY next_attempt,payout LIMIT 3").all(company, now, now);
+      const claims = rows.map(row => {
+        const leaseToken = randomUUID();
+        this.db.prepare("UPDATE fiat_payout_checks SET lease_until=?,lease_token=? WHERE company=? AND payout=?").run(now + 180000, leaseToken, company, String(row.payout));
+        return { payoutId: String(row.payout), leaseToken, failures: Number(row.failures) };
+      });
+      this.db.exec("COMMIT"); return claims;
+    } catch (error) { this.db.exec("ROLLBACK"); throw error; }
+  }
+  finishCheck(company: string, claim: { payoutId: string; leaseToken: string; failures: number }, success: boolean, now = Date.now()) {
+    const payout = this.stored(company, claim.payoutId);
+    if (!payout || !["submitting", "processing", "uncertain"].includes(payout.status)) {
+      return this.db.prepare("DELETE FROM fiat_payout_checks WHERE company=? AND payout=? AND lease_token=?").run(company, claim.payoutId, claim.leaseToken).changes === 1;
+    }
+    const failures = success ? 0 : Math.min(claim.failures + 1, 10);
+    const delay = success ? 60000 : Math.min(3600000, 60000 * 2 ** (failures - 1));
+    return this.db.prepare("UPDATE fiat_payout_checks SET next_attempt=?,lease_until=0,lease_token=NULL,failures=?,last_checked=?,last_error=? WHERE company=? AND payout=? AND lease_token=?").run(now + delay, failures, now, success ? null : "Provider status unavailable; payment was not resubmitted", company, claim.payoutId, claim.leaseToken).changes === 1;
+  }
   private event(company: string, payout: string, event: string, principal: string) { this.db.prepare("INSERT INTO fiat_payout_events(company,payout,at,event,principal) VALUES(?,?,?,?,?)").run(company, payout, new Date().toISOString(), event, principal); }
   prepare(company: string, principal: string, requestId: string, recipientId: string, amount: unknown, narration: unknown, hash: string) {
     if (!/^[a-zA-Z0-9_-]{5,100}$/.test(requestId)) throw new Error("A stable request ID is required");

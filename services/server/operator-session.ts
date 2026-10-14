@@ -75,7 +75,8 @@ export function requireSameOrigin(request: Request): void {
   const origin = request.headers.get("origin");
   const url = new URL(request.url);
   const expected = process.env.SETTLBOX_APP_ORIGIN || `${url.protocol}//${request.headers.get("host") || url.host}`;
-  if (origin !== expected) throw new Error("Request origin is not authorized");
+  const additional = (process.env.SETTLBOX_ADDITIONAL_APP_ORIGINS || "").split(",").map(value => value.trim()).filter(Boolean);
+  if (origin !== expected && !additional.includes(origin || "")) throw new Error("Request origin is not authorized");
 }
 
 export function sessionCookie(token: string, secure: boolean): string {

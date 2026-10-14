@@ -1,4 +1,5 @@
 import { lookup } from "node:dns/promises";
+import type { LookupFunction } from "node:net";
 import { request as httpsRequest } from "node:https";
 import { Readable, Transform } from "node:stream";
 import ipaddr from "ipaddr.js";
@@ -13,6 +14,14 @@ export function mcpUrl(value: string) {
   return url;
 }
 
+export function pinnedMcpLookup(address: string, family: number): LookupFunction {
+  if (!publicAddress(address) || ![4, 6].includes(family)) throw new Error("Invalid public MCP address");
+  return (_host, options, done) => {
+    if (options.all) done(null, [{ address, family }]);
+    else done(null, address, family);
+  };
+}
+
 // Pin the validated DNS answer to the socket; redirects never carry credentials elsewhere.
 export function mcpFetch(endpoint: string): typeof fetch {
   const expected = mcpUrl(endpoint);
@@ -25,7 +34,7 @@ export function mcpFetch(endpoint: string): typeof fetch {
     const signal = AbortSignal.any([AbortSignal.timeout(30000), ...(init?.signal ? [init.signal] : [])]);
     return new Promise<Response>((resolve, reject) => {
       const headers = Object.fromEntries(new Headers(init?.headers).entries());
-      const request = httpsRequest(url, { method: init?.method || "GET", headers, signal, agent: false, lookup: (_host, _options, done) => done(null, pinned.address, pinned.family) }, response => {
+      const request = httpsRequest(url, { method: init?.method || "GET", headers, signal, agent: false, lookup: pinnedMcpLookup(pinned.address, pinned.family) }, response => {
         if ((response.statusCode || 0) >= 300 && (response.statusCode || 0) < 400) { response.destroy(); reject(new Error("MCP redirects are not permitted")); return; }
         let bytes = 0;
         const bounded = new Transform({ transform(chunk, _encoding, done) { bytes += chunk.length; if (bytes > 1024 * 1024) done(new Error("MCP response exceeds the size limit")); else done(null, chunk); } });

@@ -34,8 +34,10 @@ globalThis.fetch=async(input,options={})=>{
 const listener = createServer(); await new Promise(done => listener.listen(0, '127.0.0.1', done));
 const port = listener.address().port; await new Promise(done => listener.close(done)); const base = `http://127.0.0.1:${port}`;
 const token = randomBytes(32).toString('hex');
+const statusToken = randomBytes(32).toString('hex');
 const env = { ...process.env, SETTLBOX_BUSINESS_DATABASE: database, SETTLBOX_SESSION_DATABASE: resolve(root, 'sessions.sqlite'), SETTLBOX_TREASURY_DATABASE: resolve(root, 'treasury.sqlite'), SETTLBOX_TREASURY_CONFIG: configPath, PORT: String(port), HOSTNAME: '127.0.0.1', NEXT_PUBLIC_ARC_ENVIRONMENT: 'testnet', SETTLBOX_APP_ORIGIN: base, SETTLBOX_OPERATOR_TOKEN: token, SETTLBOX_KORA_FIXTURE_KEY: 'sk_test_fixture', SETTLBOX_KORA_FIXTURE_PUBLIC_KEY: 'pk_test_fixture', SETTLBOX_KORA_LIVE_KEY: 'sk_live_fixture', CIRCLE_API_KEY: '', CIRCLE_ENTITY_SECRET: '', SETTLBOX_AI_PROVIDER: '' };
 Object.assign(process.env, { SETTLBOX_BUSINESS_DATABASE: database, SETTLBOX_SESSION_DATABASE: env.SETTLBOX_SESSION_DATABASE, SETTLBOX_TREASURY_CONFIG: configPath });
+env.SETTLBOX_PAYOUT_STATUS_TOKEN = statusToken;
 const restrictedCookies = [];
 const team = new TeamMemberRepository(database);
 try {
@@ -61,6 +63,8 @@ async function request(body, options = {}) {
 async function success(body, options) { const response = await request(body, options); const value = await response.json(); assert.equal(response.status, 200, JSON.stringify(value)); return value; }
 try {
   await start(); assert.equal((await request(undefined)).status, 403);
+  assert.equal((await fetch(`${base}/api/payout-provider/reconcile`, { method: 'POST' })).status, 401);
+  assert.equal((await fetch(`${base}/api/payout-provider/reconcile`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } })).status, 401);
   const login = await fetch(`${base}/api/operator/session`, { method: 'POST', headers: { Origin: base, 'Content-Type': 'application/json' }, body: JSON.stringify({ token }) }); assert.equal(login.status, 200); cookie = login.headers.get('set-cookie').split(';')[0];
   for (const restricted of restrictedCookies) {
     assert.equal((await request(undefined, { cookie: restricted })).status, 403);
@@ -92,15 +96,25 @@ try {
   const webhook = await fetch(`${base}/api/payout-provider/webhook`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-korapay-signature': signature }, body: JSON.stringify({ data: eventData }) });
   assert.equal(webhook.status, 200);
   assert.equal((await success({ action: 'status', id: uncertain.id })).status, 'sandbox_success');
+  const workerPayout = await success({ action: 'prepare', recipientId: recipient.id, amount: '1003', narration: 'timeout worker recovery fixture', requestId: 'request-worker-recovery' });
+  assert.equal((await success({ action: 'submit', id: workerPayout.id, confirmSandbox: true })).status, 'uncertain');
+  const workerResult = await fetch(`${base}/api/payout-provider/reconcile`, { method: 'POST', headers: { Authorization: `Bearer ${statusToken}` } });
+  assert.equal(workerResult.status, 200); assert.deepEqual(await workerResult.json(), { checked: 1, deferred: 0 });
+  assert.equal((await success()).payouts.find(row => row.id === workerPayout.id).status, 'sandbox_success');
+  const attemptedSubmit = await fetch(`${base}/api/payout-provider`, { method: 'POST', headers: { Authorization: `Bearer ${statusToken}`, Origin: base, 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'submit', id: workerPayout.id, confirmSandbox: true }) });
+  assert.equal(attemptedSubmit.status, 403);
   const proposals = new AgentProposalRepository(database);
   try {
     const proposal = proposals.prepare(config.wallet.companyId, 'workspace-operator', randomUUID(), { tool: 'payout.prepare', arguments: { recipientId: recipient.id, amount: '1002', narration: 'Chat review fixture' } });
     const response = await fetch(`${base}/api/agent-actions`, { method: 'POST', headers: { Cookie: cookie, Origin: base, 'Content-Type': 'application/json' }, body: JSON.stringify({ id: proposal.id, action: 'confirm' }) });
     const result = await response.json(); assert.equal(result.status, 'completed', JSON.stringify(result)); assert.equal(result.result.status, 'pending_review');
+    const noExecution = await fetch(`${base}/api/payout-provider/reconcile`, { method: 'POST', headers: { Authorization: `Bearer ${statusToken}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'submit', id: result.result.id }) });
+    assert.equal(noExecution.status, 200);
+    assert.equal((await success()).payouts.find(row => row.id === result.result.id).status, 'pending_review');
   } finally { proposals.close(); }
   await stop(); await start(); const snapshot = await success();
   assert.equal(snapshot.payouts.find(row => row.id === draft.id).status, 'sandbox_success');
   assert.ok(snapshot.events.some(event => event.event.includes('authorized')));
   assert.equal(snapshot.liveEnabled, false);
-  console.log('PASS: production payout routes enforce authentication, CSRF, test-only keys, recipient verification, idempotency, immutable approval, single submission, uncertainty recovery, chat dispatch and restart persistence. No financial provider was contacted.');
+  console.log('PASS: production payout routes enforce authentication, CSRF, test-only keys, recipient verification, idempotency, immutable approval, single submission, uncertainty recovery, chat dispatch, restricted status-worker capability and restart persistence. No financial provider was contacted.');
 } finally { await stop(); }

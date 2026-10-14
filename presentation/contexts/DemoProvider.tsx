@@ -180,6 +180,9 @@ export interface InvoiceSettings {
     showWalletQr: boolean;
 }
 export interface DemoProposal {
+    businessRecordId?: string;
+    amountExact?: string;
+    transactionHash?: string | null;
     id: string;
     uuid: string;
     accountId: string;
