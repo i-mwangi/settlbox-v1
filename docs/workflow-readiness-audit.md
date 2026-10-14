@@ -134,3 +134,35 @@ Read-only USYC verification at Arc Testnet block 67029765 confirmed the Teller d
 The owner requested ngrok for external MCP testing. A temporary loopback diagnostic server exposes only one fixed-message tool, without business-data or payment access. Real HTTPS discovery uncovered a Node socket lookup callback mismatch when address-list mode is requested. Fixed the pinned DNS callback to return the expected list or single-address shape, retaining public-address validation and avoiding a second DNS resolution. A regression test covers both callback modes and rejected private addresses. Real ngrok discovery passed after the fix; production browser verification follows below.
 
 Production browser verification passed MCP connection creation, HTTPS discovery, explicitly enabling the single diagnostic tool, real Azure chat proposal, owner review and the returned fixed diagnostic text with isError false. Proof is private at .data/mcp-ngrok-success-test.png. The temporary connection was removed and ngrok/fixture processes were stopped afterward. This verifies an external Streamable HTTP diagnostic server, not an accounting provider, OAuth flow or inbound Settlbox MCP server. Final production build and TypeScript passed; the regular app remains on port 3002.
+
+### Inbound MCP server - October 14
+
+Added a separate authenticated stateless MCP endpoint at /api/mcp for external clients. Owner-created credentials are scoped to record reads and/or action proposals, hashed at rest, company/principal bound, expiring after 30 days and individually revocable. Member-owner credentials recheck current membership. Access is configured in Settings without forwarding operator cookies or provider credentials. Requests are bounded and rate limited; invocation audit metadata persists in the business database.
+
+External requests use immutable existing agent proposals and appear in Finance agent for owner review. Supported mutations use the existing dispatcher and canonical preconditions. External clients cannot confirm, approve, queue or execute payments, change vault policy or invoke arbitrary outbound tools. Payment review requests return to the normal plan/chat and Circle authorization flow. Revocation blocks pending confirmations; it cannot undo already dispatched actions.
+
+147 automated tests pass. An isolated production server and the official TypeScript MCP client passed initialization, discovery, scoped reads, immutable proposal retries, owner-only confirmation, stale-record rejection, payment handoff without execution, credential isolation/revocation, audit, size/origin guards and restart persistence. No financial provider or real payment was contacted. Authenticated browser verification confirmed the new Settings section, read/proposal scope controls and reachable creation button. No real-workspace credential was automatically created. Proof is private at .data/inbound-mcp-settings.png.
+
+The server supports the 2025 Streamable HTTP protocol versions with bearer authentication. OAuth, stdio and the 2026-07-28 protocol are not implemented. OAuth-only hosted clients and specific Codex/Claude product UIs have not been verified; the client connection guide states these limits. No public tunnel or deployment was enabled for the inbound server. USYC and live fiat execution remain unchanged and unavailable.
+
+Final verification: production build and TypeScript passed after origin hardening; the official-client HTTP harness passed again against that exact build. The application was restored on port 3002 and /login returned HTTP 200. Credentials remain an explicit owner setup action in Settings.
+
+### 2026-10-14 — inbound MCP OAuth connector support
+
+Added public OAuth discovery and dynamic client registration, owner sign-in/consent, S256 PKCE authorization codes, resource-bound one-hour bearer access and rotating refresh tokens. Refresh/code replay revokes the grant; Settings revocation blocks refresh. Existing payment authorization boundaries remain in force.
+
+Validation: production build and typecheck passed; full suite 150 tests passed, followed by the added expired-code/grant test (four OAuth tests passed). Isolated production HTTP harness passed OAuth discovery, registration, consent/CSRF, PKCE, official MCP client access, refresh/revocation and all existing inbound tests. Public ngrok discovery returns the configured HTTPS issuer; unauthenticated MCP returns 401 with protected-resource metadata. OAuth sign-in UI inspected. Actual Claude connection still requires the owner to retry Connect and select permissions; not claimed verified.
+
+### 2026-10-14 — paid transaction details
+
+Fixed Transactions history opening details by row number instead of the saved UUID, and stopped truncating UUIDs that begin with digits. Missing records now render a message instead of an endless spinner. Settled business payments show exact saved amount, recipient wallet, Arc Testnet and recorded settlement hash; demo approvers and invented invoice lines are excluded from that panel.
+
+Validation: production build including type checking passed; nine business-record and settlement tests passed. Browser check opened MCP payment test from History and verified Paid, 0.001 USDC, recipient and Arcscan transaction link. No payment was submitted by these checks.
+
+### 2026-10-14 — restore platform styling
+
+Restored live transaction detail cards, approvers section and adjacent progress column based on the original transaction layout. Uses real saved amount, recipient, required approval policy and settlement link; does not invent individual signer data. Narrow screens stack the columns.
+
+Finance agent, its action/payment/wallet reviews, OAuth consent buttons and inbound/outbound MCP Settings now reuse the platform texture-button gradients, explicit 14px button typography, existing sidebar/close icons, neutral surfaces and modal header/backdrop treatment. Payment policy and authorization handlers are unchanged.
+
+Validation: final production build and type checking passed. Browser inspected the restored paid MCP panel, agent conversation/review styling and MCP Settings. Final payment popup check encountered an expired session and kept authorization disabled; no payment or permission change was submitted. Proof images saved privately under .data/platform-*.png.

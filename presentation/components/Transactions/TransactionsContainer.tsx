@@ -564,7 +564,7 @@ export function TransactionsContainer() {
               </div>) : (<Table headers={["Transaction", "Description", "Amount", "Status", "Date"]} data={proposalRows} className="w-full" rowClassName="py-4" headerClassName="py-3" tableLayout="fixed" columnWidths={{ "0": "155px", "2": "150px", "3": "130px", "4": "180px" }} actionColumnWidth="210px" showFooter={false} showPagination={true} actionColumn={true} actionRenderer={proposalActionRenderer} currentPage={currentPage} onPageChange={setCurrentPage} rowsPerPage={rowsPerPage} onRowsPerPageChange={setRowsPerPage} onRowClick={rowData => {
                     const proposal = (rowData as any).__proposal;
                     if (proposal)
-                        openModal("TRANSACTION_DETAIL", { proposalId: proposal.id });
+                        openModal("TRANSACTION_DETAIL", { proposalId: proposal.uuid });
                 }} noDataMessage={activeSubTab === "history"
                     ? "Executed, failed, and cancelled proposals will appear here" : "No pending transactions yet. Create a proposal from the Bills page to get started."}/>)}
           </div>

@@ -201,12 +201,12 @@ export function useCreateProposalFromBills() {
         }) => { }, isPending: false };
 }
 export function useGetProposal(_proposalId?: number | string, _options?: any) {
-    const { data } = useDemo();
+    const { data, isLoaded } = useDemo();
     if (!_proposalId || !data?.pendingProposals) {
-        return { data: undefined, isLoading: false, isError: false, refetch: async () => { } };
+        return { data: undefined, isLoading: !isLoaded, isError: false, refetch: async () => { } };
     }
     const idStr = String(_proposalId);
-    const p = data.pendingProposals.find(p => p.id === idStr || p.id === `prop-${idStr.padStart(3, "0")}`);
+    const p = data.pendingProposals.find(p => p.uuid === idStr || p.id === idStr || p.id === `prop-${idStr.padStart(3, "0")}`);
     if (!p) {
         return { data: undefined, isLoading: false, isError: false, refetch: async () => { } };
     }
