@@ -172,3 +172,11 @@ Validation: final production build and type checking passed. Browser inspected t
 Dashboard balance range defaults to Day. Added rolling Minute and Hour views, and replaced categorical three-hour/month-name buckets with a numeric timestamp axis. Tick labels/density adapt to the visible duration, from seconds through clock times and calendar dates. Points use actual observation times; missing history is not synthesized. Change/flow values follow the selected range. Dashboard clock updates every 15 seconds and requests workspace refresh once per visible minute. Balance storage retains minute observations for the latest day and returns hourly summaries for older history without deleting existing records. Finance agent sidebar now uses the existing chat icon instead of Earn's chart icon.
 
 Validation: four time-series/storage tests and two provider-history tests passed; production build including type checking passed. Browser verified default Day, Minute second labels, Hour clock labels, restored Day view and chat sidebar icon. Screenshot: .data/dashboard-day-adaptive.png.
+
+### 2026-10-14 — native integrations
+
+Implemented company-scoped encrypted Google Sheets OAuth, explicit preview/import of up to 100 drafts with stable source IDs, and RAW exports into a new spreadsheet. Slack supports a privately configured incoming webhook, explicit connection test, opt-in record-change notifications and a durable delivery audit. Stripe reads restricted-key snapshots of up to 100 customers, invoices and charges per category; no payment mutations or automatic/full-history synchronization.
+
+All integration pages reuse platform cards and buttons. Google Sheets, Slack and Stripe include demo-based numbered How it works cards with accurate capability descriptions. Google import review uses readable fields instead of raw JSON.
+
+Validation: 161 tests passed for the integration implementation; isolated production HTTP checks passed with mocked Google, Slack and Stripe responses. User screenshots confirm real Google OAuth connection, a successful sheet preview, and Slack reporting connection-test delivery. Real Sheets import/export and Stripe account access remain unverified. Stripe guide type checking passed.

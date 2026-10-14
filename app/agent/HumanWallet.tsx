@@ -1,4 +1,5 @@
 "use client";
+import FinanceButton from "@/presentation/components/Common/FinanceButton";
 
 import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -76,12 +77,12 @@ export default function HumanWallet({ administrator }: { administrator?: string 
     {config.error && <p role="alert" className="text-sm text-red-600">{config.error.message}</p>}
     {config.data && !config.data.configured && <p className="text-sm text-text-secondary">Embedded approvals need the Circle application configuration. Contact the workspace administrator to finish setup.</p>}
     <div className="flex flex-wrap gap-3">
-      {!authentication && <button className={button} disabled={!config.data?.configured || pending} onClick={() => void perform("connect")}>Connect approval wallet</button>}
+      {!authentication && <FinanceButton className={button} disabled={!config.data?.configured || pending} onClick={() => void perform("connect")}>Connect approval wallet</FinanceButton>}
       {authentication && <>
-        <button className={button} disabled={pending || Boolean(challengeId)} onClick={() => void perform("connect")}>Reconnect approval wallet</button>
-        {wallets.length === 0 && !challengeId && <button className={button} disabled={pending} onClick={() => void perform("initialize")}>Set up approval wallet</button>}
-        <button className={button} disabled={pending} onClick={() => void perform("refresh")}>Refresh wallet details</button>
-        <button className={button} disabled={pending} onClick={() => void perform("disconnect")}>Disconnect</button>
+        <FinanceButton className={button} disabled={pending || Boolean(challengeId)} onClick={() => void perform("connect")}>Reconnect approval wallet</FinanceButton>
+        {wallets.length === 0 && !challengeId && <FinanceButton className={button} disabled={pending} onClick={() => void perform("initialize")}>Set up approval wallet</FinanceButton>}
+        <FinanceButton className={button} disabled={pending} onClick={() => void perform("refresh")}>Refresh wallet details</FinanceButton>
+        <FinanceButton className={button} disabled={pending} onClick={() => void perform("disconnect")}>Disconnect</FinanceButton>
       </>}
     </div>
     {wallets.map(wallet => <div key={wallet.id} className="text-sm space-y-2">
@@ -91,20 +92,20 @@ export default function HumanWallet({ administrator }: { administrator?: string 
     </div>)}
     {wallets.some(wallet => administrator?.toLowerCase() === wallet.address.toLowerCase()) && <div className="space-y-3">
       <label className="flex flex-col gap-2 text-sm">Approver or recipient address<input value={targetAddress} onChange={event => setTargetAddress(event.target.value)} disabled={pending || Boolean(challengeId)} className="rounded-lg border border-primary-divider p-2 bg-background" /></label>
-      <div className="flex flex-wrap gap-3">{[["allow_approver", "Add human approver"], ["allow_recipient", "Allow recipient"], ["pause", "Pause vault"], ["unpause", "Activate vault"]].map(([action, label]) => <button key={action} className={button} disabled={pending || Boolean(challengeId)} onClick={() => void prepareAdministration(action)}>{label}</button>)}</div>
+      <div className="flex flex-wrap gap-3">{[["allow_approver", "Add human approver"], ["allow_recipient", "Allow recipient"], ["pause", "Pause vault"], ["unpause", "Activate vault"]].map(([action, label]) => <FinanceButton key={action} className={button} disabled={pending || Boolean(challengeId)} onClick={() => void prepareAdministration(action)}>{label}</FinanceButton>)}</div>
       <div className="space-y-2 border-t border-primary-divider pt-3">
         <p className="font-medium">Circle execution wallet</p>
         <p className="text-sm break-all">{config.data?.executionWallet || "Execution wallet configuration unavailable"}</p>
         <p className="text-sm text-text-secondary">Assign the dedicated Circle wallet for automated contract calls. Your approval wallet keeps administration and human approvals. Keep the vault paused during setup.</p>
         <div className="flex flex-wrap gap-3">
-          <button className={button} disabled={pending || Boolean(challengeId) || !config.data?.executionWallet} onClick={() => void prepareAdministration("configure_executor")}>Assign Circle executor</button>
-          <button className={button} disabled={pending || Boolean(challengeId)} onClick={() => void verifyExecutor()}>Verify Circle executor</button>
+          <FinanceButton className={button} disabled={pending || Boolean(challengeId) || !config.data?.executionWallet} onClick={() => void prepareAdministration("configure_executor")}>Assign Circle executor</FinanceButton>
+          <FinanceButton className={button} disabled={pending || Boolean(challengeId)} onClick={() => void verifyExecutor()}>Verify Circle executor</FinanceButton>
         </div>
       </div>
       {payments.data?.payments.filter(payment => payment.status === "awaiting_approval").map(payment => <div key={payment.id} className="rounded-lg border border-primary-divider p-3 space-y-2">
         <p>Approve {payment.amount} USDC to <span className="break-all">{payment.recipient}</span></p>
         <p className="text-xs text-text-secondary break-all">Obligation: {payment.recordId} · Vault payment: {payment.id}</p>
-        <button className={button} disabled={pending || Boolean(challengeId)} onClick={() => void prepareAdministration("approve_payment", payment.recordId)}>Prepare payment approval</button>
+        <FinanceButton className={button} disabled={pending || Boolean(challengeId)} onClick={() => void prepareAdministration("approve_payment", payment.recordId)}>Prepare payment approval</FinanceButton>
       </div>)}
     </div>}
     {message && <p role="status" className="text-sm">{message}</p>}
@@ -112,7 +113,7 @@ export default function HumanWallet({ administrator }: { administrator?: string 
     {challengeId && <div ref={reviewBar} role="region" aria-label="Pending Circle authorization" className="sticky bottom-0 z-20 rounded-xl border border-primary-divider bg-background p-4 shadow-lg space-y-2">
       <p className="text-sm font-medium">Approval ready: {challengePurpose}</p>
       <p className="text-sm text-text-secondary">Open Circle’s secure screen to review this action and enter your private PIN.</p>
-      <button ref={reviewButton} className="w-full rounded-lg bg-[#1b1b1b] px-4 py-3 text-sm font-medium text-white whitespace-normal focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:opacity-50" disabled={pending} onClick={() => void authorize()}>{pending ? "Waiting for Circle…" : `Review and authorize ${challengePurpose}`}</button>
+      <FinanceButton ref={reviewButton} className="w-full rounded-lg bg-[#1b1b1b] px-4 py-3 text-sm font-medium text-white whitespace-normal focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:opacity-50" disabled={pending} onClick={() => void authorize()}>{pending ? "Waiting for Circle…" : `Review and authorize ${challengePurpose}`}</FinanceButton>
     </div>}
   </div>;
 }

@@ -1,0 +1,2 @@
+sourceId,kind,title,counterparty,recipient,amount,dueDate,description
+google-sheets-test-1,bill,Google Sheets connection test,Integration test,0xE487dD5D9cd9562678c759D1d82c0b8821Daa53e,0.001,2026-10-14,Import a draft only; do not pay
