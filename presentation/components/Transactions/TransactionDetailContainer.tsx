@@ -1,4 +1,5 @@
 "use client";
+import LiveTransactionDetails from "./LiveTransactionDetails";
 import { n } from "@/presentation/services/utils/normalizeToken";
 import { useGetProposal, useCancelProposal, useSignProposal, useSubmitRejection, useGetMultisigAccount, useGetConsumableNotes, } from "@/presentation/services/api/multisig";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -307,18 +308,7 @@ const TransactionDetailContainer = ({ proposalId: proposalIdProp, inModal = fals
       </div>);
     }
     if (!proposal) return <p role="status" className="p-6 text-sm text-text-secondary">Transaction not found. Close this window and refresh the transaction list.</p>;
-    if (proposal.businessRecordId && proposal.status === "EXECUTED") return <section className="p-6 space-y-5 text-sm">
-      <div className="flex flex-wrap justify-between gap-3"><h2 className="text-lg font-semibold">{proposal.description}</h2><Badge text="Paid" status={getStatusBadge(proposal.status).status}/></div>
-      <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-6 gap-y-4">
-        <dt className="text-text-secondary">Amount</dt><dd>{proposal.amountExact || proposal.amount} USDC</dd>
-        <dt className="text-text-secondary">Recipient</dt><dd>{proposal.to}</dd>
-        <dt className="text-text-secondary">Wallet</dt><dd className="break-all">{proposal.toAddress}</dd>
-        <dt className="text-text-secondary">Network</dt><dd>Arc Testnet</dd>
-        <dt className="text-text-secondary">Created</dt><dd>{formatDateTime(proposal.createdAt)}</dd>
-        <dt className="text-text-secondary">Description</dt><dd className="break-words">{proposal.note || "—"}</dd>
-        {proposal.transactionHash && <><dt className="text-text-secondary">Transaction</dt><dd className="break-all"><a className="text-primary-blue underline" target="_blank" rel="noreferrer" href={`https://testnet.arcscan.app/tx/${proposal.transactionHash}`}>{proposal.transactionHash}</a></dd></>}
-      </dl>
-    </section>;
+    if (proposal.businessRecordId) return <LiveTransactionDetails payment={proposal} />;
     const statusBadge = getStatusBadge(proposal.status);
     const pendingCount = pendingMembers.length;
     return (<div className={`flex w-full flex-col bg-background ${inModal ? "" : "h-full"}`}>

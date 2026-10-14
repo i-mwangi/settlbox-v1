@@ -158,3 +158,11 @@ Validation: production build and typecheck passed; full suite 150 tests passed, 
 Fixed Transactions history opening details by row number instead of the saved UUID, and stopped truncating UUIDs that begin with digits. Missing records now render a message instead of an endless spinner. Settled business payments show exact saved amount, recipient wallet, Arc Testnet and recorded settlement hash; demo approvers and invented invoice lines are excluded from that panel.
 
 Validation: production build including type checking passed; nine business-record and settlement tests passed. Browser check opened MCP payment test from History and verified Paid, 0.001 USDC, recipient and Arcscan transaction link. No payment was submitted by these checks.
+
+### 2026-10-14 — restore platform styling
+
+Restored live transaction detail cards, approvers section and adjacent progress column based on the original transaction layout. Uses real saved amount, recipient, required approval policy and settlement link; does not invent individual signer data. Narrow screens stack the columns.
+
+Finance agent, its action/payment/wallet reviews, OAuth consent buttons and inbound/outbound MCP Settings now reuse the platform texture-button gradients, explicit 14px button typography, existing sidebar/close icons, neutral surfaces and modal header/backdrop treatment. Payment policy and authorization handlers are unchanged.
+
+Validation: final production build and type checking passed. Browser inspected the restored paid MCP panel, agent conversation/review styling and MCP Settings. Final payment popup check encountered an expired session and kept authorization disabled; no payment or permission change was submitted. Proof images saved privately under .data/platform-*.png.

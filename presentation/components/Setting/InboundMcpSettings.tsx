@@ -1,4 +1,5 @@
 "use client";
+import FinanceButton from "@/presentation/components/Common/FinanceButton";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { workspaceFetch } from "@/presentation/services/api/seeded-workspace";
@@ -16,11 +17,11 @@ export default function InboundMcpSettings() {
       <label className="block">Assistant name<input required maxLength={80} value={name} onChange={event=>setName(event.target.value)} className="mt-2 w-full rounded-xl border border-primary-divider bg-background p-3" placeholder="My MCP client" /></label>
       <label className="flex gap-2"><input type="checkbox" checked={read} onChange={event=>setRead(event.target.checked)} />Read company invoices and payables</label>
       <label className="flex gap-2"><input type="checkbox" checked={propose} onChange={event=>setPropose(event.target.checked)} />Propose actions for owner review</label>
-      <button className={button} disabled={busy||!!state.error||(!read&&!propose)}>Create 30-day credential</button>
+      <FinanceButton variant="primary" className={button} disabled={busy||!!state.error||(!read&&!propose)}>Create 30-day credential</FinanceButton>
     </form>
-    {token&&<div className="rounded-xl border border-primary-divider p-4 space-y-3"><p>Shown once. Save this credential privately in your MCP client. Do not paste it into chat.</p><textarea aria-label="New MCP bearer credential" readOnly autoComplete="off" value={token} className="w-full break-all rounded-lg border border-primary-divider p-3 text-[14px]" /><button className={button} onClick={()=>setToken("")}>Hide credential</button></div>}
+    {token&&<div className="rounded-xl border border-primary-divider p-4 space-y-3"><p>Shown once. Save this credential privately in your MCP client. Do not paste it into chat.</p><textarea aria-label="New MCP bearer credential" readOnly autoComplete="off" value={token} className="w-full break-all rounded-lg border border-primary-divider p-3 text-[14px]" /><FinanceButton className={button} onClick={()=>setToken("")}>Hide credential</FinanceButton></div>}
     {(error||state.error)&&<p role="alert">{error||state.error?.message}</p>}
-    {state.data?.credentials.map(row=><div key={row.id} className="rounded-xl border border-primary-divider p-3 flex flex-wrap items-center justify-between gap-3"><div><p>{row.name}</p><p className="text-[12px] text-text-secondary">{row.scopes.join(" · ")} · {row.revoked?"Revoked":`Expires ${new Date(row.expiresAt).toLocaleDateString()}`}</p></div>{!row.revoked&&<button className={button} disabled={busy} onClick={()=>void act({action:"revoke",id:row.id})}>Revoke</button>}</div>)}
+    {state.data?.credentials.map(row=><div key={row.id} className="rounded-xl border border-primary-divider p-3 flex flex-wrap items-center justify-between gap-3"><div><p>{row.name}</p><p className="text-[12px] text-text-secondary">{row.scopes.join(" · ")} · {row.revoked?"Revoked":`Expires ${new Date(row.expiresAt).toLocaleDateString()}`}</p></div>{!row.revoked&&<FinanceButton className={button} disabled={busy} onClick={()=>void act({action:"revoke",id:row.id})}>Revoke</FinanceButton>}</div>)}
     {!!state.data?.events.length&&<details><summary className="cursor-pointer">External access audit</summary>{state.data.events.map((event,index)=><p key={index} className="mt-2 text-[12px]">{new Date(event.at).toLocaleString()} · {event.event} · {event.id}</p>)}</details>}
   </section>;
 }
