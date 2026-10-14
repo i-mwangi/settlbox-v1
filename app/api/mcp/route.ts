@@ -7,17 +7,19 @@ import { openReimbursements } from "@/services/server/reimbursements";
 import { openAgentProposals } from "@/services/server/agent-proposals";
 import { agentToolCatalog, validateAgentOperation } from "@/services/server/agent-tools";
 import { openTeamMembers } from "@/services/server/team-members";
+import { oauthIssuer } from "@/services/server/mcp-oauth";
 export const runtime = "nodejs";
 const headers = { "Cache-Control": "no-store" };
 async function handle(request: Request) {
   const config = readTreasuryConfiguration(); const store = openInboundMcp();
   try {
-    if (!inboundOriginAllowed(request.headers.get("origin"), process.env.SETTLBOX_APP_ORIGIN, process.env.PORT)) return Response.json({ error: "Origin rejected" }, { status: 403, headers });
+    if (!inboundOriginAllowed(request.headers.get("origin"), process.env.SETTLBOX_APP_ORIGIN, process.env.PORT) && request.headers.get("origin") !== oauthIssuer()) return Response.json({ error: "Origin rejected" }, { status: 403, headers });
     let credential;
     try { const bearer = /^Bearer (sbmcp_[a-f0-9]{64})$/i.exec(request.headers.get("authorization") || ""); if (!bearer) throw new Error(); credential = store.authenticate(bearer[1], config.wallet.companyId);
+      if (credential.resource && credential.resource !== `${oauthIssuer()}/api/mcp`) throw new Error();
       if (credential.memberId) { const members = openTeamMembers(); try { const member = members.get(credential.company, credential.memberId); if (!member || member.status !== "ACTIVE" || member.role !== "OWNER") throw new Error(); } finally { members.close(); } }
     }
-    catch { return Response.json({ error: "MCP bearer credential required" }, { status: 401, headers: { ...headers, "WWW-Authenticate": "Bearer" } }); }
+    catch { return Response.json({ error: "MCP bearer credential required" }, { status: 401, headers: { ...headers, "WWW-Authenticate": `Bearer resource_metadata="${oauthIssuer()}/.well-known/oauth-protected-resource", scope="records:read actions:propose"` } }); }
     if (request.method !== "POST") return new Response(null, { status: 405, headers: { ...headers, Allow: "POST" } });
     try { store.consume(credential.id); } catch { return Response.json({ error: "Rate limit" }, { status: 429, headers }); }
     if (request.headers.get("content-type")?.split(";")[0].trim() !== "application/json") return new Response(null, { status: 415, headers });

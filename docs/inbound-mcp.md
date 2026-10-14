@@ -18,7 +18,7 @@ url = "http://127.0.0.1:3002/api/mcp"
 bearer_token_env_var = "SETTLBOX_INBOUND_MCP_CLIENT_TOKEN"
 ```
 
-The environment variable above belongs to the external client, not Settlbox's server `.env.local`. Use the equivalent Streamable HTTP URL and bearer header configuration in other clients. OAuth-only hosted connectors are not supported by this implementation. Client-specific UI connectivity has to be verified separately; the official TypeScript MCP client is covered by the production HTTP harness.
+The environment variable above belongs to the external client, not Settlbox's server `.env.local`. Use the equivalent Streamable HTTP URL and bearer header configuration in other clients. Hosted OAuth connectors can use the public HTTPS endpoint with the OAuth flow below. Client-specific UI connectivity has to be verified separately; the official TypeScript MCP client is covered by the production HTTP harness.
 
 ## Tools and approval
 
@@ -38,3 +38,11 @@ Credentials are company scoped, owner bound, expiring and revocable. Member-owne
 Run `node --experimental-strip-types scripts/verify-inbound-mcp.mjs` after the production build. It uses an isolated database and official MCP client, with no real provider credentials or funds. Unit tests cover token hashing, scope boundaries, revocation, expiry, durable rate limits and malformed protocol messages.
 
 References: [Codex MCP configuration](https://learn.chatgpt.com/docs/extend/mcp?surface=cli), [MCP 2025-11-25 transport](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports).
+
+## Hosted OAuth connectors
+
+Set `SETTLBOX_OAUTH_ISSUER` to the trusted public HTTPS origin and include that origin in `SETTLBOX_ADDITIONAL_APP_ORIGINS`. Keep the tunnel and app running. Add `<issuer>/api/mcp` in Claude or another OAuth MCP connector. Discovery supports protected-resource metadata, authorization-server metadata and dynamic client registration. No manually copied client secret is needed for public clients.
+
+Connect opens Settlbox owner sign-in and consent. Verify the callback and select read access and, optionally, proposals. Client names are unverified metadata. Payments still require owner review and wallet authorization inside Settlbox. Revoke the resulting OAuth credential in Settings to stop access and refresh.
+
+Authorization uses S256 PKCE, exact registered redirects, company-bound grants, one-hour access tokens and rotating refresh tokens expiring with the 30-day grant. Codes expire after two minutes and can be used once. Code/refresh replay revokes the grant. Raw credentials are never stored. Registration and token calls are bounded. Changing the public issuer requires a new connection. The public tunnel exposes the app with its existing authentication; it does not bypass sign-in.

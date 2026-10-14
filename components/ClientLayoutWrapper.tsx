@@ -9,6 +9,7 @@ const PresentationLayout = dynamic(() => import("@/presentation/components/Clien
 
 export function ClientLayoutWrapper({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  if (pathname.startsWith("/oauth/")) return <>{children}</>;
   const isLive = ["/operator", "/testnet-treasury", "/transfer", "/gift/open-gift", "/dev/"].some(route => pathname === route || pathname.startsWith(route.endsWith("/") ? route : `${route}/`));
   if (isLive) return <ClientLayout>{children}</ClientLayout>;
   return <PresentationLayout>{children}</PresentationLayout>;

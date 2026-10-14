@@ -146,3 +146,9 @@ External requests use immutable existing agent proposals and appear in Finance a
 The server supports the 2025 Streamable HTTP protocol versions with bearer authentication. OAuth, stdio and the 2026-07-28 protocol are not implemented. OAuth-only hosted clients and specific Codex/Claude product UIs have not been verified; the client connection guide states these limits. No public tunnel or deployment was enabled for the inbound server. USYC and live fiat execution remain unchanged and unavailable.
 
 Final verification: production build and TypeScript passed after origin hardening; the official-client HTTP harness passed again against that exact build. The application was restored on port 3002 and /login returned HTTP 200. Credentials remain an explicit owner setup action in Settings.
+
+### 2026-10-14 — inbound MCP OAuth connector support
+
+Added public OAuth discovery and dynamic client registration, owner sign-in/consent, S256 PKCE authorization codes, resource-bound one-hour bearer access and rotating refresh tokens. Refresh/code replay revokes the grant; Settings revocation blocks refresh. Existing payment authorization boundaries remain in force.
+
+Validation: production build and typecheck passed; full suite 150 tests passed, followed by the added expired-code/grant test (four OAuth tests passed). Isolated production HTTP harness passed OAuth discovery, registration, consent/CSRF, PKCE, official MCP client access, refresh/revocation and all existing inbound tests. Public ngrok discovery returns the configured HTTPS issuer; unauthenticated MCP returns 401 with protected-resource metadata. OAuth sign-in UI inspected. Actual Claude connection still requires the owner to retry Connect and select permissions; not claimed verified.

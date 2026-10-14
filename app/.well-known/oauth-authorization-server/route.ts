@@ -1,0 +1,3 @@
+import { oauthIssuer, oauthScopes } from "@/services/server/mcp-oauth";
+export const dynamic="force-dynamic";
+export async function GET(){const issuer=oauthIssuer();return Response.json({issuer,authorization_endpoint:`${issuer}/oauth/authorize`,token_endpoint:`${issuer}/api/oauth/token`,registration_endpoint:`${issuer}/api/oauth/register`,response_types_supported:["code"],grant_types_supported:["authorization_code","refresh_token"],token_endpoint_auth_methods_supported:["none","client_secret_post","client_secret_basic"],code_challenge_methods_supported:["S256"],scopes_supported:oauthScopes,authorization_response_iss_parameter_supported:true},{headers:{"Cache-Control":"no-store","Access-Control-Allow-Origin":"*"}});}

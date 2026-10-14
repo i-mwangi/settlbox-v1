@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {mkdirSync,readFileSync,writeFileSync} from 'node:fs';
 import {resolve} from 'node:path';
-import {randomUUID,randomBytes} from 'node:crypto';
+import {randomUUID,randomBytes,createHash} from 'node:crypto';
 import {createServer} from 'node:net';
 import {Client,StreamableHTTPClientTransport} from '@modelcontextprotocol/client';
 import {SeededWorkspaceRepository} from '../services/server/seeded-workspace.ts';
@@ -13,7 +13,7 @@ const configPath=resolve(root,'config.json');writeFileSync(configPath,JSON.strin
 const workspace=new SeededWorkspaceRepository(resolve(root,'business.sqlite'));try{workspace.seed(config.wallet.companyId,'entity-3',JSON.parse(readFileSync('public/demo-data-entity-3.json','utf8')));}finally{workspace.close();}
 const listener=createServer();await new Promise(done=>listener.listen(0,'127.0.0.1',done));const port=listener.address().port;await new Promise(done=>listener.close(done));
 const base=`http://127.0.0.1:${port}`;const operator=randomBytes(32).toString('hex');
-const env={...process.env,PORT:String(port),HOSTNAME:'127.0.0.1',SETTLBOX_APP_ORIGIN:base,SETTLBOX_OPERATOR_TOKEN:operator,SETTLBOX_TREASURY_CONFIG:configPath,SETTLBOX_BUSINESS_DATABASE:resolve(root,'business.sqlite'),SETTLBOX_SESSION_DATABASE:resolve(root,'sessions.sqlite'),SETTLBOX_TREASURY_DATABASE:resolve(root,'treasury.sqlite'),CIRCLE_API_KEY:'',CIRCLE_ENTITY_SECRET:'',CIRCLE_USER_CONTROLLED_API_KEY:'',SETTLBOX_FINANCE_WORKER_TOKEN:'',SETTLBOX_PAYOUT_STATUS_TOKEN:''};
+const env={...process.env,PORT:String(port),HOSTNAME:'127.0.0.1',SETTLBOX_APP_ORIGIN:base,SETTLBOX_OAUTH_ISSUER:base,SETTLBOX_ADDITIONAL_APP_ORIGINS:'',SETTLBOX_OPERATOR_TOKEN:operator,SETTLBOX_TREASURY_CONFIG:configPath,SETTLBOX_BUSINESS_DATABASE:resolve(root,'business.sqlite'),SETTLBOX_SESSION_DATABASE:resolve(root,'sessions.sqlite'),SETTLBOX_TREASURY_DATABASE:resolve(root,'treasury.sqlite'),CIRCLE_API_KEY:'',CIRCLE_ENTITY_SECRET:'',CIRCLE_USER_CONTROLLED_API_KEY:'',SETTLBOX_FINANCE_WORKER_TOKEN:'',SETTLBOX_PAYOUT_STATUS_TOKEN:''};
 let child,cookie;const clients=[];
 async function start(){child=spawn(process.execPath,[resolve('.next/standalone/server.js')],{cwd:resolve('.next/standalone'),env,windowsHide:true,stdio:['ignore','pipe','pipe']});let logs='';child.stdout.on('data',v=>logs+=v);child.stderr.on('data',v=>logs+=v);for(let i=0;i<100;i++){if(child.exitCode!==null)throw new Error(logs);try{await fetch(base+'/login');return;}catch{await new Promise(done=>setTimeout(done,200));}}throw new Error('Server unavailable');}
 async function stop(){if(child&&child.exitCode===null){const done=new Promise(resolve=>child.once('exit',resolve));child.kill();await done;}}
@@ -24,6 +24,19 @@ const value=result=>JSON.parse(result.content[0].text);
 try{
  await start();const login=await fetch(base+'/api/operator/session',{method:'POST',headers:{Origin:base,'Content-Type':'application/json'},body:JSON.stringify({token:operator})});assert.equal(login.status,200);cookie=login.headers.get('set-cookie').split(';')[0];
  assert.equal((await fetch(base+'/api/mcp',{headers:{Cookie:cookie}})).status,401);
+ const discovery=await(await fetch(base+'/.well-known/oauth-authorization-server')).json();assert.equal(discovery.issuer,base);assert.equal(discovery.registration_endpoint,base+'/api/oauth/register');
+ const protectedResource=await(await fetch(base+'/.well-known/oauth-protected-resource/api/mcp')).json();assert.equal(protectedResource.resource,base+'/api/mcp');
+ const challenge=await fetch(base+'/api/mcp');assert.equal(challenge.status,401);assert.ok(challenge.headers.get('www-authenticate').includes('resource_metadata='));
+ const registered=await fetch(discovery.registration_endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({client_name:'OAuth HTTP fixture',redirect_uris:['https://client.example/callback'],token_endpoint_auth_method:'none'})});assert.equal(registered.status,201);const oauthClient=await registered.json();
+ const verifier='v'.repeat(43);const query=new URLSearchParams({client_id:oauthClient.client_id,redirect_uri:'https://client.example/callback',response_type:'code',state:'fixture-state',code_challenge_method:'S256',code_challenge:createHash('sha256').update(verifier).digest('base64url'),scope:'records:read actions:propose',resource:base+'/api/mcp'});
+ assert.equal((await fetch(base+'/api/oauth/authorize?'+query)).status,401);assert.equal((await owner('/api/oauth/authorize?'+query)).status,200);
+ const consentBody={query:query.toString(),decision:'allow',scopes:['records:read']};assert.equal((await fetch(base+'/api/oauth/authorize',{method:'POST',headers:{Cookie:cookie,Origin:'https://evil.invalid','Content-Type':'application/json'},body:JSON.stringify(consentBody)})).status,401);
+ const consent=await owner('/api/oauth/authorize',consentBody);assert.equal(consent.status,200);const callback=new URL((await consent.json()).redirect);assert.equal(callback.searchParams.get('state'),'fixture-state');
+ const exchange=new URLSearchParams({client_id:oauthClient.client_id,grant_type:'authorization_code',code:callback.searchParams.get('code'),redirect_uri:'https://client.example/callback',code_verifier:verifier,resource:base+'/api/mcp'});
+ const tokenResponse=await fetch(discovery.token_endpoint,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:exchange});assert.equal(tokenResponse.status,200);const oauthToken=await tokenResponse.json();const oauthMcp=await connect(oauthToken.access_token);assert.deepEqual((await oauthMcp.listTools()).tools.map(t=>t.name),['settlbox_list_records']);
+ const refresh=await fetch(discovery.token_endpoint,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({client_id:oauthClient.client_id,grant_type:'refresh_token',refresh_token:oauthToken.refresh_token})});assert.equal(refresh.status,200);assert.equal((await fetch(base+'/api/mcp',{headers:{Authorization:'Bearer '+oauthToken.access_token}})).status,401);const rotated=await refresh.json();const access=await(await owner('/api/mcp-access')).json();const oauthCredential=access.credentials.find(c=>c.name==='OAuth: OAuth HTTP fixture');assert.ok(oauthCredential);assert.equal((await owner('/api/mcp-access',{action:'revoke',id:oauthCredential.id})).status,200);assert.equal((await fetch(discovery.token_endpoint,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({client_id:oauthClient.client_id,grant_type:'refresh_token',refresh_token:rotated.refresh_token})})).status,400);
+ console.log('PASS: OAuth public discovery, registration, owner consent/CSRF, PKCE exchange, scoped official MCP client, refresh and revocation.');
+
  assert.equal((await fetch(base+'/api/mcp-access',{method:'POST',headers:{Cookie:cookie,Origin:'https://evil.invalid','Content-Type':'application/json'},body:'{"action":"create"}'})).status,403);
  const full=await credential(['records:read','actions:propose']);const client=await connect(full.token);const tools=await client.listTools();assert.equal(tools.tools.length,4);assert.ok(!tools.tools.some(t=>/execute|confirm/.test(t.name)));
  const read=await credential(['records:read']);const readClient=await connect(read.token);assert.deepEqual((await readClient.listTools()).tools.map(t=>t.name),['settlbox_list_records']);
