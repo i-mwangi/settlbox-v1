@@ -1,4 +1,5 @@
 "use client";
+import FinanceButton from "@/presentation/components/Common/FinanceButton";
 
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -29,9 +30,9 @@ export default function AdvancedAgentControls() {
     setPendingRequest(request);
     prepare.mutate(request);
   };
-  return <section className="w-full p-6 space-y-6">
+  return <section className="w-full space-y-6">
     <header>
-      <h1 className="text-2xl font-semibold text-text-primary">Finance agent</h1>
+      <h1 className="text-[18px] font-semibold text-text-primary"><img src="/sidebar/ai-assistant.svg" alt="" className="inline-block w-8 h-8 mr-3"/>Finance controls</h1>
       <p className="text-sm text-text-secondary">Prepare a review plan from saved obligations and the connected company treasury.</p>
     </header>
     {enabled && <div className="rounded-2xl border border-primary-divider bg-background p-5 space-y-3">
@@ -61,7 +62,7 @@ export default function AdvancedAgentControls() {
         <label className="flex flex-col gap-2 text-sm">Additional liquidity reserve (USDC)
           <input aria-label="Additional liquidity reserve (USDC)" inputMode="decimal" value={reserveUsdc} disabled={prepare.isPending} onChange={event => { setReserveUsdc(event.target.value); setPendingRequest(null); }} className="rounded-lg border border-primary-divider p-2 bg-background" />
         </label>
-        <button disabled={!enabled || prepare.isPending} onClick={submit} className="rounded-lg bg-[#1b1b1b] text-white px-4 py-2 disabled:opacity-50">{prepare.isPending ? "Preparing…" : pendingRequest ? "Retry plan" : "Prepare plan"}</button>
+        <FinanceButton disabled={!enabled || prepare.isPending} onClick={submit} className="rounded-lg bg-[#1b1b1b] text-white px-4 py-2 disabled:opacity-50">{prepare.isPending ? "Preparing…" : pendingRequest ? "Retry plan" : "Prepare plan"}</FinanceButton>
       </div>
       {(history.error || prepare.error) && <p role="alert" className="text-red-600">{prepare.error?.message ?? history.error?.message}</p>}
     </div>

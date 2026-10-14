@@ -8,6 +8,8 @@ const PERIOD_OPTIONS = [
     { id: "month", label: "Month" },
     { id: "week", label: "Week" },
     { id: "day", label: "Day" },
+    { id: "hour", label: "Hour" },
+    { id: "minute", label: "Minute" },
 ] as const;
 type PeriodId = (typeof PERIOD_OPTIONS)[number]["id"];
 interface PeriodFilterDropdownProps {
@@ -44,7 +46,7 @@ export const PeriodFilterDropdown = ({ period, onChange, label }: PeriodFilterDr
         }
         setIsOpen(o => !o);
     };
-    const current = label ?? PERIOD_OPTIONS.find(p => p.id === period)?.label ?? "Year";
+    const current = label ?? PERIOD_OPTIONS.find(p => p.id === period)?.label ?? "Day";
     return (<div className="relative">
       <button type="button" ref={triggerRef} onClick={toggleOpen} className="inline-flex items-center gap-2 rounded-lg border border-primary-divider bg-background px-3 py-1.5 text-sm text-text-secondary transition-colors hover:bg-app-background">
         <CalendarBlank width={15} height={15} strokeWidth={2} className="text-text-secondary"/>

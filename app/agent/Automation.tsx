@@ -1,4 +1,5 @@
 "use client";
+import FinanceButton from "@/presentation/components/Common/FinanceButton";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { workspaceFetch } from "@/presentation/services/api/seeded-workspace";
@@ -28,8 +29,8 @@ export default function Automation() {
     {enabled && <p className="text-sm text-text-secondary">Automatic queueing: {query.data?.config.autoQueue ? "enabled" : "disabled"} · Additional reserve: {query.data?.config.reserveUsdc} USDC · At most {query.data?.config.maxActions} submission attempts per cycle.</p>}
     {query.data && !query.data.runnerConfigured && <p className="text-sm text-text-secondary">Background runner needs server configuration. Run one cycle remains available after enabling.</p>}
     <div className="flex flex-wrap gap-3">
-      <button className={button} disabled={pending || !query.data} onClick={() => void request("configure", !enabled)}>{enabled ? "Stop automation" : "Enable automation"}</button>
-      <button className={button} disabled={pending || !enabled} onClick={() => void request("tick")}>Run one cycle</button>
+      <FinanceButton className={button} disabled={pending || !query.data} onClick={() => void request("configure", !enabled)}>{enabled ? "Stop automation" : "Enable automation"}</FinanceButton>
+      <FinanceButton className={button} disabled={pending || !enabled} onClick={() => void request("tick")}>Run one cycle</FinanceButton>
     </div>
     {(message || query.error) && <p role="status" className="text-sm">{message || query.error?.message}</p>}
     <details><summary className="cursor-pointer text-sm">Automation audit events</summary><ul className="space-y-2 mt-3">{query.data?.events.map((event,index) => <li key={index} className="text-xs break-all">{event.created_at} · {event.event}</li>)}</ul></details>

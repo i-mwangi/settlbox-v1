@@ -1,15 +1,16 @@
 "use client";
+import FinanceButton from "@/presentation/components/Common/FinanceButton";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { workspaceFetch } from "@/presentation/services/api/seeded-workspace";
 import type { VaultPayment } from "@/services/server/vault-payment-journal";
 export function QueueVaultPayment({ runId, recordId }: { runId: string; recordId: string }) {
   const client = useQueryClient(); const [pending, setPending] = useState(false); const [error, setError] = useState("");
-  return <div><button disabled={pending} className="rounded-lg border border-primary-divider px-3 py-2 text-sm disabled:opacity-50" onClick={async () => {
+  return <div><FinanceButton disabled={pending} className="rounded-lg border border-primary-divider px-3 py-2 text-sm disabled:opacity-50" onClick={async () => {
     setPending(true); setError("");
     try { await workspaceFetch("/api/agent-payments", "POST", { action: "queue", runId, recordId }); await client.invalidateQueries({ queryKey: ["agent-payments"] }); }
     catch(error) { setError(error instanceof Error ? error.message : "Queue request failed"); } finally { setPending(false); }
-  }}>{pending ? "Queueing…" : "Queue for vault approval"}</button>{error && <p role="alert" className="text-sm text-red-600">{error}</p>}</div>;
+  }}>{pending ? "Queueing…" : "Queue for vault approval"}</FinanceButton>{error && <p role="alert" className="text-sm text-red-600">{error}</p>}</div>;
 }
 export default function VaultPayments() {
   const client = useQueryClient(); const [pending, setPending] = useState(false); const [error, setError] = useState("");
@@ -28,9 +29,9 @@ export default function VaultPayments() {
       <p>{payment.amount} USDC · {payment.status.replaceAll("_", " ")}</p>
       <p className="break-all text-sm">Recipient: {payment.recipient}</p>
       <p className="text-xs text-text-secondary break-all">Obligation: {payment.recordId} · Payment: {payment.id}</p>
-      <div className="flex gap-3"><button disabled={pending} onClick={() => void perform("reconcile", payment.recordId)} className="rounded-lg border border-primary-divider px-3 py-2 text-sm">Check chain status</button>
+      <div className="flex gap-3"><FinanceButton disabled={pending} onClick={() => void perform("reconcile", payment.recordId)} className="rounded-lg border border-primary-divider px-3 py-2 text-sm">Check chain status</FinanceButton>
         {payment.status === "queue_pending" && !payment.queueProviderId && <QueueVaultPayment runId={payment.runId} recordId={payment.recordId} />}
-        {payment.status === "ready" && !payment.executeProviderId && <button disabled={pending} onClick={() => void perform("execute", payment.recordId)} className="rounded-lg border border-primary-divider px-3 py-2 text-sm">Execute approved payment</button>}
+        {payment.status === "ready" && !payment.executeProviderId && <FinanceButton disabled={pending} onClick={() => void perform("execute", payment.recordId)} className="rounded-lg border border-primary-divider px-3 py-2 text-sm">Execute approved payment</FinanceButton>}
         {payment.transactionHash && <a href={`https://testnet.arcscan.app/tx/${payment.transactionHash}`} target="_blank" rel="noreferrer" className="text-sm text-primary-blue">View settlement</a>}
       </div>
     </div>)}

@@ -11,6 +11,7 @@ import GoogleSheetsIntegrationSettings from "./GoogleSheetsIntegrationSettings";
 import StripeIntegrationSettings from "./StripeIntegrationSettings";
 import AdvancedAgentControls from "@/app/agent/Advanced";
 import McpSettings from "./McpSettings";
+import IntegrationFrame from "./IntegrationFrame";
 import PayoutSettings from "./PayoutSettings";
 import TeamSettings from "./TeamSettings";
 import TeamAccountContainer from "./TeamSetting/TeamAccountContainer";
@@ -54,6 +55,8 @@ export default function SettingContainer() {
     const [activeTab, setActiveTab] = useState<TabType>("account");
     const searchParams = useSearchParams();
     const teamAccountParam = searchParams.get("team-account");
+    const integrationTab=searchParams.get("tab");
+    useEffect(()=>{if(integrationTab&&["google-sheets","integrations","stripe","mcp","finance","payouts"].includes(integrationTab))setActiveTab(integrationTab as TabType);},[integrationTab]);
     useEffect(() => {
         if (teamAccountParam) {
             setActiveTab("team");
@@ -140,9 +143,9 @@ export default function SettingContainer() {
             {activeTab === "integrations" && <SlackIntegrationSettings />}
             {activeTab === "google-sheets" && <GoogleSheetsIntegrationSettings />}
             {activeTab === "stripe" && <StripeIntegrationSettings />}
-            {activeTab === "mcp" && <McpSettings />}
-            {activeTab === "payouts" && <PayoutSettings />}
-            {activeTab === "finance" && <AdvancedAgentControls />}
+            {activeTab === "mcp" && <IntegrationFrame><McpSettings /></IntegrationFrame>}
+            {activeTab === "payouts" && <IntegrationFrame><PayoutSettings /></IntegrationFrame>}
+            {activeTab === "finance" && <IntegrationFrame><AdvancedAgentControls /></IntegrationFrame>}
             {activeTab === "invoice" && <InvoiceSettingsTab />}
           </div>
         </div>
