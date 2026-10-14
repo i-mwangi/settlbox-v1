@@ -152,3 +152,9 @@ Final verification: production build and TypeScript passed after origin hardenin
 Added public OAuth discovery and dynamic client registration, owner sign-in/consent, S256 PKCE authorization codes, resource-bound one-hour bearer access and rotating refresh tokens. Refresh/code replay revokes the grant; Settings revocation blocks refresh. Existing payment authorization boundaries remain in force.
 
 Validation: production build and typecheck passed; full suite 150 tests passed, followed by the added expired-code/grant test (four OAuth tests passed). Isolated production HTTP harness passed OAuth discovery, registration, consent/CSRF, PKCE, official MCP client access, refresh/revocation and all existing inbound tests. Public ngrok discovery returns the configured HTTPS issuer; unauthenticated MCP returns 401 with protected-resource metadata. OAuth sign-in UI inspected. Actual Claude connection still requires the owner to retry Connect and select permissions; not claimed verified.
+
+### 2026-10-14 — paid transaction details
+
+Fixed Transactions history opening details by row number instead of the saved UUID, and stopped truncating UUIDs that begin with digits. Missing records now render a message instead of an endless spinner. Settled business payments show exact saved amount, recipient wallet, Arc Testnet and recorded settlement hash; demo approvers and invented invoice lines are excluded from that panel.
+
+Validation: production build including type checking passed; nine business-record and settlement tests passed. Browser check opened MCP payment test from History and verified Paid, 0.001 USDC, recipient and Arcscan transaction link. No payment was submitted by these checks.
