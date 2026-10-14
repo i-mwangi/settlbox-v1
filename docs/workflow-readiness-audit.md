@@ -166,3 +166,9 @@ Restored live transaction detail cards, approvers section and adjacent progress 
 Finance agent, its action/payment/wallet reviews, OAuth consent buttons and inbound/outbound MCP Settings now reuse the platform texture-button gradients, explicit 14px button typography, existing sidebar/close icons, neutral surfaces and modal header/backdrop treatment. Payment policy and authorization handlers are unchanged.
 
 Validation: final production build and type checking passed. Browser inspected the restored paid MCP panel, agent conversation/review styling and MCP Settings. Final payment popup check encountered an expired session and kept authorization disabled; no payment or permission change was submitted. Proof images saved privately under .data/platform-*.png.
+
+### 2026-10-14 — dashboard time scale and Finance agent icon
+
+Dashboard balance range defaults to Day. Added rolling Minute and Hour views, and replaced categorical three-hour/month-name buckets with a numeric timestamp axis. Tick labels/density adapt to the visible duration, from seconds through clock times and calendar dates. Points use actual observation times; missing history is not synthesized. Change/flow values follow the selected range. Dashboard clock updates every 15 seconds and requests workspace refresh once per visible minute. Balance storage retains minute observations for the latest day and returns hourly summaries for older history without deleting existing records. Finance agent sidebar now uses the existing chat icon instead of Earn's chart icon.
+
+Validation: four time-series/storage tests and two provider-history tests passed; production build including type checking passed. Browser verified default Day, Minute second labels, Hour clock labels, restored Day view and chat sidebar icon. Screenshot: .data/dashboard-day-adaptive.png.

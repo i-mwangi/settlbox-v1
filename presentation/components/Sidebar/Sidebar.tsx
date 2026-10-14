@@ -166,8 +166,8 @@ export const actionItems = [
         badgeCount: 0,
     },
     {
-        icon: "/sidebar/earn.svg",
-        filledIcon: "/sidebar/filled-earn.svg",
+        icon: "/sidebar/ai-assistant.svg",
+        filledIcon: "/sidebar/filled-ai-assistant.svg",
         label: "Finance agent",
         isActive: false,
         link: SidebarLink.Agent,
