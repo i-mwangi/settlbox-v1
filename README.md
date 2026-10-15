@@ -1,8 +1,26 @@
 # Settlbox
 
-Settlbox is a stablecoin-native business finance platform for treasury, invoices, payroll and contractor payments. Its Finance agent helps operators understand obligations, prepare actions for review and coordinate authorized USDC payments on Arc.
+Settlbox is a stablecoin-native business finance platform that connects treasury, invoices, payroll and contractor payments to an AI Finance agent. It turns saved business obligations into policy-checked actions, authorized USDC settlement on Arc and a traceable record of what happened.
 
 The broader vision is a business account for global collections, payroll and USD treasury management. The current implementation is an **Arc Testnet prototype**. Live banking, fiat payouts, yield and universal onboarding eligibility are not represented as available services.
+
+## The problem
+
+Small businesses and distributed teams manage cash, incoming invoices, bills and contractor payments in separate tools. Knowing a balance is not enough: an operator also needs to know what is due, which cash is already committed, what can be paid within policy and which decisions require attention.
+
+Settlbox brings those obligations and payment controls into one workflow. Its current focus is explainable payment preparation and traceable execution, rather than replacing every bank account or accounting system.
+
+## What the agent decides
+
+| Decision | Evidence and boundary |
+| --- | --- |
+| Which obligations need attention first | Orders saved obligations by due date and explains eligible versus blocked items. This is a deterministic priority rule, not learned payment-timing optimization. |
+| What cash is available for proposed payments | Uses the selected funding source, existing commitments, liquidity floor and additional reserve. Uncollected invoices are not cash. |
+| Which payments must stop or escalate | Checks recipient permissions, payment limits, remaining daily capacity, liquidity and active workflows. The language model cannot override these checks. |
+| Which business action to prepare | Resolves a supported operation from the conversation and saved context, then presents its exact terms for review. |
+| Whether an execution can proceed | The server and contract recheck the saved payment and applicable approvals. An enabled worker can reconcile and execute already-ready payments within policy; it cannot create human signatures. |
+
+The model explains and proposes; deterministic checks and contract rules enforce authority. The current prototype does not independently negotiate vendor terms, screen sanctions, infer milestone completion or optimize yield.
 
 ## How it works
 
@@ -13,6 +31,23 @@ The broader vision is a business account for global collections, payroll and USD
 5. With Slack notifications enabled, the background worker posts structured record updates with a transaction link when a settlement hash is recorded.
 
 Uncollected invoices are excluded from spendable cash. A completed action review does not itself prove payment settlement. Execution rechecks current balances, permissions and limits.
+
+## Verified workflow example
+
+A saved test bill for **0.001 USDC** was prepared through the Finance agent, reviewed in Settlbox and authorized by the operator. It settled on Arc Testnet, was recorded as paid, and produced a Slack card with the actual transaction link:
+
+[View the verified Arc Testnet transaction](https://testnet.arcscan.app/tx/0xcc534c3310eb51b699b94ba2f7610e9d29658ff384c490e23e66bf8e35d5ad15)
+
+The broader rehearsal also verified Google Sheets draft import/export and an analysis that distinguished eligible bills, protected liquidity, blocked obligations and unpaid invoices. These are engineering verification results using test assets; they are not evidence of commercial payment volume or customer adoption. Public customer-adoption metrics are not reported here.
+
+To explore the workflow in a configured workspace, ask:
+
+- “What needs attention, which bills are eligible for review, and why are the others blocked?”
+- “How much cash is protected, and what remains after the eligible payments?”
+- “Prepare a draft bill for [counterparty] for [amount] USDC, due [date], to [wallet]. Do not pay it.”
+- “Open payment review for [saved bill title]. Keep its amount and recipient unchanged.”
+
+Use the actual saved record names and permitted recipients. Review exact details before authorizing. Open **Financial decision summary** and **Agent audit trail** on the Finance agent page to inspect the saved evidence. Live use needs configured wallets and providers; cloning the repository alone does not provision them.
 
 ## Implemented capabilities
 
