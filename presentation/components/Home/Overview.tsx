@@ -34,7 +34,7 @@ const BalanceOverviewHeader = ({ totalBalance = 0, accountIds, }: {
     const [selectedTokens, setSelectedTokens] = useState<string[]>(["USDC"]);
     const toggleToken = (symbol: string) => setSelectedTokens(previous => previous.includes(symbol) ? [] : [symbol]);
     const tokenLabel = selectedTokens.length ? "USDC" : "No tokens";
-    const [period, setPeriod] = useState<PeriodId>("day");
+    const [period, setPeriod] = useState<PeriodId>("year");
     const periodLabel = PERIODS.find(item => item.id === period)?.label || "Day";
     const [now,setNow]=useState(()=>Date.now());
     useEffect(()=>{const timer=setInterval(()=>setNow(Date.now()),15000);return()=>clearInterval(timer);},[]);
