@@ -450,7 +450,10 @@ const CreateClientInvoice = () => {
             {showPreview ? <EyeClosed width={16} height={16} strokeWidth={2}/> : <Eye width={16} height={16} strokeWidth={2}/>}
             {showPreview ? "Hide Preview" : "Show Preview"}
           </button>
-          <SecondaryButton text="Cancel" variant="red" onClick={() => openModal(MODAL_IDS.DISCARD_CHANGES, { onConfirm: () => router.push("/invoice") })} buttonClassName="w-fit" disabled={isLoading}/>
+          <SecondaryButton text="Cancel" variant="red" onClick={() => openModal(MODAL_IDS.DISCARD_CHANGES, {
+            // A confirmed discard must leave the form even if client routing is stalled.
+            onConfirm: () => window.location.assign("/invoice"),
+          })} buttonClassName="w-fit" disabled={isLoading}/>
           <SecondaryButton text="Save as Draft" variant="light" onClick={handleSaveDraft} buttonClassName="w-fit whitespace-nowrap" disabled={isLoading}/>
           <PrimaryButton text={isLoading ? "Sending..." : "Send Invoice"} onClick={handleSendInvoice} containerClassName="w-fit" buttonClassName="whitespace-nowrap" disabled={isLoading}/>
         </div>
