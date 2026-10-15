@@ -1,3 +1,4 @@
+import { arcReadTransport } from "./arc-read-transport.ts";
 import { openVaultPayments } from "./vault-payments";
 import { readTreasuryVaultStatus } from "./treasury-vault";
 import { createPublicClient, http } from "viem";
@@ -6,10 +7,10 @@ import { treasuryVaultAbi } from "../arc/treasury-vault";
 import { parseAmount } from "../arc/amount";
 import type { BusinessRecord } from "../../types/business";
 import type { AgentPlanningContext } from "../../types/agent";
-export async function vaultPlanningContext(companyId: string, records: BusinessRecord[]): Promise<AgentPlanningContext> {
-  const vault = await readTreasuryVaultStatus(companyId);
+export async function vaultPlanningContext(companyId: string, records: BusinessRecord[], observed?: Awaited<ReturnType<typeof readTreasuryVaultStatus>>): Promise<AgentPlanningContext> {
+  const vault = observed ?? await readTreasuryVaultStatus(companyId);
   if (vault.state !== "verified") throw new Error("Verified vault is required for planning");
-  const reader = createPublicClient({ chain: arcTestnet, transport: http(process.env.NEXT_PUBLIC_ARC_RPC_URL || arcTestnet.rpcUrls.default.http[0], { timeout: 10000, retryCount: 1 }) });
+  const reader = createPublicClient({ chain: arcTestnet, transport: arcReadTransport() });
   const recipients = [...new Set(records.filter(record => record.kind !== "invoice").map(record => record.recipient))];
   const allowedRecipients: `0x${string}`[] = [];
   for (let offset = 0; offset < recipients.length; offset += 8) {

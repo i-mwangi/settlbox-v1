@@ -19,3 +19,9 @@ Disconnect removes the saved connection and snapshot from Settlbox. Revoke or ro
 References:
 - https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks/
 - https://docs.stripe.com/keys
+
+Slack recovery: record notifications are paced at least 1.1 seconds apart within a cycle. Confirmed HTTP 429 rejections respect Retry-After, pause the channel and receive at most three persisted attempts. Network failures, unexpected acknowledgements and server errors remain uncertain and are not automatically resent; check Slack before another attempt. Other confirmed client rejections are marked failed. Delivery audit shows the sanitized reason and attempt count. Old uncertain records are preserved rather than falsely marked delivered.
+
+Arc reads use bounded retry and a documented backup RPC. SETTLBOX_ARC_BACKUP_RPC_URL can select another HTTPS Arc Testnet read endpoint. No transaction-submission method is permitted on this read transport. Notification processing runs independently of finance RPC reads.
+
+References: https://docs.arc.io/arc/references/rpc-endpoints and https://docs.slack.dev/apis/web-api/rate-limits/
