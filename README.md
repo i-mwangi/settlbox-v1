@@ -208,7 +208,7 @@ npm run typecheck:arc
 npm run build
 ```
 
-Setup guides: [Google Sheets](docs/google-sheets-setup.md), [Slack and Stripe](docs/slack-stripe-setup.md), and [.env.example](.env.example).
+[Documentation index](docs/README.md). Setup guides: [Google Sheets](docs/google-sheets-setup.md), [Slack and Stripe](docs/slack-stripe-setup.md), and [.env.example](.env.example).
 
 Circle credentials remain server-side. Operator sessions expire after one hour. Configuration, SQLite databases and private uploads live under `.data` by default. Preserve the integration encryption key and use persistent storage. Distributed deployments require appropriate shared transactional storage.
 
