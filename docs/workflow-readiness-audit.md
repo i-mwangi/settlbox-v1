@@ -180,3 +180,9 @@ Implemented company-scoped encrypted Google Sheets OAuth, explicit preview/impor
 All integration pages reuse platform cards and buttons. Google Sheets, Slack and Stripe include demo-based numbered How it works cards with accurate capability descriptions. Google import review uses readable fields instead of raw JSON.
 
 Validation: 161 tests passed for the integration implementation; isolated production HTTP checks passed with mocked Google, Slack and Stripe responses. User screenshots confirm real Google OAuth connection, a successful sheet preview, and Slack reporting connection-test delivery. Real Sheets import/export and Stripe account access remain unverified. Stripe guide type checking passed.
+
+### 2026-10-15 — real Slack transaction cards
+
+Background record notifications now use structured Slack blocks within a coloured attachment, with real saved title, amount, status and record type. Unsettled records explicitly state no settlement hash is recorded. Paid records with a valid hash include a View transaction link to Arc Testnet explorer. User-controlled field values use plain_text to prevent Slack mention/markup injection. Delivery deduplication and uncertain-post handling remain unchanged.
+
+Validation: four provider integration tests and type checking passed. Sent a structured card for the saved demo draft; user confirmed its appearance. User personally authorized 0.001 test USDC for Slack background delivery second test 2026-10-15. App reported settled; independent Arc RPC receipt returned status 0x1 for 0xcc534c3310eb51b699b94ba2f7610e9d29658ff384c490e23e66bf8e35d5ad15. Sent the paid card using the real saved record; user confirmed Paid, green border and transaction link. No additional payment was created or sent by the notification verification.
