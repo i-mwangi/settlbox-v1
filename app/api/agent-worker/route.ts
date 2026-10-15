@@ -25,7 +25,7 @@ export async function POST(request: Request) {
   }
   try {
     const { action, settings } = await request.json(); const company = readTreasuryConfiguration().wallet.companyId;
-    if (action === "tick") { const result=await runFinanceWorker(company); await runSlackNotifications(company).catch(()=>undefined); return Response.json(result, { headers }); }
+    if (action === "tick") { const [finance,notifications]=await Promise.allSettled([runFinanceWorker(company),runSlackNotifications(company)]); if(finance.status==="rejected")throw finance.reason; return Response.json({...finance.value,notifications:notifications.status==="fulfilled"?notifications.value:{error:"Notification cycle failed; check delivery audit"}}, { headers }); }
     if (action !== "configure" || worker) return Response.json({ error: "Only the company owner can change automation settings" }, { status: 403, headers });
     const store = openFinanceWorker();
     try { return Response.json(store.configure(company, settings, actor), { headers }); } finally { store.close(); }

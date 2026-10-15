@@ -1,3 +1,4 @@
+import { arcReadTransport } from "./arc-read-transport.ts";
 import { readFileSync, mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { createPublicClient, http, decodeFunctionData, erc20Abi } from "viem";
@@ -20,7 +21,7 @@ export async function openTreasury() {
   if (process.env.NEXT_PUBLIC_ARC_ENVIRONMENT && process.env.NEXT_PUBLIC_ARC_ENVIRONMENT !== "testnet") throw new Error("Arc Testnet is required");
   const config = readTreasuryConfiguration();
   if (config.wallet.chainId !== arcTestnet.id) throw new Error("Arc Testnet wallet is required");
-  const reader = createPublicClient({ chain: arcTestnet, transport: http(process.env.NEXT_PUBLIC_ARC_RPC_URL || arcTestnet.rpcUrls.default.http[0]) });
+  const reader = createPublicClient({ chain: arcTestnet, transport: arcReadTransport() });
   if (await reader.getChainId() !== arcTestnet.id) throw new Error("RPC is not Arc Testnet");
   const balance = await reader.getBalance({ address: config.wallet.address });
   const path = resolve(process.env.SETTLBOX_TREASURY_DATABASE || ".data/treasury.sqlite");

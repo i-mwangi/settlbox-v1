@@ -196,3 +196,11 @@ Finance agent now exposes Financial decision summary and Agent audit trail. The 
 Validation: 163 tests passed, type checking and production build passed. Live analysis correctly identified two eligible 0.001 USDC bills, 0.001 USDC protected funds, 5.002 USDC blocked obligations and 10.001 USDC uncollected invoices. Browser verified deterministic summary and saved audit view. No payment or policy mutation was proposed by the analysis test. Proof: .data/agent-audit-trail.png.
 
 Also investigated dashboard balance scope: it reads the company wallet rather than the separate payment vault. Observed company wallet 19.963963323588361304 USDC (displayed rounded as $19.96), vault 19.996 USDC; the confirmed Slack demo transaction interacted with the vault. No balance was artificially adjusted.
+
+### 2026-10-15 — RPC and Slack recovery
+
+Arc planning, vault status, company-wallet balance and treasury reads now use bounded read-only retry/failover through the configured primary and a documented Arc Testnet backup. Unavailable reads fail closed with a sanitized retry message. Failed balance cache promises are evicted; planning reuses its already-observed vault status rather than repeating the status read. No transaction submission method is permitted by the shared read transport.
+
+Slack failures now record sanitized reasons, attempt counts and scheduled retry times. Only confirmed HTTP 429 rejections receive automatic persisted retries (maximum three attempts), honoring Retry-After and pausing the channel. Batches are paced. Ambiguous network/server responses remain uncertain with no automatic resend; definitive other client rejections become failed. Test-message failures are recorded without promising a background retry. Notification processing runs independently of finance RPC processing. Existing uncertain history remains unchanged.
+
+Validation: 166 tests passed; final focused Slack tests, type checking, production build and isolated production API checks passed. Live primary and backup identified Arc Testnet. An isolated process with its primary intentionally unavailable recovered chain ID and block reads through the real backup. Browser verified a real harmless Slack connection test delivered and appeared sent with attempt count 1. No payment was sent by these recovery checks.
