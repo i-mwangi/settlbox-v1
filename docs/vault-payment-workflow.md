@@ -10,8 +10,6 @@ Use **Check chain status** after queueing. The saved recipient, amount and expir
 
 Settlement is recorded as paid only after a successful Arc receipt, the expected executor and vault transaction identities, and a matching `PaymentExecuted` event are verified. The business record receives the transaction hash. Provider acceptance and PIN completion alone never mark it paid. The Finance agent panel shows persistent audit events and links to verified settlements.
 
-Verification on October 11, 2026: 97 automated tests passed, including company isolation, changed records, paid-history rejection, cross-route duplicate prevention, aggregate reservations and contract ownership/policy/approval/replay behavior. A new 0.001 USDC bill, `d709de29-7cff-4dde-92be-fbf643818a94`, is saved as a draft for an actual test settlement. Live queue/approval/execution/reconciliation remain pending human activation and test funding. No settlement is claimed by these automated checks.
+See [workflow verification history](workflow-readiness-audit.md) for dated live settlements and automated checks.
 
-The signed-in Codex browser prepared and saved a vault-funded plan. It reported the actual zero vault balance and blocked the 0.001 USDC test bill for insufficient liquidity. The 0.002 USDC reimbursement remained blocked for its recipient, payment limit and liquidity constraints. An interrupted upstream request was retried without creating a payment or bypassing a block.
-
-For this test, the vault needs at least payment amount + its 0.001 USDC floor + any additional reserve. The Circle executor separately needs native Arc Testnet USDC for transaction fees. Funds in the company treasury or approval wallet are not automatically funds held by the vault or executor.
+For a payment, the vault needs at least payment amount + its 0.001 USDC floor + any additional reserve. The Circle executor separately needs native Arc Testnet USDC for transaction fees. Funds in the company treasury or approval wallet are not automatically funds held by the vault or executor.
