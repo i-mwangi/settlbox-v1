@@ -25,7 +25,7 @@ test('Slack record cards contain real fields, safe text and only validated settl
  try{await sendSlack('SETTLBOX_SLACK_CARD_WEBHOOK_URL',payload,async(url,init)=>{assert.deepEqual(JSON.parse(init.body),payload);return new Response('ok')});}finally{delete process.env.SETTLBOX_SLACK_CARD_WEBHOOK_URL;}
 });
 test('Slack limits destinations to official incoming webhooks and does not confirm failures',async()=>{
- const name='SETTLBOX_SLACK_FIXTURE_WEBHOOK_URL';process.env[name]='https://evil.invalid/services/a/b/c';assert.throws(()=>slackWebhook(name));process.env[name]='https://hooks.slack.com/services/A/B/C';let calls=0;await sendSlack(name,'hello',async(url,init)=>{calls++;assert.equal(url,'https://hooks.slack.com/services/A/B/C');assert.equal(init.redirect,'error');return new Response('ok')});assert.equal(calls,1);await assert.rejects(sendSlack(name,'hello',async()=>new Response('bad',{status:500})));delete process.env[name];
+ const name='SETTLBOX_SLACK_FIXTURE_WEBHOOK_URL';process.env[name]='https://evil.invalid/services/a/b/c';assert.throws(()=>slackWebhook(name));process.env[name]='https://hooks.slack.com/services/A/B/C';let calls=0;await sendSlack(name,'hello',async(url,init)=>{calls++;assert.equal(url,'https://hooks.slack.com/services/A/B/C');assert.equal(init.redirect,'error');return new Response('ok')});assert.equal(calls,1);await assert.rejects(sendSlack(name,'hello',async()=>new Response('bad',{status:500})),error=>error.deliveryStatus==='uncertain');await assert.rejects(sendSlack(name,'hello',async()=>new Response('invalid',{status:400})),error=>error.deliveryStatus==='failed');await assert.rejects(sendSlack(name,'hello',async()=>{throw new Error('https://secret-webhook.invalid/key')}),error=>error.deliveryStatus==='uncertain'&&!error.message.includes('secret-webhook'));delete process.env[name];
 });
 test('Slack automatic delivery is opt-in, company scoped and does not retry uncertain posts',async()=>{
  const dir=mkdtempSync(join(tmpdir(),'slack-'));const path=join(dir,'db');const previous=process.env.SETTLBOX_BUSINESS_DATABASE;process.env.SETTLBOX_BUSINESS_DATABASE=path;process.env.SETTLBOX_SLACK_FIXTURE_WEBHOOK_URL='https://hooks.slack.com/services/A/B/C';const store=new IntegrationStore(path,'b'.repeat(64));const records=new BusinessRecordRepository(path);try{
@@ -35,3 +35,28 @@ test('Slack automatic delivery is opt-in, company scoped and does not retry unce
 test('Stripe snapshot accepts restricted keys only and issues read requests to Stripe',async()=>{
  const name='SETTLBOX_STRIPE_FIXTURE_READ_KEY';process.env[name]='sk_test_full';await assert.rejects(stripeSnapshot(name));process.env[name]='rk_test_fixture';const calls=[];const data=await stripeSnapshot(name,async(url,init)=>{calls.push(url);assert.equal(init.method,undefined);assert.equal(init.headers.Authorization,'Bearer rk_test_fixture');assert.equal(init.redirect,'error');if(url.endsWith('/account'))return Response.json({id:'acct_fixture',business_profile:{name:'Fixture'}});if(url.includes('/customers?'))return Response.json({data:[{id:'cus_fixture',name:'Vendor',email:'fixture@example.invalid'}],has_more:false});if(url.includes('/invoices?'))return Response.json({data:[{id:'in_fixture',status:'paid',currency:'usd',amount_due:100,customer:'cus_fixture'}],has_more:true});return Response.json({data:[],has_more:false});});assert.equal(calls.length,4);assert.equal(data.mode,'test');assert.equal(data.invoices[0].status,'paid');assert.equal(data.moreAvailable,true);assert.ok(!JSON.stringify(data).includes('rk_test_fixture'));delete process.env[name];
 });
+
+ test('Slack persists rate-limit backoff across reopen and never retries ambiguous or permanent failures',async()=>{
+ const dir=mkdtempSync(join(tmpdir(),'slack-recovery-'));const path=join(dir,'db');const previous=process.env.SETTLBOX_BUSINESS_DATABASE;process.env.SETTLBOX_BUSINESS_DATABASE=path;process.env.SETTLBOX_SLACK_FIXTURE_WEBHOOK_URL='https://hooks.slack.com/services/A/B/C';let store=new IntegrationStore(path,'c'.repeat(64));const records=new BusinessRecordRepository(path);const realNow=Date.now;let now=realNow();Date.now=()=>now;
+ try{
+  records.create('company',{kind:'bill',title:'Recovery fixture',counterparty:'Vendor',recipient:'0x1111111111111111111111111111111111111111',amount:'0.001',dueDate:'2026-10-31',description:''});
+  store.save('company','slack',{keyEnv:'SETTLBOX_SLACK_FIXTURE_WEBHOOK_URL',enabled:true,baseline:[]});
+  let calls=0;const limited=async()=>{calls++;return new Response('rate_limited',{status:429,headers:{'retry-after':'60'}})};
+  await deliverSlackChanges('company',store,limited);assert.equal(store.deliveries('company')[0].status,'retryable');
+  store.close();store=new IntegrationStore(path,'c'.repeat(64));await deliverSlackChanges('company',store,limited);assert.equal(calls,1);
+  now+=61000;await deliverSlackChanges('company',store,limited);assert.equal(calls,2);
+  now+=61000;await deliverSlackChanges('company',store,limited);assert.equal(calls,3);assert.equal(store.deliveries('company')[0].status,'failed');
+  now+=61000;await deliverSlackChanges('company',store,limited);assert.equal(calls,3);
+  assert.match(store.deliveries('company')[0].reason,/rate limit/);
+ }finally{Date.now=realNow;records.close();store.close();if(previous===undefined)delete process.env.SETTLBOX_BUSINESS_DATABASE;else process.env.SETTLBOX_BUSINESS_DATABASE=previous;delete process.env.SETTLBOX_SLACK_FIXTURE_WEBHOOK_URL;rmSync(dir,{recursive:true,force:true});}
+ });
+ test('Slack confirms paced batches without duplicates',async()=>{
+ const dir=mkdtempSync(join(tmpdir(),'slack-paced-'));const path=join(dir,'db');const previous=process.env.SETTLBOX_BUSINESS_DATABASE;process.env.SETTLBOX_BUSINESS_DATABASE=path;process.env.SETTLBOX_SLACK_FIXTURE_WEBHOOK_URL='https://hooks.slack.com/services/A/B/C';const store=new IntegrationStore(path,'d'.repeat(64));const records=new BusinessRecordRepository(path);
+ try{
+  for(let i=0;i<2;i++)records.create('company',{kind:'bill',title:'Batch '+i,counterparty:'Vendor',recipient:'0x1111111111111111111111111111111111111111',amount:'0.001',dueDate:'2026-10-31',description:''});
+  store.save('company','slack',{keyEnv:'SETTLBOX_SLACK_FIXTURE_WEBHOOK_URL',enabled:true,baseline:[]});const pauses=[];
+  const result=await deliverSlackChanges('company',store,async()=>new Response('ok'),async(ms)=>{pauses.push(ms)});
+  assert.equal(result.sent,2);assert.deepEqual(pauses,[1100]);assert.ok(store.deliveries('company').every(row=>row.status==='sent'&&row.reason===''));
+  const again=await deliverSlackChanges('company',store,async()=>{throw new Error('must not resend')});assert.equal(again.attempted,0);
+ }finally{records.close();store.close();if(previous===undefined)delete process.env.SETTLBOX_BUSINESS_DATABASE;else process.env.SETTLBOX_BUSINESS_DATABASE=previous;delete process.env.SETTLBOX_SLACK_FIXTURE_WEBHOOK_URL;rmSync(dir,{recursive:true,force:true});}
+ });

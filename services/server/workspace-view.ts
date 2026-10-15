@@ -1,3 +1,4 @@
+import { arcReadTransport } from "./arc-read-transport.ts";
 import { createPublicClient, http, formatUnits } from "viem";
 import { arcTestnet } from "../arc/network.ts";
 import type { TreasuryConfiguration } from "./treasury-runtime";
@@ -15,10 +16,10 @@ export async function workspaceView(workspace: SeededWorkspace, config: Treasury
   let amountExact = "0";
   if (connected) {
     if (!cachedBalance || cachedBalance.address !== config.wallet.address || cachedBalance.expiresAt <= Date.now()) {
-      const reader = createPublicClient({ chain: arcTestnet, transport: http(process.env.NEXT_PUBLIC_ARC_RPC_URL || arcTestnet.rpcUrls.default.http[0]) });
+      const reader = createPublicClient({ chain: arcTestnet, transport: arcReadTransport() });
       cachedBalance = { address: config.wallet.address, expiresAt: Date.now() + 10000, value: reader.getBalance({ address: config.wallet.address }).then(balance => formatUnits(balance, 18)) };
     }
-    amountExact = await cachedBalance.value;
+    try { amountExact = await cachedBalance.value; } catch (error) { cachedBalance = undefined; throw error; }
     amount = Number(amountExact);
   }
   const accounts = workspace.data.accounts.map((account, index) => index === 0 && connected ? { ...account, accountId: config.wallet.address } : account);
