@@ -24,7 +24,18 @@ test("planning preserves records and never counts receivables as available cash"
   assert.equal(result.balanceUsdc, "10");
   assert.equal(result.obligationsUsdc, "1");
   assert.equal(result.unallocatedUsdc, "8");
+  assert.deepEqual(result.cashPosition,{protectedUsdc:"0",availableBeforePaymentsUsdc:"9",reviewablePaymentsUsdc:"1",blockedPaymentsUsdc:"0",receivablesUsdc:"1000",priorityRule:"earliest_due_first"});
   assert.deepEqual(input, before);
+});
+
+test("decision evidence prioritizes due dates and distinguishes protected cash from blocked debt",()=>{
+ const result=planBusinessActions(request,{...context,reservedBaseUnits:parseAmount("7").toString(),records:[{...record,id:"later",dueDate:"2026-10-30",amount:"2"},{...record,id:"earlier",dueDate:"2026-10-14",amount:"1"}]});
+ assert.deepEqual(result.actions.map(row=>row.recordId),["earlier","later"]);
+ assert.equal(result.actions[0].disposition,"review");
+ assert.equal(result.actions[1].disposition,"blocked");
+ assert.match(result.actions[1].reasons.join(),/reserved liquidity/);
+ assert.deepEqual(result.cashPosition,{protectedUsdc:"7",availableBeforePaymentsUsdc:"2",reviewablePaymentsUsdc:"1",blockedPaymentsUsdc:"2",receivablesUsdc:"0",priorityRule:"earliest_due_first"});
+ assert.equal(result.unallocatedUsdc,"1");
 });
 
 test("planning respects cumulative daily commitments, reserved cash and recipient restrictions", () => {

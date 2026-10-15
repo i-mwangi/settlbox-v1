@@ -1,3 +1,4 @@
+import { arcReadTransport } from "./arc-read-transport.ts";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { createPublicClient, http, keccak256, type Hex } from "viem";
@@ -12,7 +13,7 @@ export async function readTreasuryVaultStatus(companyId: string): Promise<Treasu
   const path = resolve(process.env.SETTLBOX_TREASURY_VAULT_CONFIG || ".data/treasury-vault.json");
   if (!existsSync(path)) return { state: "not_configured", message: "The treasury vault is not deployed or configured. Current treasury payments do not use this vault." };
   const config = validateVaultConfiguration(JSON.parse(readFileSync(path, "utf8")), companyId);
-  const reader = createPublicClient({ chain: arcTestnet, transport: http(process.env.NEXT_PUBLIC_ARC_RPC_URL || arcTestnet.rpcUrls.default.http[0], { timeout: 10000, retryCount: 1 }) });
+  const reader = createPublicClient({ chain: arcTestnet, transport: arcReadTransport() });
   const chainId = await reader.getChainId();
   if (chainId !== config.chainId) throw new Error("Vault RPC network does not match Arc Testnet");
   const blockNumber = await reader.getBlockNumber();

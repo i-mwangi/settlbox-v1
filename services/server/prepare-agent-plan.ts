@@ -18,7 +18,7 @@ export async function prepareAgentPlan(value: unknown, principalId: string, advi
     if (vault.state === "verified") {
       const records = openBusinessRecords();
       try {
-        const plan = planBusinessActions(input, await vaultPlanningContext(companyId, records.list(companyId)));
+        const plan = planBusinessActions(input, await vaultPlanningContext(companyId, records.list(companyId), vault));
         const reviewed = advisory ? await reviewAgentPlan(plan) : plan;
         return repository.save(companyId, principalId, input, { ...reviewed, fundingSource: "treasury_vault" });
       } finally { records.close(); }

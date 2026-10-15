@@ -1,56 +1,81 @@
 # Settlbox
 
-Business accounts, payroll, invoices, and treasury management on Arc.
+Settlbox is a stablecoin-native business finance platform for treasury, invoices, payroll and contractor payments. Its Finance agent helps operators understand obligations, prepare actions for review and coordinate authorized USDC payments on Arc.
 
-## Development
+The broader vision is a business account for global collections, payroll and USD treasury management. The current implementation is an **Arc Testnet prototype**. Live banking, fiat payouts, yield and universal onboarding eligibility are not represented as available services.
 
-Use Node.js 24 or newer. Run `npm ci`, copy `.env.example` to `.env.local`, then run `npm run dev`.
+## How it works
 
-The default network is Arc Testnet. Connect an EVM wallet through the dashboard and open `/transfer` to send native USDC. Transfers require wallet approval. A submitted transaction is not presented as confirmed settlement.
+1. Create an obligation manually, ask the Finance agent to prepare it, or import reviewed drafts from Google Sheets.
+2. Ask what needs attention. The agent explains due-date priorities, protected liquidity, eligible payments and blocked obligations using saved records and current policy.
+3. Review the proposed action. Payments require the applicable human wallet authorization and contract approvals.
+4. Verify USDC settlement on Arc Testnet, with saved payment state and a transaction hash.
+5. With Slack notifications enabled, the background worker posts structured record updates with a transaction link when a settlement hash is recorded.
 
-## Current capabilities
+Uncollected invoices are excluded from spendable cash. A completed action review does not itself prove payment settlement. Execution rechecks current balances, permissions and limits.
 
-- Arc wallet connection, network selection, native USDC balance queries, and wallet-approved transfers.
-- Exact integer accounting utilities and typed payment intents.
-- Recipient allowlists, transaction limits, daily limits including reservations, and distinct approval counting.
-- A payment orchestration interface requiring atomic authorization and reservation from its repository implementation.
-- A SQLite treasury ledger with durable reservations, immutable idempotency bindings, approval records, and verified settlement transitions.
-- Circle wallet provisioning and Arc Testnet payment execution through the official SDK.
-- An authenticated testnet treasury at `/testnet-treasury`, with operator access at `/operator`.
-- Durable invoices, bills, payroll, reimbursements, contacts, collections, and company records.
-- Wallet-signed team invitations, distinct reviewer identities, role restrictions, and immediate session revocation.
-- Atomic batch drafts, idempotent draft creation, private receipt uploads, and printable business documents.
-- Durable payment schedules with bounded draft preparation, pause/resume, and occurrence history.
-- Recipient-bound funded gifts on Arc, with confirmed claims and refunds after expiry.
-- Server-persisted invoice presentation settings applied to printable invoices.
+## Implemented capabilities
 
-The connected wallet and Circle company treasury are separate accounts. Company disbursements pass through the configured treasury policy and approvals.
+- **Finance agent:** conversational analysis and reviewed actions, saved conversations, financial decision summaries and a visible agent audit trail. Analysis is based on recorded obligations, not a forecast of unknown expenses.
+- **Treasury:** Circle wallet integration, a contract-enforced payment vault, recipient allowlists, spending limits, liquidity protection, human approvals, durable reservations and idempotent payment handling.
+- **Invoices and receivables:** saved invoices, branded printable documents, payment links, Arc USDC collection and settlement reconciliation.
+- **Payroll and contractors:** employee/contractor records, agreements, bills and recurring schedules that prepare drafts. Scheduling does not bypass approval.
+- **Expenses:** reimbursements, private receipt uploads, review and payment workflows.
+- **Google Sheets:** OAuth connection, reviewed imports of up to 100 draft rows with stable source IDs, and exports of up to 1,000 saved records into a new spreadsheet. Import/export is explicit; automatic two-way sync is not implemented.
+- **Slack:** incoming webhook connection, opt-in background record notifications, structured payment cards and a delivery audit.
+- **Stripe:** restricted-key, read-only snapshots of the latest 100 customers, invoices and charges per category. Manual refresh; no payment mutations or automatic full-history sync. Real-account verification remains pending.
+- **MCP:** authenticated access for external assistants to read supported context and propose actions for review, plus configurable outbound MCP connections. Assistants cannot bypass wallet authorization.
+- **Access and records:** authenticated sessions, role restrictions, signed team invitations, durable business records and saved payment outcomes.
+
+The company wallet and payment vault are **separate funding sources**. The current dashboard balance reads the company wallet; vault payments reduce the vault balance. Neither represents every asset held by the business.
 
 ## Verification
 
-Run `npm test` for financial policy, storage, and configuration tests. Run `npm run typecheck:arc` for the Arc and server modules, `npm run typecheck` for application diagnostics, and `npm run build` for the production build.
+Live checks have verified Sheets draft import/export, agent analysis and review, user-authorized Arc Testnet USDC settlement, audit records and Slack background notifications. A paid Slack card was checked against an actual successful transaction receipt.
 
-`npm run verify:circle` uses configured Circle credentials to provision isolated Arc Testnet wallets and verify a 0.001 USDC payment against chain receipts and the recipient balance. Request faucet funding separately with `npm run verify:circle -- --request-faucet`. The public Circle faucet is a fallback when the authenticated faucet is unavailable.
+The latest recovery verification passed **166 automated tests**, application type checking and the production build. Failure-path tests cover read-only RPC failover, bounded Slack rate-limit retries and duplicate protection. An isolated live test recovered through the backup Arc RPC after its primary was deliberately made unavailable. Integration HTTP checks also use mocked providers; these do not establish live-provider readiness.
 
-`npm run verify:api` tests a local running server at `http://127.0.0.1:3002`. It checks authentication, origin enforcement, approval, idempotency conflicts, Circle execution, on-chain settlement, durable history, and session revocation. It sends 0.001 test USDC to the configured approved verification recipient and persists its payment identifier to avoid repeated payments.
+See [the readiness audit](docs/workflow-readiness-audit.md) for detailed evidence and limitations.
 
-On October 9, 2026, 47 automated tests passed and the full application type check passed with zero errors. Live verification confirmed bill, payroll, reimbursement, incoming invoice, funded gift claim, and expired gift refund settlement on Arc Testnet. Workspace HTTP checks verify persistence, draft retries, signed invitations, private uploads, role restrictions, and session revocation. Production builds enforce TypeScript validation.
+## Development
 
-## Testnet workspace
+Use Node.js 24 or newer. Run `npm ci`, copy `.env.example` to `.env.local`, and privately configure the services you use. Never commit credentials, wallet secrets or local databases.
 
-The server reads `CIRCLE_API_KEY`, `CIRCLE_ENTITY_SECRET`, and a high-entropy `SETTLBOX_OPERATOR_TOKEN` from `.env.local`. Circle credentials are never required by the browser. Operator sessions expire after one hour and are stored as hashed tokens.
+```sh
+npm run dev -- --port 3002
+```
 
-Treasury configuration lives in `.data/treasury-config.json`. It contains the company wallet reference, recipient allowlist, exact limits, approval threshold, and gas reserve. The initial configuration limits payments to 0.001 USDC, limits the daily total to 0.01 USDC, permits only the isolated verification recipient, and requires approval for every payment. Authenticated team reviewers have distinct approval identities.
+For production, run `npm run build`, set the `PORT` environment variable to `3002` if desired, then run `npm start`. The production launcher starts configured schedule, finance and payout-status workers while the process remains running.
 
-The production server prepares due bill and payroll drafts on startup and once per minute while running. Each pass prepares at most 100 occurrences atomically. Run `npm run schedules:prepare` for a manual pass; preparation is also available in the scheduled payments screen. These operations do not release payments. Treasury review and approvals remain required.
+```sh
+npm test
+npm run typecheck
+npm run typecheck:arc
+npm run build
+```
 
-Run `npm run contracts:compile` to compile the gift escrow, `npm run contracts:deploy` to deploy it through Circle Contracts using the isolated verification wallet, and `npm run verify:gifts` to reconcile the journaled test claim and refund. Deployment and verification identities are persisted under `.data` to prevent repeated funding on retries. The tested bytecode is pinned in `.data/gift-escrow.json`; wallet signing endpoints do not substitute for supported Circle contract deployment.
+Setup guides: [Google Sheets](docs/google-sheets-setup.md), [Slack and Stripe](docs/slack-stripe-setup.md), and [.env.example](.env.example).
 
-Use a persistent disk for SQLite. Multiple connections on one host are supported; a distributed deployment requires a shared transactional database. Mainnet company disbursements are disabled.
+Circle credentials remain server-side. Operator sessions expire after one hour. Configuration, SQLite databases and private uploads live under `.data` by default. Preserve the integration encryption key and use persistent storage. Distributed deployments require appropriate shared transactional storage.
 
-## Remaining integrations
+Scripts such as `verify:circle`, `verify:api` and gift deployment/verification can provision wallets, deploy contracts or send test funds when configured. Inspect their setup and payment terms before running them; they are not ordinary read-only health checks.
 
-- Scheduled reconciliation, provider event verification, and a reviewed recovery workflow for uncertain submissions.
-- Fiat payouts, card issuing, and bank-account provisioning through configured providers.
-- Crosschain liquidity, reserve products, and contract-enforced approval policies.
-- Banking, cards, reserves, and Slack/Google Sheets/Stripe connections require configured providers and authorization. Their screens report the unavailable state and do not create sample transactions or claim successful connections.
+## Reliability and audit boundaries
+
+Arc reads use bounded retries and a documented backup endpoint. Missing current chain data fails closed. Slack batches are paced; confirmed rate-limit rejections respect `Retry-After` with a three-attempt cap. Ambiguous deliveries remain uncertain and are not automatically resent. External outages remain possible.
+
+The agent audit view exposes recent saved conversations, decision snapshots and available proposal states. These are application records, not an immutable event ledger or the model's private reasoning. Transaction receipts provide separate evidence of settlement.
+
+## Access-dependent and unfinished capabilities
+
+- USYC investment/redemption requires approved access and completed execution integration. No fixed APY is promised.
+- Kora payout workflows are sandbox-only. Live funding, bank/mobile-money payouts and on/off ramps require provider approval and supported-market integration.
+- Card issuing and bank-account provisioning require external providers.
+- Cross-chain liquidity consolidation, FX conversion, broad counterparty screening, subscription usage monitoring and milestone releases are not demonstrated end to end.
+- Sheets automatic two-way sync, Stripe real-account verification and complete integration-state awareness in chat remain unfinished.
+
+Mainnet company disbursements are disabled. The prototype does not establish production compliance, global availability or eligibility without a particular legal entity.
+
+## License
+
+MIT. See [LICENSE](LICENSE). The original BuidlGuidl copyright notice is preserved.
