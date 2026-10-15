@@ -19,6 +19,14 @@ export interface AgentAction {
 }
 
 export interface AgentPlan {
+  cashPosition?: {
+    protectedUsdc: string;
+    availableBeforePaymentsUsdc: string;
+    reviewablePaymentsUsdc: string;
+    blockedPaymentsUsdc: string;
+    receivablesUsdc: string;
+    priorityRule: "earliest_due_first";
+  };
   fundingSource?: "treasury_vault";
   mode: "proposal_only";
   engine: "deterministic";

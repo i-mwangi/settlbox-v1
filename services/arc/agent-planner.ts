@@ -26,6 +26,10 @@ export function planBusinessActions(input: AgentPlanRequest, context: AgentPlann
   const committedToday = parseBaseUnits(context.committedTodayBaseUnits);
   let dailyRemaining = dailyLimit > committedToday ? dailyLimit - committedToday : 0n;
   let obligations = 0n;
+  const availableBeforePayments = remaining;
+  let reviewablePayments = 0n;
+  let blockedPayments = 0n;
+  let receivables = 0n;
   const active = context.records.filter(record => record.dueDate <= request.throughDate && !["paid", "cancelled", "confirmed"].includes(record.status));
   active.sort((a, b) => a.dueDate.localeCompare(b.dueDate) || a.id.localeCompare(b.id));
   const actions = active.map(record => {
@@ -39,14 +43,17 @@ export function planBusinessActions(input: AgentPlanRequest, context: AgentPlann
       if (amount > dailyRemaining) reasons.push("Amount exceeds the remaining daily limit");
       if (amount > remaining) reasons.push("Payment would consume reserved liquidity");
       if (["processing", "submitted", "ready", "awaiting_approval"].includes(record.status)) reasons.push("Payment already has an active workflow");
-      if (!reasons.length) { remaining -= amount; dailyRemaining -= amount; }
+      if (!reasons.length) { remaining -= amount; dailyRemaining -= amount; reviewablePayments += amount; }
+      else blockedPayments += amount;
     }
+    else receivables += amount;
     return { recordId: record.id, kind: record.kind, title: record.title, amountUsdc: record.amount, dueDate: record.dueDate,
       tool: incoming ? "review_receivable" as const : "review_payment" as const,
       disposition: reasons.length ? "blocked" as const : "review" as const,
-      reasons: reasons.length ? reasons : [incoming ? "Review the receivable and its saved payment status" : "Human review and current treasury authorization are required"],
+      reasons: reasons.length ? reasons : [incoming ? "Uncollected invoice; excluded from available cash" : "Prioritized by earliest due date; fits remaining liquidity and payment limits. Human authorization is still required"],
     };
   });
   return { mode: "proposal_only", engine: "deterministic", balanceUsdc: formatAmount(balance), reserveUsdc: request.reserveUsdc,
-    obligationsUsdc: formatAmount(obligations), unallocatedUsdc: formatAmount(remaining), actions };
+    obligationsUsdc: formatAmount(obligations), unallocatedUsdc: formatAmount(remaining), actions,
+    cashPosition: { protectedUsdc: formatAmount(reserved), availableBeforePaymentsUsdc: formatAmount(availableBeforePayments), reviewablePaymentsUsdc: formatAmount(reviewablePayments), blockedPaymentsUsdc: formatAmount(blockedPayments), receivablesUsdc: formatAmount(receivables), priorityRule: "earliest_due_first" } };
 }
