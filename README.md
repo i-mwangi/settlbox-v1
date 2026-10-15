@@ -29,6 +29,125 @@ Uncollected invoices are excluded from spendable cash. A completed action review
 
 The company wallet and payment vault are **separate funding sources**. The current dashboard balance reads the company wallet; vault payments reduce the vault balance. Neither represents every asset held by the business.
 
+## Architecture
+
+The dashboard, Finance agent and manual screens share server-side business records. The language model proposes supported operations; deterministic policy checks, explicit reviews and contract rules govern execution.
+
+```mermaid
+flowchart TB
+    Operator[Business operator] --> UI[Next.js dashboard and Finance agent]
+    Assistant[External MCP assistant] --> MCP[Authenticated inbound MCP server]
+
+    subgraph Server[Settlbox server]
+        API[Authenticated API routes and role checks]
+        Planner[Deterministic planner and policy checks]
+        Chat[Chat orchestration and reviewed proposals]
+        Journal[Payment orchestration and reconciliation]
+        Workers[Schedule, finance and payout-status workers]
+        Integrations[Sheets, Slack, Stripe and outbound MCP adapters]
+        Store[(SQLite business records, plans, proposals and payment journals)]
+        Private[Private receipts and encrypted integration credentials]
+        MCP --> API
+        API --> Chat
+        API --> Planner
+        Chat --> Planner
+        Chat --> Store
+        Planner --> Store
+        API --> Journal
+        Journal --> Store
+        Workers --> Journal
+        Workers --> Integrations
+        API --> Integrations
+        Integrations --> Store
+        Integrations --> Private
+    end
+
+    UI --> API
+    Chat <-->|Bounded context and proposed operation| Azure[Azure OpenAI]
+    UI <-->|User completes secure authorization| CircleUser[Circle user-controlled wallet]
+    Journal --> CircleExecutor[Circle execution wallet]
+    CircleUser --> Vault
+    CircleExecutor --> Vault
+    Journal --> RPC[Primary and backup read-only Arc RPC]
+    RPC --> Arc[Arc Testnet]
+    Vault[Policy-controlled treasury vault] --> Arc
+    Company[Separate company wallet] --> Arc
+    Arc --> Recipient[Recipient receives USDC]
+    Integrations <--> Sheets[Google Sheets]
+    Integrations --> Slack[Slack incoming webhook]
+    Integrations --> Stripe[Stripe read-only API]
+    Integrations <--> Remote[Enabled external MCP tools]
+    Integrations <--> Kora[Kora sandbox payouts]
+```
+
+**Boundaries:** model output is not payment authorization. Wallet PINs and private keys are not supplied to the model. Server credentials stay out of browser configuration. The vault and company wallet are separate addresses and balances. Stripe snapshots and Kora sandbox balances do not become spendable Arc funds. External MCP tools require review and remain subject to their configured permissions.
+
+### Agent payment sequence
+
+This is the implemented vault-payment path. Manual record entry and reviewed Sheets imports can create the same saved obligation before the conversation begins.
+
+```mermaid
+sequenceDiagram
+    actor User as Business operator
+    participant UI as Finance agent UI
+    participant API as Settlbox server
+    participant AI as Azure OpenAI
+    participant DB as SQLite records and journals
+    participant Circle as Circle wallets
+    participant Vault as Arc Testnet vault
+    participant Worker as Background worker
+    participant Slack as Slack channel
+
+    User->>UI: Ask to review a saved payable
+    UI->>API: Authenticated chat request with request ID
+    API->>DB: Read obligation, conversation and saved workflow
+    API->>Vault: Read current balance, policy and approvals through RPC
+    API->>API: Compute eligible and blocked actions
+    API->>AI: Bounded context and deterministic plan
+    AI-->>API: Answer and proposed supported operation
+    API->>API: Validate operation and bind saved terms
+    API->>DB: Save plan, conversation and proposal
+    API-->>UI: Show exact payment review
+    User->>UI: Authorize the displayed payment
+    UI->>API: Prepare or resume queued payment
+    API->>Circle: Submit contract queue request
+    Circle->>Vault: Queue obligation
+    opt Contract requires a human approval
+        API->>Circle: Create approval challenge
+        Circle-->>UI: Secure wallet authorization screen
+        User->>Circle: Complete authorization privately
+        Circle->>Vault: Record approval
+    end
+    UI->>API: Reconcile and execute when ready
+    API->>API: Recheck saved terms, policy and workflow state
+    API->>Circle: Execute queued payment
+    Circle->>Vault: Execute within contract rules
+    Vault-->>API: Reconciliation verifies settlement receipt and event
+    API->>DB: Save paid state and settlement hash
+    API-->>UI: Show settlement result and explorer link
+    Worker->>DB: Find new or changed record versions
+    Worker->>Slack: Post structured paid card and transaction link
+    Slack-->>Worker: Delivery acknowledgement or failure
+    Worker->>DB: Persist delivery outcome and retry metadata
+```
+
+The enabled finance worker can also execute already-ready payments within policy. It cannot supply human signatures. Slack notification processing is independent of the finance cycle, and an uncertain notification is not automatically resent.
+
+### Repository map
+
+| Location | Responsibility |
+| --- | --- |
+| `app/agent/` | Conversation, action/payment reviews, decision summary and audit UI |
+| `presentation/` | Dashboard, manual workflows, Settings and shared components |
+| `app/api/` | Authenticated business, payment, integration and MCP endpoints |
+| `services/arc/` | Exact amounts, deterministic planning and payment policy utilities |
+| `services/server/` | Persistence, agent orchestration, wallet/provider adapters and reconciliation |
+| `contracts/` | Treasury vault and gift escrow contracts and artifacts |
+| `scripts/` | Production launcher, background workers and verification scripts |
+| `tests/` | Policy, persistence, authorization, recovery and integration tests |
+| `docs/` | Setup guides and verification history |
+| `.data/` | Private local runtime configuration, databases, uploads and verification artifacts; not source-controlled |
+
 ## Verification
 
 Live checks have verified Sheets draft import/export, agent analysis and review, user-authorized Arc Testnet USDC settlement, audit records and Slack background notifications. A paid Slack card was checked against an actual successful transaction receipt.
