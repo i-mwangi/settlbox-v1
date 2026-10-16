@@ -72,9 +72,9 @@ export default function SettingContainer() {
       </div>);
         setShowBackArrow(false);
     }, [activeTab]);
-    return (<div className="flex w-full h-full flex-col bg-background">
+    return (<div className="flex min-h-0 w-full h-full shrink-0 flex-col overflow-hidden bg-background">
       
-      <div className="flex w-full items-start justify-between gap-4 px-6 pt-6 pb-3">
+      <div className="flex w-full shrink-0 items-start justify-between gap-4 px-6 pt-6 pb-3">
         <div className="flex flex-col gap-0.5">
           <h1 className="text-[26px] font-bold leading-tight tracking-tight text-text-primary">Settings</h1>
           <p className="text-[14px] text-text-secondary">
@@ -86,7 +86,7 @@ export default function SettingContainer() {
       
       <div className="flex w-full flex-1 min-h-0 flex-row gap-2 px-6 pb-6">
         
-        <div className="bg-background flex flex-col items-start w-full max-w-[300px] h-full">
+        <div className="workspace-scroll bg-background flex min-h-0 shrink-0 flex-col items-start w-[220px] xl:w-[300px] h-full overflow-y-auto">
           <div className="flex flex-col items-center justify-center w-full">
             <div className="flex flex-col gap-1 items-start pb-5 pt-3 w-full">
               
@@ -132,8 +132,8 @@ export default function SettingContainer() {
         </div>
 
         
-        <div className="flex-1 bg-background flex justify-center items-start overflow-y-auto">
-          <div className="w-[900px]">
+        <div className="workspace-scroll min-h-0 min-w-0 flex-1 bg-background overflow-y-auto">
+          <div className="mx-auto w-full max-w-[900px]">
             
             {activeTab === "account" && <AccountSettings />}
             {activeTab === "notifications" && <NotificationSettings />}

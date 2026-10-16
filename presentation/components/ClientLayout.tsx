@@ -104,13 +104,13 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
                       <ModalManager />
                       <TitleProvider>
                         {isFullscreen ? (<div className="h-screen w-screen">{children}</div>) : (<div className="flex flex-col h-screen overflow-hidden">
-                            <div className="flex flex-row gap-2">
-                              <div className={`top-0 transition-[width] duration-200 ${sidebarCollapsed ? "w-[68px]" : SIDEBAR_WIDTH_CLASSES}`}>
+                            <div className="flex min-h-0 flex-1 flex-row gap-2">
+                              <div className={`top-0 shrink-0 transition-[width] duration-200 ${sidebarCollapsed ? "w-[68px]" : SIDEBAR_WIDTH_CLASSES}`}>
                                 <Sidebar collapsed={sidebarCollapsed} onToggleCollapse={toggleSidebar}/>
                               </div>
-                              <div className="flex-1 h-screen flex flex-col overflow-hidden gap-2">
+                              <div className="min-h-0 min-w-0 flex-1 h-screen flex flex-col overflow-hidden gap-2">
                                 <Title />
-                                <div className="mx-[8px] mb-[24px] rounded-[12px] flex justify-center items-center flex-1 overflow-auto relative bg-background">
+                                <div className="workspace-scroll mx-[8px] mb-[24px] min-h-0 min-w-0 rounded-[12px] flex flex-col items-stretch flex-1 overflow-auto relative bg-background">
                                   {children}
                                 </div>
                               </div>
