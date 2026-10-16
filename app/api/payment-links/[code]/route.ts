@@ -1,5 +1,5 @@
 import { requireOperatorSession, requireSameOrigin } from "@/services/server/operator-session";
-import { openPaymentLinks } from "@/services/server/payment-links";
+import { openPaymentLinks, publicPaymentLink } from "@/services/server/payment-links";
 
 export const runtime = "nodejs";
 type Context = { params: Promise<{ code: string }> };
@@ -10,7 +10,7 @@ export async function GET(_request: Request, context: Context) {
   try {
     const link = repository.get(code);
     if (!link) return Response.json({ error: "Payment link not found" }, { status: 404 });
-    return Response.json({ ...link, records: [] });
+    return Response.json(publicPaymentLink(link));
   } finally { repository.close(); }
 }
 

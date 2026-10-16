@@ -23,7 +23,7 @@ export function useGetPaymentLinks() {
 }
 
 export function useGetPaymentLinkByCode(code?: string) {
-  return useQuery({ queryKey: ["payment-links", code], enabled: !!code, queryFn: () => request<BusinessPaymentLink>(`/${encodeURIComponent(code!)}`) });
+  return useQuery({ queryKey: ["payment-links", code], enabled: !!code, queryFn: () => request<BusinessPaymentLink & { settlement?: { status: "confirmed"; transactionHash: string; confirmedAt: string } | null }>(`/${encodeURIComponent(code!)}`) });
 }
 
 export function useGetPaymentLinkByCodeForOwner(code?: string) {
