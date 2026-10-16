@@ -336,6 +336,26 @@ input:-moz-autofill:active {
   -ms-overflow-style: none;
 }
 
+/* Main page and Settings scroll areas need a visible, draggable scrollbar. */
+.workspace-scroll {
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+  -ms-overflow-style: auto;
+}
+
+.workspace-scroll::-webkit-scrollbar {
+  display: block;
+  width: 8px;
+  height: 8px;
+}
+
+.workspace-scroll::-webkit-scrollbar-thumb {
+  background: #a1a1aa;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background-clip: padding-box;
+}
+
 @keyframes slide-up {
   from {
     opacity: 0;
