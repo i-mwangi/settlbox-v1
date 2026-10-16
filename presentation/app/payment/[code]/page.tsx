@@ -45,7 +45,7 @@ const Header = () => {
       </div>
     </div>);
 };
-const PaymentSuccess = ({ amount, tokenSymbol, recipientName, }: {
+const PaymentSuccess = ({ amount, tokenSymbol, recipientName }: {
     amount: string;
     tokenSymbol: string;
     recipientName: string;
@@ -71,6 +71,7 @@ const PaymentLinkDetailPage = () => {
         amount: string;
         tokenSymbol: string;
         recipientName: string;
+        transactionHash?: string;
     } | null>(null);
     const [pendingHash, setPendingHash] = useState<TransactionHash | null>(null);
     useEffect(() => {
@@ -87,10 +88,19 @@ const PaymentLinkDetailPage = () => {
             sessionStorage.setItem(`settlbox-link-payment:${code}`, hash);
             await recordPaymentMutation.mutateAsync({ code, data: { txid: hash } });
             sessionStorage.removeItem(`settlbox-link-payment:${code}`);
-            setPaymentSuccess({ amount: paymentLink.amount, tokenSymbol: "USDC", recipientName: paymentLink.title });
+            setPaymentSuccess({ amount: paymentLink.amount, tokenSymbol: "USDC", recipientName: paymentLink.title, transactionHash: hash });
         } catch (error) { toast.error(error instanceof Error ? error.message : "Payment is pending. Retry verification before sending again."); }
         finally { setIsSending(false); }
     };
+    const confirmedPayment = paymentSuccess || (paymentLink?.settlement?.status === "confirmed" ? {
+        amount: paymentLink.amount, tokenSymbol: "USDC", recipientName: paymentLink.title,
+        transactionHash: paymentLink.settlement.transactionHash,
+    } : null);
+    // Query invalidation closes single-use links immediately after verification.
+    // A verified receipt must take precedence over the closed-link screen.
+    if (confirmedPayment) {
+        return <div className="flex flex-col w-full h-full bg-app-background p-2"><Header /><div className="flex flex-col w-full h-screen p-4 items-center justify-start gap-10 bg-background rounded-lg"><PaymentSuccess {...confirmedPayment}/></div></div>;
+    }
     if (isLoading) {
         return (<div className="flex flex-col w-full h-full items-center justify-center">
         <img src="/loading-square.gif" alt="loading" className="w-12 h-12"/>
@@ -105,12 +115,13 @@ const PaymentLinkDetailPage = () => {
             }}>
           <div className="w-fit h-fit relative flex justify-center items-center flex-col gap-4 z-2">
             <span className="text-text-primary text-7xl font-bold anton-regular leading-none uppercase">
-              Oops, this link isn’t active anymore.
+              {error ? "Unable to load this payment link" : !paymentLink ? "Payment link not found" : "This payment link is closed"}
             </span>
             <span className="text-text-primary text-lg">
-              Looks like the creator has turned it off. You can reach out to them to get a new one.
+              {error ? "We could not check its status. Reload to try again; do not send another payment if you already signed." : "This checkout is unavailable. Contact the creator if you need assistance."}
             </span>
           </div>
+          {error && <button className="mt-4 rounded-lg border px-4 py-2" onClick={() => window.location.reload()}>Retry loading</button>}
         </div>
 
         <img src="/gift/background-settlbox-text.svg" alt="Settlbox background" className="w-[1050px] absolute top-100 left-1/2 -translate-x-1/2 -translate-y-1/2 z-1"/>
@@ -120,7 +131,6 @@ const PaymentLinkDetailPage = () => {
       <Header />
 
       <div className="flex flex-col w-full h-screen p-4 items-center justify-start gap-10 bg-background rounded-lg">
-        {paymentSuccess ? (<PaymentSuccess {...paymentSuccess}/>) : (<>
             
             <div className="w-full flex flex-row gap-2 px-7 items-center justify-start">
               <img src="/misc/star-icon.svg" alt="Payment Link"/>
@@ -140,7 +150,6 @@ const PaymentLinkDetailPage = () => {
                 }
                 : null} handleConnectWallet={() => { void wallet.connect().catch(error => toast.error(error instanceof Error ? error.message : "Wallet connection failed")); }} handleSubmitPayment={handleSubmitPayment} isSending={isSending}/>
             </div>
-          </>)}
       </div>
     </div>);
 };

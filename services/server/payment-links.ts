@@ -150,6 +150,18 @@ export function verifyLinkSettlement(
   if (blockTimestamp < BigInt(Math.floor(Date.parse(link.createdAt) / 1000))) throw new Error("Transaction predates this payment link");
 }
 
+// Public checkout exposes settlement proof without disclosing payer history.
+export function publicPaymentLink(link: BusinessPaymentLink) {
+  const latest = link.records[0];
+  return {
+    ...link,
+    records: [],
+    settlement: link.status === "DEACTIVATED" && latest
+      ? { status: "confirmed" as const, transactionHash: latest.txid, confirmedAt: latest.createdAt }
+      : null,
+  };
+}
+
 export function openPaymentLinks() {
   const path = resolve(process.env.SETTLBOX_BUSINESS_DATABASE || ".data/business.sqlite");
   mkdirSync(dirname(path), { recursive: true });

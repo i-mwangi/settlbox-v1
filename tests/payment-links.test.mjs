@@ -3,11 +3,30 @@ import assert from "node:assert/strict";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { PaymentLinkRepository, validatePaymentLink, verifyLinkSettlement } from "../services/server/payment-links.ts";
+import { PaymentLinkRepository, validatePaymentLink, verifyLinkSettlement, publicPaymentLink } from "../services/server/payment-links.ts";
 
 const details = { title: "Consulting", description: "Monthly invoice", amount: "0.001", paymentWalletAddress: `0x${"1".repeat(40)}` };
 const payer = `0x${"2".repeat(40)}`;
 const hash = `0x${"a".repeat(64)}`;
+
+test("paid single-use checkout exposes a receipt after reload without exposing payer history", () => {
+  const repository = new PaymentLinkRepository(":memory:");
+  try {
+    const link = repository.create(details, "invoice-receipt", { singleUse: true });
+    assert.equal(publicPaymentLink(link).settlement, null);
+    repository.record(link.code, hash, payer, link.amount);
+    const checkout = publicPaymentLink(repository.get(link.code));
+    assert.equal(checkout.status, "DEACTIVATED");
+    assert.equal(checkout.settlement.status, "confirmed");
+    assert.equal(checkout.settlement.transactionHash, hash);
+    assert.deepEqual(checkout.records, []);
+    assert.equal(JSON.stringify(checkout).includes(payer), false);
+    assert.throws(() => repository.record(link.code, `0x${"b".repeat(64)}`, payer, link.amount), /inactive/);
+    const disabled = repository.create(details);
+    repository.update(disabled.code, { status: "DEACTIVATED" });
+    assert.equal(publicPaymentLink(repository.get(disabled.code)).settlement, null);
+  } finally { repository.close(); }
+});
 
 test("payment links and verified receipts survive restart without duplicate settlement", () => {
   const directory = mkdtempSync(join(tmpdir(), "settlbox-links-"));
