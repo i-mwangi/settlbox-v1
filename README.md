@@ -191,28 +191,188 @@ The latest recovery verification passed **166 automated tests**, application typ
 
 See [the readiness audit](docs/workflow-readiness-audit.md) for detailed evidence and limitations.
 
-## Development
+## Development: clone, configure and run
 
-Use Node.js 24 or newer. Run `npm ci`, copy `.env.example` to `.env.local`, and privately configure the services you use. Never commit credentials, wallet secrets or local databases.
+### 1. Install prerequisites and clone
+
+Use **Node.js 24 or newer**, npm and Git. The server uses Node's built-in SQLite API; a separate SQLite service is not needed. Run commands from the repository root.
 
 ```sh
-npm run dev -- --port 3002
+git clone https://github.com/i-mwangi/settlbox-v1.git
+cd settlbox-v1
+node --version
+npm --version
+npm ci
 ```
 
-For production, run `npm run build`, set the `PORT` environment variable to `3002` if desired, then run `npm start`. The production launcher starts configured schedule, finance and payout-status workers while the process remains running.
+### 2. Create the local environment
+
+Copy the template once. Do not overwrite an existing configured environment.
+
+**Windows PowerShell:**
+
+```powershell
+Copy-Item .env.example .env.local
+New-Item -ItemType Directory -Force .data
+```
+
+**macOS/Linux:**
+
+```sh
+cp .env.example .env.local
+mkdir -p .data
+```
+
+Edit these local-origin settings in `.env.local` for the port used below:
+
+```dotenv
+NEXT_PUBLIC_ARC_ENVIRONMENT=testnet
+NEXT_PUBLIC_ARC_RPC_URL=https://rpc.testnet.arc.io
+NEXT_PUBLIC_APP_URL=http://127.0.0.1:3002
+NEXT_PUBLIC_SERVER_URL=http://127.0.0.1:3002
+SETTLBOX_APP_ORIGIN=http://127.0.0.1:3002
+```
+
+Use the same hostname consistently; `localhost` and `127.0.0.1` are different browser origins. Restart after changing server variables; rebuild after changing `NEXT_PUBLIC_` values in production.
+
+Generate separate random values for `SETTLBOX_OPERATOR_TOKEN`, `SETTLBOX_FINANCE_WORKER_TOKEN` and, if using integrations, `SETTLBOX_INTEGRATION_ENCRYPTION_KEY`. Run the following once for each value and copy the output privately into its setting:
+
+```sh
+node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
+```
+
+Keep `.env.local`, wallet credentials, tokens and `.data` private. Preserve the integration encryption key: replacing it makes previously encrypted provider credentials unreadable.
+
+### 3. Configure workspace sign-in
+
+There are no shared default login credentials. After creating `.env.local`, use the interactive PowerShell helper (`pwsh` also works where PowerShell is installed):
+
+```powershell
+powershell -NoProfile -File scripts/configure-auth.ps1
+```
+
+It prompts for your email and a hidden password of at least 12 characters, then writes `SETTLBOX_LOGIN_EMAIL` and a salted password hash to `.env.local`. It does not store the plaintext password. Do not put your password in a committed file or shell command. The underlying `scripts/configure-auth.mjs` also accepts a JSON object containing `email` and `password` through standard input for a private setup tool.
+
+### 4. Configure the company treasury
+
+Starting the server does **not** provision a company wallet or payment vault. Authenticated workspace operations require a company treasury configuration at `SETTLBOX_TREASURY_CONFIG` (default `.data/treasury-config.json`). Use a Circle Arc Testnet wallet you control and its real wallet ID/address. Keep the company ID stable across the workspace, vault and executor configuration.
+
+The file has this structure; replace the wallet placeholders before use. The zero limits and empty allowlist below intentionally permit no outgoing payments:
+
+```json
+{
+  "wallet": {
+    "id": "YOUR_CIRCLE_ARC_TESTNET_WALLET_ID",
+    "companyId": "YOUR_STABLE_COMPANY_ID",
+    "address": "YOUR_FULL_ARC_TESTNET_WALLET_ADDRESS",
+    "chainId": 5042002
+  },
+  "gasReserveBaseUnits": "0",
+  "policy": {
+    "allowedRecipients": [],
+    "maxPaymentBaseUnits": "0",
+    "dailyLimitBaseUnits": "0",
+    "approvalThresholdBaseUnits": "0",
+    "requiredApprovals": 1
+  }
+}
+```
+
+Choose recipients, gas reserve and spending policy explicitly before enabling disbursements. These configuration amounts use **18-decimal native USDC base units**; 0.001 USDC is `1000000000000000`. The vault has its own separately enforced policy and balance. A sample address or copied verification configuration does not establish ownership or spending authority.
+
+For configured Circle operations, set server-only `CIRCLE_API_KEY` and the registered `CIRCLE_ENTITY_SECRET`. Human approvals additionally need `NEXT_PUBLIC_CIRCLE_APP_ID` and the appropriate user-controlled wallet API key. Follow [Circle executor setup](docs/circle-executor-setup.md), [treasury vault setup](docs/treasury-vault.md), [human wallet approvals](docs/human-wallet-approvals.md) and [the payment workflow](docs/vault-payment-workflow.md) before attempting settlement. Wallet/vault provisioning and test funding are separate from ordinary application startup.
+
+### 5. Run the development server
+
+```sh
+npm run dev -- --hostname 127.0.0.1 --port 3002
+```
+
+Open [workspace login](http://127.0.0.1:3002/login), sign in with the credentials created above, then open [Dashboard](http://127.0.0.1:3002/) or [Finance agent](http://127.0.0.1:3002/agent). Stop the foreground server with **Ctrl+C**. Development output is stored in `.next-dev`.
+
+`npm run dev` does not launch the background workers used by `npm start`. To test the finance/Slack worker in development, run this in a second terminal with the same port and configured worker token:
+
+**PowerShell:**
+
+```powershell
+$env:PORT='3002'
+npm run agent:worker
+```
+
+**macOS/Linux:**
+
+```sh
+PORT=3002 npm run agent:worker
+```
+
+The worker loads `.env.local`. Finance automation and Slack notifications still require their individual Settings controls to be enabled. Use production startup below to exercise all configured launcher workers together; do not run a duplicate finance worker alongside it.
+
+### 6. Configure the agent and optional integrations
+
+Configure only the features you intend to use. Empty provider settings do not become working services merely because the UI is visible.
+
+| Feature | Configuration and setup |
+| --- | --- |
+| Finance chat | `SETTLBOX_AI_PROVIDER=azure`, `AZURE_OPENAI_ENDPOINT`, `AZURE_OPENAI_DEPLOYMENT`, server-only `AZURE_OPENAI_API_KEY`; see [Finance chat](docs/finance-chat.md). |
+| Google Sheets | Google OAuth client, encryption key and exact callback URI; see [Sheets setup](docs/google-sheets-setup.md). Connect your account in Settings. |
+| Slack | Server-only `SETTLBOX_SLACK_COMPANY_WEBHOOK_URL`; connect, test, then explicitly enable notifications in Settings. See [Slack setup](docs/slack-stripe-setup.md). |
+| Stripe | Server-only restricted read key `SETTLBOX_STRIPE_COMPANY_READ_KEY`; see [Stripe setup](docs/slack-stripe-setup.md). |
+| External AI assistants | Authenticated `/api/mcp`; local bearer clients or compatible hosted OAuth clients. See [MCP setup](docs/inbound-mcp.md). |
+| Fiat payouts | Kora sandbox configuration only; see [fiat payouts](docs/fiat-payouts.md). |
+| Gifts | Separate deployed and verified escrow configuration at `SETTLBOX_GIFT_ESCROW_CONFIG`; inspect gift scripts before provisioning or funding. |
+
+For a hosted MCP client, expose the local app through a configured HTTPS deployment or an explicitly started tunnel, for example `ngrok http 3002`. Set `SETTLBOX_OAUTH_ISSUER` to that public HTTPS origin and include it in `SETTLBOX_ADDITIONAL_APP_ORIGINS`, then restart the app. The connector URL is `https://YOUR_CURRENT_HOST/api/mcp`. Keep the local app origin for local browsing; never publish your own tokens or reuse someone else's tunnel hostname. A changed tunnel origin requires updating configuration and reconnecting the client.
+
+### 7. Build and start the production server
+
+Stop the existing server before rebuilding, particularly on Windows where generated standalone files may be locked. Keep `.data` and `.env.local` intact.
+
+```sh
+npm run build
+```
+
+Then start the built application:
+
+**PowerShell:**
+
+```powershell
+$env:PORT='3002'
+$env:HOSTNAME='127.0.0.1'
+npm start
+```
+
+**macOS/Linux:**
+
+```sh
+PORT=3002 HOSTNAME=127.0.0.1 npm start
+```
+
+The build generates `.next/standalone`; `npm start` loads `.env.local` and runs the standalone server with the configured schedule, finance and payout-status workers. Workers operate only while this process remains running and their required settings are present. See [finance automation](docs/finance-automation.md) for execution controls. **Ctrl+C** stops the foreground process. Rebuild after source changes before restarting production.
+
+### 8. Validate the installation
 
 ```sh
 npm test
 npm run typecheck
 npm run typecheck:arc
-npm run build
 ```
 
-[Documentation index](docs/README.md). Setup guides: [Google Sheets](docs/google-sheets-setup.md), [Slack and Stripe](docs/slack-stripe-setup.md), and [.env.example](.env.example).
+A production build is also a required check: `npm run build`. For a basic UI check, log in, open Dashboard, create one intended draft and reopen it. A loaded page or saved draft is not proof of provider connectivity or payment settlement.
 
-Circle credentials remain server-side. Operator sessions expire after one hour. Configuration, SQLite databases and private uploads live under `.data` by default. Preserve the integration encryption key and use persistent storage. Distributed deployments require appropriate shared transactional storage.
+Scripts such as `verify:circle`, `verify:api`, deployment scripts and gift verification can provision wallets, deploy contracts or send test funds when configured. Inspect their setup and payment terms before running them; they are not ordinary read-only health checks.
 
-Scripts such as `verify:circle`, `verify:api` and gift deployment/verification can provision wallets, deploy contracts or send test funds when configured. Inspect their setup and payment terms before running them; they are not ordinary read-only health checks.
+### 9. Troubleshooting and persistence
+
+- **Port already in use:** stop the server already using 3002, or choose another port and update origins/callbacks consistently.
+- **Login not configured or session expired:** run the sign-in helper if needed, restart, and sign in again. Operator sessions expire after one hour.
+- **Treasury configuration missing:** configure your own wallet registry in step 4. Cloning does not copy the private configured workspace used in demonstrations.
+- **RPC or wrong-network error:** use Arc Testnet chain ID `5042002`; check app and external wallet RPC settings separately. The app's backup read endpoint is configurable through `SETTLBOX_ARC_BACKUP_RPC_URL`.
+- **No background Slack delivery in dev:** run the finance worker with the matching port, configure its token, and enable Slack notifications in Settings. A connection test does not prove the worker is running.
+- **Windows build cannot replace generated files:** stop the local application before rebuilding. Do not delete runtime databases to fix a build error.
+
+SQLite databases, configuration, encrypted credentials and private receipt uploads live under `.data` by default; application repositories initialize their database tables when used. Preserve this directory and the encryption key across restarts/deployments. Use persistent storage. Distributed deployments require appropriate shared transactional storage rather than independent local database copies.
+
+[Documentation index](docs/README.md) · [Environment template](.env.example)
 
 ## Reliability and audit boundaries
 
